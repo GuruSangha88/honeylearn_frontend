@@ -137,32 +137,6 @@ const LessonDetail = () => {
                 <p>No audio available for this section</p>
               </div>
             )}
-            
-            {/* Section Navigation */}
-            <div className="w-full mt-8 flex justify-between">
-              <Button 
-                variant="outline" 
-                disabled={currentSectionIndex === 0}
-                onClick={() => {
-                  if (currentSectionIndex > 0) {
-                    setCurrentSectionIndex(prevIndex => prevIndex - 1);
-                  }
-                }}
-              >
-                Previous Section
-              </Button>
-              <Button 
-                disabled={currentSectionIndex === lesson.sections.length - 1}
-                className="bg-tutor-purple hover:bg-tutor-dark-purple"
-                onClick={() => {
-                  if (currentSectionIndex < lesson.sections.length - 1) {
-                    setCurrentSectionIndex(prevIndex => prevIndex + 1);
-                  }
-                }}
-              >
-                Next Section
-              </Button>
-            </div>
           </div>
           
           {/* Right Column - Chat Interface */}

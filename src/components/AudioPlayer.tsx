@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, SkipForward, SkipBack, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 
@@ -107,62 +107,66 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
     }
   };
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
-
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col items-center">
       <audio ref={audioRef} src={audioUrl} preload="metadata" />
       
-      <div className="flex flex-col items-center">
-        {/* Pulsating Circle */}
-        <div className={`w-24 h-24 mb-4 rounded-full flex items-center justify-center ${isPulsing ? 'animate-pulse-glow' : ''}`}>
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-tutor-purple to-tutor-blue flex items-center justify-center">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 9L15 12L12 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+      {/* New Audio Circle Design */}
+      <div className="relative mb-8">
+        {/* Outer glow ring */}
+        <div className={`absolute inset-0 rounded-full bg-gradient-to-br from-tutor-blue to-tutor-purple opacity-30 blur-md transform scale-125 ${isPulsing ? 'animate-pulse-glow' : ''}`}></div>
+        
+        {/* Outer circle with gradient */}
+        <div className="relative flex items-center justify-center w-56 h-56 rounded-full bg-gradient-to-br from-tutor-blue to-tutor-purple p-1.5">
+          
+          {/* Inner dark circle */}
+          <div className="w-full h-full rounded-full bg-tutor-dark-gray flex items-center justify-center cursor-pointer" onClick={togglePlay}>
+            
+            {/* Audio wave visualization */}
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <div className={`h-10 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave1_1.2s_ease-in-out_infinite]' : ''}`}></div>
+              <div className={`h-14 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave2_1s_ease-in-out_infinite]' : ''}`}></div>
+              <div className={`h-20 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave3_1.4s_ease-in-out_infinite]' : ''}`}></div>
+              <div className={`h-16 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave4_0.9s_ease-in-out_infinite]' : ''}`}></div>
+              <div className={`h-8 w-2.5 rounded-full bg-tutor-purple ${isPulsing ? 'animate-[audio-wave5_1.1s_ease-in-out_infinite]' : ''}`}></div>
+            </div>
+
+            {/* Play/Pause overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 rounded-full flex items-center justify-center transition-opacity duration-200">
+              {!isPulsing && (
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-tutor-purple bg-opacity-80">
+                  <Play size={32} fill="white" className="ml-1.5" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Controls */}
-        <div className="w-full flex items-center justify-between mb-2">
-          <span className="text-xs text-gray-400">{formatTime(currentTime)}</span>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={togglePlay} className="rounded-full">
-              {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-            </Button>
-          </div>
-          <span className="text-xs text-gray-400">{formatTime(duration)}</span>
-        </div>
-
-        {/* Progress Bar */}
+      {/* Hidden Progress Bar (for seeking functionality) */}
+      <div className="w-full hidden">
         <Slider
           value={[currentTime]}
           min={0}
           max={duration || 1}
           step={0.01}
           onValueChange={handleSeek}
-          className="w-full"
         />
+      </div>
 
-        {/* Volume Control */}
-        <div className="flex items-center gap-2 mt-3 self-end">
-          <Button variant="ghost" size="icon" onClick={toggleMute} className="h-8 w-8">
-            {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-          </Button>
-          <Slider
-            value={[isMuted ? 0 : volume]}
-            min={0}
-            max={1}
-            step={0.01}
-            onValueChange={handleVolumeChange}
-            className="w-24"
-          />
-        </div>
+      {/* Volume Control */}
+      <div className="flex items-center gap-2 mt-2 self-end">
+        <Button variant="ghost" size="icon" onClick={toggleMute} className="h-8 w-8">
+          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </Button>
+        <Slider
+          value={[isMuted ? 0 : volume]}
+          min={0}
+          max={1}
+          step={0.01}
+          onValueChange={handleVolumeChange}
+          className="w-24"
+        />
       </div>
     </div>
   );

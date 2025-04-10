@@ -110,13 +110,38 @@ export default {
 				'gradient-shift': {
 					'0%, 100%': { backgroundPosition: '0% 50%' },
 					'50%': { backgroundPosition: '100% 50%' }
+				},
+				'audio-wave1': {
+					'0%, 100%': { height: '10px' },
+					'50%': { height: '20px' }
+				},
+				'audio-wave2': {
+					'0%, 100%': { height: '14px' },
+					'50%': { height: '28px' }
+				},
+				'audio-wave3': {
+					'0%, 100%': { height: '20px' },
+					'50%': { height: '36px' }
+				},
+				'audio-wave4': {
+					'0%, 100%': { height: '16px' },
+					'50%': { height: '30px' }
+				},
+				'audio-wave5': {
+					'0%, 100%': { height: '8px' },
+					'50%': { height: '18px' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-				'gradient-shift': 'gradient-shift 3s ease infinite'
+				'gradient-shift': 'gradient-shift 3s ease infinite',
+				'audio-wave1': 'audio-wave1 1.2s ease-in-out infinite',
+				'audio-wave2': 'audio-wave2 1s ease-in-out infinite',
+				'audio-wave3': 'audio-wave3 1.4s ease-in-out infinite',
+				'audio-wave4': 'audio-wave4 0.9s ease-in-out infinite',
+				'audio-wave5': 'audio-wave5 1.1s ease-in-out infinite'
 			}
 		}
 	},
