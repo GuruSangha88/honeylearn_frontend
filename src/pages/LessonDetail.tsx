@@ -138,11 +138,6 @@ const LessonDetail = () => {
         {/* Lesson Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-semibold gradient-text">{lessonTitle}</h1>
-          {currentSection && (
-            <p className="text-tutor-purple text-sm mt-1">
-              Section {currentSectionIndex + 1}/{lesson.sections.length}: {currentSection.title}
-            </p>
-          )}
         </div>
         
         {/* Lesson Content */}
