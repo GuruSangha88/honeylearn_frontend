@@ -55,7 +55,7 @@ const LessonDetail = () => {
           type: 'image',
           data: {
             type: 'image',
-            url: '/lovable-uploads/61320e92-6046-43d9-8082-84de8a3e68a7.png',
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/whatisworkcover.png',
             alt: 'What Is Work?'
           },
           timing: 0
