@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -20,10 +19,9 @@ const LessonDetail = () => {
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
   
-  // Reference to store the gif timer
   const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Find lesson in topics
   useEffect(() => {
     let foundLesson = null;
     let foundCourseTitle = '';
@@ -51,7 +49,6 @@ const LessonDetail = () => {
     if (lesson && lesson.sections.length > 0) {
       setCurrentSection(lesson.sections[currentSectionIndex]);
       
-      // For the "What is Work?" lesson, add the image as initial content
       if (lessonId === '4001' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'intro-image',
@@ -66,13 +63,11 @@ const LessonDetail = () => {
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
       } else {
-        // Reset active content when section changes
         setActiveContent([]);
       }
     }
   }, [lesson, currentSectionIndex, lessonId]);
   
-  // Calculate daily goal percentage
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
   const dailyGoalPercentage = todayGoal 
     ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
@@ -80,7 +75,6 @@ const LessonDetail = () => {
   
   const handleTimeUpdate = (currentTime: number) => {
     if (currentSection) {
-      // Filter content items that should be shown at this time
       const contentToShow = currentSection.content?.filter(
         item => item.timing <= currentTime && 
                (!activeContent.some(ac => ac.id === item.id))
@@ -92,22 +86,21 @@ const LessonDetail = () => {
     }
   };
   
-  // Clean up gif timer when component unmounts
   useEffect(() => {
     return () => {
       if (gifTimerRef.current) {
         clearTimeout(gifTimerRef.current);
       }
+      if (secondGifTimerRef.current) {
+        clearTimeout(secondGifTimerRef.current);
+      }
     };
   }, []);
   
   const handleSectionEnd = () => {
-    // Special handling for What is Work lesson
     if (lessonId === '4001' && currentSectionIndex === 0) {
-      // Update to the second part audio
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
       
-      // Replace the image with helping gif
       setActiveContent([{
         id: 'helping-gif',
         type: 'image',
@@ -119,9 +112,11 @@ const LessonDetail = () => {
         timing: 0
       }]);
       
-      // Set a timer to replace the helping gif with the fixing gif after 6 seconds
       if (gifTimerRef.current) {
         clearTimeout(gifTimerRef.current);
+      }
+      if (secondGifTimerRef.current) {
+        clearTimeout(secondGifTimerRef.current);
       }
       
       gifTimerRef.current = setTimeout(() => {
@@ -135,22 +130,31 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
-      }, 6000); // 6 seconds
+        
+        secondGifTimerRef.current = setTimeout(() => {
+          setActiveContent([{
+            id: 'reward-gif',
+            type: 'image',
+            data: {
+              type: 'image',
+              url: 'https://hlearn.b-cdn.net/what%20is%20work/reward.gif',
+              alt: 'People Getting Rewards for Work'
+            },
+            timing: 0
+          }]);
+        }, 6000);
+      }, 6000);
       
-      // Move to next section
       if (lesson && currentSectionIndex < lesson.sections.length - 1) {
         setCurrentSectionIndex(prevIndex => prevIndex + 1);
       }
     } else if (lesson && currentSectionIndex < lesson.sections.length - 1) {
-      // Default behavior - move to next section
       setCurrentSectionIndex(prevIndex => prevIndex + 1);
     } else {
-      // End of lesson
       console.log('Lesson completed');
     }
   };
   
-  // Get the audio URL to use
   const getAudioUrl = () => {
     if (customAudioUrl) {
       return customAudioUrl;
@@ -173,28 +177,20 @@ const LessonDetail = () => {
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
-        {/* Header with Student Info */}
         <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
-        
-        {/* Lesson Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-semibold gradient-text">{lessonTitle}</h1>
         </div>
-        
-        {/* Lesson Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left Column - Audio Player */}
           <div className="glass-card p-6 flex flex-col items-center justify-center">
             <AudioPlayer 
               audioUrl={getAudioUrl()} 
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={getAudioUrl()} // Add key to ensure player resets when URL changes
+              key={getAudioUrl()}
             />
           </div>
-          
-          {/* Right Column - Chat Interface */}
           <div className="h-[500px]">
             <ChatBox 
               contentItems={activeContent}
