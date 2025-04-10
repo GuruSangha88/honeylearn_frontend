@@ -1,4 +1,3 @@
-
 import { Topic, Student, Parent } from '../types';
 
 export const mockTopics: Topic[] = [
@@ -214,6 +213,151 @@ export const mockTopics: Topic[] = [
                 completed: false,
                 durationInSeconds: 200,
                 content: []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '4',
+    title: 'Money Explorers',
+    description: 'Learn about money, work, and economics for kids',
+    imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
+    courses: [
+      {
+        id: '401',
+        topicId: '4',
+        title: 'Introduction to Money',
+        description: 'Learn the basics of money and how it works',
+        totalLessons: 3,
+        completedLessons: 0,
+        lessons: [
+          {
+            id: '4001',
+            courseId: '401',
+            title: 'What Is Work?',
+            description: 'Understanding jobs, work, and earning money',
+            duration: 720, // 12 minutes
+            completed: false,
+            sections: [
+              {
+                id: '40001',
+                title: 'Introduction to Work',
+                audioUrl: '/audio/money/work/intro.mp3',
+                completed: false,
+                durationInSeconds: 180,
+                content: [
+                  {
+                    id: '400001',
+                    type: 'image',
+                    timing: 10,
+                    data: {
+                      url: '/images/money/work_intro.png',
+                      alt: 'People working at different jobs'
+                    }
+                  },
+                  {
+                    id: '400002',
+                    type: 'text',
+                    timing: 60,
+                    data: {
+                      text: "Work is how people use their skills to help others and earn money. Everyone has different talents they can share!"
+                    }
+                  },
+                  {
+                    id: '400003',
+                    type: 'quiz',
+                    timing: 120,
+                    data: {
+                      question: 'Why do people work?',
+                      options: [
+                        'To have fun only', 
+                        'To earn money and help others', 
+                        'Because they have to', 
+                        'To get toys'
+                      ],
+                      correctAnswerIndex: 1
+                    }
+                  }
+                ]
+              },
+              {
+                id: '40002',
+                title: 'Different Types of Jobs',
+                audioUrl: '/audio/money/work/job_types.mp3',
+                completed: false,
+                durationInSeconds: 240,
+                content: [
+                  {
+                    id: '400004',
+                    type: 'image',
+                    timing: 30,
+                    data: {
+                      url: '/images/money/job_types.png',
+                      alt: 'Different types of jobs'
+                    }
+                  },
+                  {
+                    id: '400005',
+                    type: 'text',
+                    timing: 90,
+                    data: {
+                      text: "There are many different jobs! Doctors help sick people. Teachers help students learn. Farmers grow food. Artists make beautiful things. What job sounds interesting to you?"
+                    }
+                  },
+                  {
+                    id: '400006',
+                    type: 'question',
+                    timing: 180,
+                    data: {
+                      question: "What job would you like to have when you grow up?",
+                      responseType: "open"
+                    }
+                  }
+                ]
+              },
+              {
+                id: '40003',
+                title: 'Earning and Saving',
+                audioUrl: '/audio/money/work/earning.mp3',
+                completed: false,
+                durationInSeconds: 210,
+                content: [
+                  {
+                    id: '400007',
+                    type: 'text',
+                    timing: 30,
+                    data: {
+                      text: "When people work, they earn money. They can use this money to buy things they need, like food and clothes. They can also save some money for later."
+                    }
+                  },
+                  {
+                    id: '400008',
+                    type: 'image',
+                    timing: 120,
+                    data: {
+                      url: '/images/money/piggy_bank.png',
+                      alt: 'Child putting coins in a piggy bank'
+                    }
+                  },
+                  {
+                    id: '400009',
+                    type: 'quiz',
+                    timing: 180,
+                    data: {
+                      question: 'What can you do with money you earn?',
+                      options: [
+                        'Only spend it right away', 
+                        'Only save it forever', 
+                        'Spend some and save some', 
+                        'Give it all away'
+                      ],
+                      correctAnswerIndex: 2
+                    }
+                  }
+                ]
               }
             ]
           }

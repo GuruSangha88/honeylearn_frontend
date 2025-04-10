@@ -1,12 +1,24 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, UserPlus, LineChart, PieChart, BarChart } from 'lucide-react';
+import { ChevronLeft, Users, BookOpen, Award, Clock, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { mockParent } from '@/data/mockData';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { mockParent, mockTopics } from '@/data/mockData';
 
 const ParentDashboard = () => {
   const navigate = useNavigate();
@@ -172,7 +184,7 @@ const ParentDashboard = () => {
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">Students</h2>
                   <Button className="bg-tutor-purple hover:bg-tutor-dark-purple gap-1">
-                    <UserPlus size={16} />
+                    <Users size={16} />
                     Add Student
                   </Button>
                 </div>
@@ -260,7 +272,6 @@ const ParentDashboard = () => {
                           variant="link" 
                           className="text-tutor-purple"
                           onClick={() => {
-                            // In a real app, you'd switch to the student's view
                             navigate('/');
                           }}
                         >
