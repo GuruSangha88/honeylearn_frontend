@@ -30,8 +30,8 @@ const TopicDetail = () => {
   }
   
   return (
-    <div className="min-h-screen bg-tutor-dark text-white">
-      <div className="container max-w-6xl mx-auto py-6 px-4">
+    <div className="min-h-screen bg-tutor-dark text-white pt-4">
+      <div className="container max-w-6xl mx-auto px-4">
         {/* Header with Student Info */}
         <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
         

@@ -1,0 +1,104 @@
+
+import { Home, BookOpen, User, MenuIcon } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const TopNav = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const menuItems = [
+    { name: "Home", icon: <Home className="w-5 h-5 mr-2" />, path: "/" },
+    { name: "Curriculum", icon: <BookOpen className="w-5 h-5 mr-2" />, path: "/curriculum" },
+    { name: "Parent View", icon: <User className="w-5 h-5 mr-2" />, path: "/parents" },
+  ];
+
+  return (
+    <header className="bg-tutor-dark border-b border-gray-800 sticky top-0 z-50">
+      <div className="container max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center">
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/lovable-uploads/ea337c81-3a2b-4dfb-8f64-733dca433902.png" 
+              alt="HoneyLearn" 
+              className="h-10" 
+            />
+          </Link>
+        </div>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:block">
+          <NavigationMenu>
+            <NavigationMenuList>
+              {menuItems.map((item) => (
+                <NavigationMenuItem key={item.path}>
+                  <Link to={item.path}>
+                    <NavigationMenuLink 
+                      className={cn(
+                        "flex items-center px-4 py-2 text-sm font-medium rounded-md",
+                        isActive(item.path) ? "text-tutor-purple" : "text-gray-300 hover:text-white"
+                      )}
+                    >
+                      {item.icon}
+                      {item.name}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-gray-300 hover:text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <MenuIcon className="h-6 w-6" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-tutor-dark-gray border-t border-gray-800">
+          <div className="container max-w-6xl mx-auto px-4 py-2">
+            {menuItems.map((item) => (
+              <Link 
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "flex items-center px-4 py-3 text-sm font-medium rounded-md",
+                  isActive(item.path) ? "text-tutor-purple" : "text-gray-300 hover:text-white"
+                )}
+              >
+                {item.icon}
+                {item.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default TopNav;
