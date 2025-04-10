@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import AudioPlayer from '@/components/AudioPlayer';
@@ -19,6 +18,7 @@ const LessonDetail = () => {
   const [courseTitle, setCourseTitle] = useState('');
   const [lessonTitle, setLessonTitle] = useState('');
   const [lesson, setLesson] = useState<any>(null);
+  const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
   
   // Find lesson in topics
   useEffect(() => {
@@ -61,6 +61,7 @@ const LessonDetail = () => {
           timing: 0
         };
         setActiveContent([initialImage]);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
       } else {
         // Reset active content when section changes
         setActiveContent([]);
@@ -89,8 +90,29 @@ const LessonDetail = () => {
   };
   
   const handleSectionEnd = () => {
-    if (lesson && currentSectionIndex < lesson.sections.length - 1) {
+    // Special handling for What is Work lesson
+    if (lessonId === '4001' && currentSectionIndex === 0) {
+      // Update to the second part audio
+      setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
+      
+      // Replace the image with gif
+      setActiveContent([{
+        id: 'helping-gif',
+        type: 'image',
+        data: {
+          type: 'image',
+          url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
+          alt: 'People Helping Each Other'
+        },
+        timing: 0
+      }]);
+      
       // Move to next section
+      if (lesson && currentSectionIndex < lesson.sections.length - 1) {
+        setCurrentSectionIndex(prevIndex => prevIndex + 1);
+      }
+    } else if (lesson && currentSectionIndex < lesson.sections.length - 1) {
+      // Default behavior - move to next section
       setCurrentSectionIndex(prevIndex => prevIndex + 1);
     } else {
       // End of lesson
@@ -98,11 +120,12 @@ const LessonDetail = () => {
     }
   };
   
-  // Override audio URL for What is Work lesson
+  // Get the audio URL to use
   const getAudioUrl = () => {
-    if (lessonId === '4001' && currentSectionIndex === 0) {
-      return 'https://hlearn.b-cdn.net/intro.mp3';
+    if (customAudioUrl) {
+      return customAudioUrl;
     }
+    
     return currentSection?.audioUrl || '';
   };
   
@@ -137,6 +160,7 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
+              key={getAudioUrl()} // Add key to ensure player resets when URL changes
             />
           </div>
           
