@@ -47,10 +47,26 @@ const LessonDetail = () => {
   useEffect(() => {
     if (lesson && lesson.sections.length > 0) {
       setCurrentSection(lesson.sections[currentSectionIndex]);
-      // Reset active content when section changes
-      setActiveContent([]);
+      
+      // For the "What is Work?" lesson, add the image as initial content
+      if (lessonId === '4001' && currentSectionIndex === 0) {
+        const initialImage: ContentItem = {
+          id: 'intro-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: '/lovable-uploads/61320e92-6046-43d9-8082-84de8a3e68a7.png',
+            alt: 'What Is Work?'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+      } else {
+        // Reset active content when section changes
+        setActiveContent([]);
+      }
     }
-  }, [lesson, currentSectionIndex]);
+  }, [lesson, currentSectionIndex, lessonId]);
   
   // Calculate daily goal percentage
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
@@ -80,6 +96,14 @@ const LessonDetail = () => {
       // End of lesson
       console.log('Lesson completed');
     }
+  };
+  
+  // Override audio URL for What is Work lesson
+  const getAudioUrl = () => {
+    if (lessonId === '4001' && currentSectionIndex === 0) {
+      return 'https://hlearn.b-cdn.net/intro.mp3';
+    }
+    return currentSection?.audioUrl || '';
   };
   
   if (!lesson) {
@@ -125,18 +149,12 @@ const LessonDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Column - Audio Player */}
           <div className="glass-card p-6 flex flex-col items-center justify-center">
-            {currentSection?.audioUrl ? (
-              <AudioPlayer 
-                audioUrl={currentSection.audioUrl} 
-                onTimeUpdate={handleTimeUpdate}
-                onEnded={handleSectionEnd}
-                autoPlay={true}
-              />
-            ) : (
-              <div className="text-center text-gray-400">
-                <p>No audio available for this section</p>
-              </div>
-            )}
+            <AudioPlayer 
+              audioUrl={getAudioUrl()} 
+              onTimeUpdate={handleTimeUpdate}
+              onEnded={handleSectionEnd}
+              autoPlay={true}
+            />
           </div>
           
           {/* Right Column - Chat Interface */}
@@ -144,6 +162,7 @@ const LessonDetail = () => {
             <ChatBox 
               contentItems={activeContent}
               initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
+              hideInputField={true}
             />
           </div>
         </div>

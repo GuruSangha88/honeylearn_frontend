@@ -18,9 +18,10 @@ interface ChatBoxProps {
     type: ContentType;
     data: any;
   }[];
+  hideInputField?: boolean;
 }
 
-const ChatBox = ({ initialMessage = "Say something to start the conversation", contentItems = [] }: ChatBoxProps) => {
+const ChatBox = ({ initialMessage = "Say something to start the conversation", contentItems = [], hideInputField = false }: ChatBoxProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -85,7 +86,7 @@ const ChatBox = ({ initialMessage = "Say something to start the conversation", c
             <img 
               src={message.content.url} 
               alt={message.content.alt || 'Lesson image'} 
-              className="rounded-lg max-h-60 w-auto"
+              className="rounded-lg max-h-72 w-auto"
             />
           );
         } else if (message.content.type === 'video') {
@@ -204,18 +205,19 @@ const ChatBox = ({ initialMessage = "Say something to start the conversation", c
           </div>
         )}
       </div>
-      <form onSubmit={handleSubmit} className="border-t border-gray-800 p-3 flex">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-500"
-        />
-        <Button type="submit" size="icon" variant="ghost" className="text-tutor-purple">
-          <Send size={18} />
-        </Button>
-      </form>
+      {!hideInputField && (
+        <form onSubmit={handleSubmit} className="border-t border-gray-800 p-3 flex">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-500"
+          />
+          <Button type="submit" size="icon" variant="ghost" className="text-tutor-purple">
+            <Send size={18} />
+          </Button>
+        </form>
+      )}
     </div>
   );
 };
