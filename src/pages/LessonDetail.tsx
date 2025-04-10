@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -19,6 +19,9 @@ const LessonDetail = () => {
   const [lessonTitle, setLessonTitle] = useState('');
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
+  
+  // Reference to store the gif timer
+  const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   // Find lesson in topics
   useEffect(() => {
@@ -89,13 +92,22 @@ const LessonDetail = () => {
     }
   };
   
+  // Clean up gif timer when component unmounts
+  useEffect(() => {
+    return () => {
+      if (gifTimerRef.current) {
+        clearTimeout(gifTimerRef.current);
+      }
+    };
+  }, []);
+  
   const handleSectionEnd = () => {
     // Special handling for What is Work lesson
     if (lessonId === '4001' && currentSectionIndex === 0) {
       // Update to the second part audio
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
       
-      // Replace the image with gif
+      // Replace the image with helping gif
       setActiveContent([{
         id: 'helping-gif',
         type: 'image',
@@ -106,6 +118,24 @@ const LessonDetail = () => {
         },
         timing: 0
       }]);
+      
+      // Set a timer to replace the helping gif with the fixing gif after 6 seconds
+      if (gifTimerRef.current) {
+        clearTimeout(gifTimerRef.current);
+      }
+      
+      gifTimerRef.current = setTimeout(() => {
+        setActiveContent([{
+          id: 'fixing-gif',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/fixing.gif',
+            alt: 'People Fixing Things'
+          },
+          timing: 0
+        }]);
+      }, 6000); // 6 seconds
       
       // Move to next section
       if (lesson && currentSectionIndex < lesson.sections.length - 1) {
