@@ -11,6 +11,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 const TopNav = () => {
@@ -41,7 +42,7 @@ const TopNav = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center">
           <NavigationMenu>
             <NavigationMenuList>
               {menuItems.map((item) => (
@@ -61,6 +62,13 @@ const TopNav = () => {
               ))}
             </NavigationMenuList>
           </NavigationMenu>
+          
+          {/* Student Profile Button */}
+          <Link to="/" className="ml-2">
+            <Avatar className="h-8 w-8 bg-tutor-purple text-white border-none">
+              <AvatarFallback>Alex</AvatarFallback>
+            </Avatar>
+          </Link>
         </div>
 
         {/* Mobile menu button */}
@@ -94,6 +102,14 @@ const TopNav = () => {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Student Profile in Mobile Menu */}
+            <div className="flex items-center px-4 py-3">
+              <Avatar className="h-8 w-8 bg-tutor-purple text-white border-none mr-2">
+                <AvatarFallback>Alex</AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-medium text-gray-300">Alex</span>
+            </div>
           </div>
         </div>
       )}

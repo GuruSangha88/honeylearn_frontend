@@ -2,7 +2,6 @@
 import { HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface HeaderProps {
   student: {
@@ -34,15 +33,6 @@ const Header = ({ student, dailyGoalPercentage }: HeaderProps) => {
           <Button variant="ghost" size="icon" className="rounded-full">
             <HelpCircle className="h-5 w-5" />
           </Button>
-          <Avatar className="h-10 w-10 border-2 border-tutor-purple/30">
-            {student.avatar ? (
-              <AvatarImage src={student.avatar} alt={student.name} />
-            ) : (
-              <AvatarFallback className="bg-tutor-purple text-white">
-                {student.name[0]}
-              </AvatarFallback>
-            )}
-          </Avatar>
         </div>
       </div>
       <div className="h-2 bg-gray-700 rounded-full overflow-hidden w-full">
