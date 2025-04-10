@@ -123,18 +123,6 @@ const LessonDetail = () => {
         {/* Header with Student Info */}
         <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
         
-        {/* Back Navigation */}
-        <div className="mt-8 mb-6">
-          <Button
-            variant="link"
-            className="flex items-center gap-1 text-gray-300 hover:text-white pl-0"
-            onClick={() => navigate(-1)}
-          >
-            <ChevronLeft size={20} />
-            Back to {courseTitle}
-          </Button>
-        </div>
-        
         {/* Lesson Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-semibold gradient-text">{lessonTitle}</h1>

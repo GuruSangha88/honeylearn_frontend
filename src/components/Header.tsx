@@ -1,5 +1,5 @@
 
-import { HelpCircle } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -25,13 +25,11 @@ const Header = ({ student, dailyGoalPercentage }: HeaderProps) => {
           <Button 
             variant="outline" 
             size="sm" 
-            className="bg-blue-600 text-white hover:bg-blue-700 border-none"
-            onClick={() => navigate('/curriculum')}
+            className="bg-gray-700 text-white hover:bg-gray-600 border-none flex items-center gap-1"
+            onClick={() => navigate(-1)}
           >
-            Curriculum
-          </Button>
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <HelpCircle className="h-5 w-5" />
+            <ChevronLeft size={16} />
+            Back
           </Button>
         </div>
       </div>
