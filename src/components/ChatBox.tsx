@@ -1,7 +1,10 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ContentType } from '@/types';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+
 interface ChatMessage {
   id: string;
   type: 'text' | 'media' | 'quiz' | 'question';
@@ -75,9 +78,13 @@ const ChatBox = ({
         return <p>{message.content}</p>;
       case 'media':
         if (message.content.type === 'image') {
-          return <div className="flex justify-center w-full">
-              <img src={message.content.url} alt={message.content.alt || 'Lesson image'} className="rounded-lg max-h-72 w-auto object-fill" />
-            </div>;
+          return (
+            <img 
+              src={message.content.url} 
+              alt={message.content.alt || 'Lesson image'} 
+              className="mx-auto rounded-lg max-h-72 object-contain"
+            />
+          );
         } else if (message.content.type === 'video') {
           return <div className="flex justify-center w-full">
               <video src={message.content.url} controls className="rounded-lg max-h-60 w-full" />
