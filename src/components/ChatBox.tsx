@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -86,15 +85,13 @@ const ChatBox = ({
       case 'media':
         if (message.content.type === 'image') {
           return (
-            <div className="flex justify-center items-center w-full h-full">
-              <div className="max-w-[280px] w-full rounded-lg overflow-hidden">
-                <AspectRatio ratio={3/4} className="bg-gradient-to-b from-blue-100 to-blue-300">
-                  <img 
-                    src={message.content.url} 
-                    alt={message.content.alt || 'Lesson image'} 
-                    className="object-cover w-full h-full"
-                  />
-                </AspectRatio>
+            <div className="flex justify-center items-center w-full p-2">
+              <div className="max-w-[300px] w-full">
+                <img 
+                  src={message.content.url} 
+                  alt={message.content.alt || 'Lesson image'} 
+                  className="rounded-lg w-full h-auto object-contain"
+                />
               </div>
             </div>
           );
