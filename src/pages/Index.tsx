@@ -8,7 +8,7 @@ const Index = () => {
   useEffect(() => {
     // Redirect to the dashboard
     navigate('/');
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-tutor-dark text-white">

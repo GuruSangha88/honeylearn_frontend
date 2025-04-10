@@ -18,26 +18,37 @@ const LessonDetail = () => {
   const [activeContent, setActiveContent] = useState<ContentItem[]>([]);
   const [courseTitle, setCourseTitle] = useState('');
   const [lessonTitle, setLessonTitle] = useState('');
+  const [lesson, setLesson] = useState<any>(null);
   
   // Find lesson in topics
-  let lesson;
-  
-  for (const topic of mockTopics) {
-    for (const course of topic.courses) {
-      const foundLesson = course.lessons.find((l) => l.id === lessonId);
-      if (foundLesson) {
-        lesson = foundLesson;
-        setCourseTitle(course.title);
-        setLessonTitle(foundLesson.title);
-        break;
+  useEffect(() => {
+    let foundLesson = null;
+    let foundCourseTitle = '';
+    let foundLessonTitle = '';
+    
+    for (const topic of mockTopics) {
+      for (const course of topic.courses) {
+        const found = course.lessons.find((l) => l.id === lessonId);
+        if (found) {
+          foundLesson = found;
+          foundCourseTitle = course.title;
+          foundLessonTitle = found.title;
+          break;
+        }
       }
+      if (foundLesson) break;
     }
-    if (lesson) break;
-  }
+    
+    setLesson(foundLesson);
+    setCourseTitle(foundCourseTitle);
+    setLessonTitle(foundLessonTitle);
+  }, [lessonId]);
   
   useEffect(() => {
     if (lesson && lesson.sections.length > 0) {
       setCurrentSection(lesson.sections[currentSectionIndex]);
+      // Reset active content when section changes
+      setActiveContent([]);
     }
   }, [lesson, currentSectionIndex]);
   
@@ -65,7 +76,6 @@ const LessonDetail = () => {
     if (lesson && currentSectionIndex < lesson.sections.length - 1) {
       // Move to next section
       setCurrentSectionIndex(prevIndex => prevIndex + 1);
-      setActiveContent([]);
     } else {
       // End of lesson
       console.log('Lesson completed');
@@ -136,7 +146,6 @@ const LessonDetail = () => {
                 onClick={() => {
                   if (currentSectionIndex > 0) {
                     setCurrentSectionIndex(prevIndex => prevIndex - 1);
-                    setActiveContent([]);
                   }
                 }}
               >
@@ -148,7 +157,6 @@ const LessonDetail = () => {
                 onClick={() => {
                   if (currentSectionIndex < lesson.sections.length - 1) {
                     setCurrentSectionIndex(prevIndex => prevIndex + 1);
-                    setActiveContent([]);
                   }
                 }}
               >

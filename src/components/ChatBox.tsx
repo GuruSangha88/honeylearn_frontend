@@ -27,16 +27,16 @@ const ChatBox = ({ initialMessage = "Say something to start the conversation", c
 
   useEffect(() => {
     // Add content items as messages
-    const contentMessages = contentItems.map(item => ({
-      id: item.id,
-      type: item.type === 'text' ? 'text' : 
-            item.type === 'image' || item.type === 'video' ? 'media' :
-            item.type as 'quiz' | 'question',
-      content: item.data,
-      isUser: false
-    }));
-    
-    if (contentMessages.length > 0) {
+    if (contentItems.length > 0) {
+      const contentMessages = contentItems.map(item => ({
+        id: item.id,
+        type: (item.type === 'text' ? 'text' : 
+              item.type === 'image' || item.type === 'video' ? 'media' :
+              item.type) as 'text' | 'media' | 'quiz' | 'question',
+        content: item.data,
+        isUser: false
+      }));
+      
       setMessages(contentMessages);
     }
   }, [contentItems]);
