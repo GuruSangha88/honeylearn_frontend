@@ -3,12 +3,15 @@ import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ContentType } from '@/types';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+
 interface ChatMessage {
   id: string;
   type: 'text' | 'media' | 'quiz' | 'question';
   content: any;
   isUser: boolean;
 }
+
 interface ChatBoxProps {
   initialMessage?: string;
   contentItems?: {
@@ -18,6 +21,7 @@ interface ChatBoxProps {
   }[];
   hideInputField?: boolean;
 }
+
 const ChatBox = ({
   initialMessage = "Say something to start the conversation",
   contentItems = [],
@@ -26,6 +30,7 @@ const ChatBox = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     // Add content items as messages
     if (contentItems.length > 0) {
@@ -38,14 +43,17 @@ const ChatBox = ({
       setMessages(contentMessages);
     }
   }, [contentItems]);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
       behavior: 'smooth'
     });
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
@@ -70,19 +78,26 @@ const ChatBox = ({
       }, 1000);
     }
   };
+
   const renderMessage = (message: ChatMessage) => {
     switch (message.type) {
       case 'text':
         return <p>{message.content}</p>;
       case 'media':
         if (message.content.type === 'image') {
-          return <div className="flex justify-center items-center w-full">
-              <img 
-                src={message.content.url} 
-                alt={message.content.alt || 'Lesson image'} 
-                className="rounded-lg max-h-72 object-contain mx-auto" 
-              />
-            </div>;
+          return (
+            <div className="flex justify-center items-center w-full h-full">
+              <div className="max-w-[280px] w-full rounded-lg overflow-hidden">
+                <AspectRatio ratio={3/4} className="bg-gradient-to-b from-blue-100 to-blue-300">
+                  <img 
+                    src={message.content.url} 
+                    alt={message.content.alt || 'Lesson image'} 
+                    className="object-cover w-full h-full"
+                  />
+                </AspectRatio>
+              </div>
+            </div>
+          );
         } else if (message.content.type === 'video') {
           return <div className="flex justify-center w-full">
               <video src={message.content.url} controls className="rounded-lg max-h-60 w-full" />
@@ -125,6 +140,7 @@ const ChatBox = ({
         return <p>{JSON.stringify(message.content)}</p>;
     }
   };
+
   return <div className="flex flex-col h-full glass-card">
       <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
         {messages.length === 0 ? <div className="text-center text-gray-400 h-full flex items-center justify-center">
@@ -146,4 +162,5 @@ const ChatBox = ({
         </form>}
     </div>;
 };
+
 export default ChatBox;
