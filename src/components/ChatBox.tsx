@@ -88,7 +88,7 @@ const ChatBox = ({
       case 'media':
         if (message.content.type === 'image') {
           return (
-            <div className="flex items-center justify-center w-full h-full">
+            <div className="w-full flex items-center justify-center">
               <img 
                 src={message.content.url} 
                 alt={message.content.alt || 'Lesson image'} 
@@ -98,7 +98,7 @@ const ChatBox = ({
           );
         } else if (message.content.type === 'video') {
           return (
-            <div className="flex justify-center w-full">
+            <div className="w-full flex items-center justify-center">
               <video src={message.content.url} controls className="rounded-lg max-h-60 w-full" />
             </div>
           );
@@ -141,34 +141,44 @@ const ChatBox = ({
     }
   };
 
-  return <div className="flex flex-col h-full glass-card w-full">
-      <div className="glass-card p-6 flex items-center justify-center h-[450px] w-full overflow-hidden">
+  return (
+    <div className="flex flex-col h-full glass-card w-full">
+      <div className="glass-card p-6 h-[450px] w-full overflow-hidden flex items-center justify-center">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-400 h-full flex items-center justify-center">
+          <div className="text-center text-gray-400">
             <p>{initialMessage}</p>
           </div>
         ) : (
-          <div className="flex flex-col space-y-4 w-full h-full overflow-y-auto">
-            <div className="flex-1 flex items-center justify-center">
-              {messages.map(message => (
-                <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} w-full`}>
-                  <div className={`max-w-[75%] rounded-lg p-3 ${message.isUser ? 'bg-tutor-purple/30 text-white' : 'bg-tutor-dark-gray text-white'}`}>
-                    {renderMessage(message)}
-                  </div>
+          <div className="w-full h-full flex items-center justify-center">
+            {messages.length > 0 && messages.map(message => (
+              <div 
+                key={message.id} 
+                className="w-full flex items-center justify-center"
+              >
+                <div className={`max-w-[80%] rounded-lg p-3 ${message.isUser ? 'bg-tutor-purple/30 text-white' : 'bg-tutor-dark-gray text-white'}`}>
+                  {renderMessage(message)}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
             <div ref={messagesEndRef} />
           </div>
         )}
       </div>
-      {!hideInputField && <form onSubmit={handleSubmit} className="border-t border-gray-800 p-3 flex">
-          <input type="text" value={input} onChange={e => setInput(e.target.value)} className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-500" />
+      {!hideInputField && (
+        <form onSubmit={handleSubmit} className="border-t border-gray-800 p-3 flex">
+          <input 
+            type="text" 
+            value={input} 
+            onChange={e => setInput(e.target.value)} 
+            className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-500" 
+          />
           <Button type="submit" size="icon" variant="ghost" className="text-tutor-purple">
             <Send size={18} />
           </Button>
-        </form>}
-    </div>;
+        </form>
+      )}
+    </div>
+  );
 };
 
 export default ChatBox;
