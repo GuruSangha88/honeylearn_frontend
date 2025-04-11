@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -87,7 +88,7 @@ const ChatBox = ({
       case 'media':
         if (message.content.type === 'image') {
           return (
-            <div className="flex items-center justify-center w-full">
+            <div className="flex items-center justify-center w-full h-full">
               <img 
                 src={message.content.url} 
                 alt={message.content.alt || 'Lesson image'} 
@@ -144,8 +145,8 @@ const ChatBox = ({
       <div className="glass-card p-6 flex flex-col items-center justify-center h-[450px] w-full overflow-hidden">
         {messages.length === 0 ? <div className="text-center text-gray-400 h-full flex items-center justify-center">
             <p>{initialMessage}</p>
-          </div> : <div className="flex flex-col space-y-4 w-full">
-            {messages.map(message => <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+          </div> : <div className="flex flex-col space-y-4 w-full h-full flex items-center justify-center">
+            {messages.map(message => <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} w-full`}>
                 <div className={`max-w-[75%] rounded-lg p-3 ${message.isUser ? 'bg-tutor-purple/30 text-white' : 'bg-tutor-dark-gray text-white'}`}>
                   {renderMessage(message)}
                 </div>
