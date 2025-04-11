@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -95,13 +96,13 @@ const ChatBox = ({
       case 'media':
         if (message.content.type === 'image') {
           return (
-            <div className="flex justify-center w-full">
+            <div className="flex items-center justify-center w-full">
               <img src={message.content.url} alt={message.content.alt || 'Lesson image'} className="rounded-lg max-h-72 object-contain" />
             </div>
           );
         } else if (message.content.type === 'video') {
           return (
-            <div className="flex justify-center w-full">
+            <div className="flex items-center justify-center w-full">
               <video ref={videoRef} src={message.content.url} controls className="rounded-lg max-h-60 w-full" onEnded={handleVideoEnded} />
             </div>
           );
