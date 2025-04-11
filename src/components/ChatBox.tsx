@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,11 +29,12 @@ const ChatBox = ({
   hideInputField = false,
   preventAutoScroll = false
 }: ChatBoxProps) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [stabilizedContent, setStabilizedContent] = useState<ChatMessage[]>([]);
-
+  // Use a single state for displaying messages to prevent flickering/disappearing content
+  const [displayMessages, setDisplayMessages] = useState<ChatMessage[]>([]);
+  
+  // This effect runs when contentItems from props changes
   useEffect(() => {
     if (contentItems.length > 0) {
       const contentMessages = contentItems.map(item => ({
@@ -42,8 +44,8 @@ const ChatBox = ({
         isUser: false
       }));
       
-      setMessages(contentMessages);
-      setStabilizedContent(contentMessages);
+      // Update display messages with a function to ensure we get the latest state
+      setDisplayMessages(contentMessages);
     }
   }, [contentItems]);
 
@@ -51,7 +53,7 @@ const ChatBox = ({
     if (!preventAutoScroll) {
       scrollToBottom();
     }
-  }, [messages, preventAutoScroll]);
+  }, [displayMessages, preventAutoScroll]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
@@ -68,8 +70,8 @@ const ChatBox = ({
         content: input,
         isUser: true
       };
-      setMessages([...messages, newMessage]);
-      setStabilizedContent(prev => [...prev, newMessage]);
+      
+      setDisplayMessages(prev => [...prev, newMessage]);
       setInput('');
 
       setTimeout(() => {
@@ -79,8 +81,8 @@ const ChatBox = ({
           content: "I understand. Let's continue with the lesson.",
           isUser: false
         };
-        setMessages(prev => [...prev, responseMessage]);
-        setStabilizedContent(prev => [...prev, responseMessage]);
+        
+        setDisplayMessages(prev => [...prev, responseMessage]);
       }, 1000);
     }
   };
@@ -92,7 +94,8 @@ const ChatBox = ({
       case 'media':
         if (message.content.type === 'image') {
           return (
-            <div className="image-container w-full flex items-center justify-center" style={{ minHeight: '240px', maxHeight: '320px' }}>
+            <div className="image-container w-full flex items-center justify-center" 
+                 style={{ minHeight: '240px', maxHeight: '320px' }}>
               <img 
                 src={message.content.url} 
                 alt={message.content.alt || 'Lesson image'} 
@@ -121,14 +124,7 @@ const ChatBox = ({
             <div className="flex flex-col gap-2">
               {message.content.options.map((option: string, idx: number) => <button key={idx} className={`text-left p-2 rounded-md text-sm ${message.content.userAnswer === idx ? message.content.correctAnswerIndex === idx ? 'bg-green-600/30 border border-green-600' : 'bg-red-600/30 border border-red-600' : 'bg-gray-700/50 hover:bg-gray-700 border border-gray-700'}`} onClick={() => {
               if (message.content.userAnswer === undefined) {
-                setMessages(messages.map(m => m.id === message.id ? {
-                  ...m,
-                  content: {
-                    ...m.content,
-                    userAnswer: idx
-                  }
-                } : m));
-                setStabilizedContent(prev => prev.map(m => m.id === message.id ? {
+                setDisplayMessages(msgs => msgs.map(m => m.id === message.id ? {
                   ...m,
                   content: {
                     ...m.content,
@@ -159,7 +155,6 @@ const ChatBox = ({
     }
   };
 
-  const displayMessages = stabilizedContent.length > 0 ? stabilizedContent : messages;
   const currentMessage = displayMessages.length > 0 ? displayMessages[displayMessages.length - 1] : null;
 
   return (
