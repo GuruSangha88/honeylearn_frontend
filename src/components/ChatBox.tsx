@@ -3,12 +3,14 @@ import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ContentType } from '@/types';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+
 interface ChatMessage {
   id: string;
   type: 'text' | 'media' | 'quiz' | 'question';
   content: any;
   isUser: boolean;
 }
+
 interface ChatBoxProps {
   initialMessage?: string;
   contentItems?: {
@@ -21,6 +23,7 @@ interface ChatBoxProps {
   hideInputField?: boolean;
   onVideoComplete?: () => void;
 }
+
 const ChatBox = ({
   initialMessage = "Say something to start the conversation",
   contentItems = [],
@@ -31,8 +34,8 @@ const ChatBox = ({
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
-    // Add content items as messages
     if (contentItems.length > 0) {
       const contentMessages = contentItems.map(item => ({
         id: item.id,
@@ -43,14 +46,17 @@ const ChatBox = ({
       setMessages(contentMessages);
     }
   }, [contentItems]);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
       behavior: 'smooth'
     });
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
@@ -63,7 +69,6 @@ const ChatBox = ({
       setMessages([...messages, newMessage]);
       setInput('');
 
-      // Simulate a response (in a real app, this would call an API)
       setTimeout(() => {
         const responseMessage = {
           id: (Date.now() + 1).toString(),
@@ -75,23 +80,31 @@ const ChatBox = ({
       }, 1000);
     }
   };
+
   const handleVideoEnded = () => {
     console.log("Video ended - marking as complete");
     if (onVideoComplete) {
       onVideoComplete();
     }
   };
+
   const renderMessage = (message: ChatMessage) => {
     switch (message.type) {
       case 'text':
         return <p>{message.content}</p>;
       case 'media':
         if (message.content.type === 'image') {
-          return <img src={message.content.url} alt={message.content.alt || 'Lesson image'} className="mx-auto rounded-lg max-h-72 object-contain" />;
+          return (
+            <div className="flex justify-center w-full">
+              <img src={message.content.url} alt={message.content.alt || 'Lesson image'} className="rounded-lg max-h-72 object-contain" />
+            </div>
+          );
         } else if (message.content.type === 'video') {
-          return <div className="flex justify-center w-full">
+          return (
+            <div className="flex justify-center w-full">
               <video ref={videoRef} src={message.content.url} controls className="rounded-lg max-h-60 w-full" onEnded={handleVideoEnded} />
-            </div>;
+            </div>
+          );
         }
         return null;
       case 'quiz':
@@ -130,6 +143,7 @@ const ChatBox = ({
         return <p>{JSON.stringify(message.content)}</p>;
     }
   };
+
   return <div className="flex flex-col h-full glass-card">
       <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
         {messages.length === 0 ? <div className="text-center text-gray-400 h-full flex items-center justify-center">
@@ -152,4 +166,5 @@ const ChatBox = ({
         </form>}
     </div>;
 };
+
 export default ChatBox;
