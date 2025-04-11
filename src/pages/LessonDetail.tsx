@@ -7,7 +7,7 @@ import AudioPlayer from '@/components/AudioPlayer';
 import ChatBox from '@/components/ChatBox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { mockTopics, currentStudent } from '@/data/mockData';
-import { LessonSection, ContentItem } from '@/types';
+import { LessonSection, ContentItem, ContentType } from '@/types';
 
 const LessonDetail = () => {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ const LessonDetail = () => {
       if (lessonId === '4001' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'intro-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/whatswork.png',
@@ -90,29 +90,29 @@ const LessonDetail = () => {
       
       if (lessonId === '4001' && currentSectionIndex === 0 && currentTime >= 41 && 
           !activeContentRef.current.some(item => item.id === 'high-five-gif')) {
-        const highFiveContent = [{
+        const highFiveContent: ContentItem = {
           id: 'high-five-gif',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/high%20five.gif',
             alt: 'High Five'
           },
           timing: 41
-        }];
-        setActiveContent(highFiveContent);
-        activeContentRef.current = highFiveContent;
+        };
+        setActiveContent([highFiveContent]);
+        activeContentRef.current = [highFiveContent];
       }
     } else if (isSecondPartActive) {
       setSecondPartPlaybackTime(currentTime);
-      let updatedContent = [...activeContentRef.current];
+      let updatedContent: ContentItem[] = [...activeContentRef.current];
       let contentUpdated = false;
       
       if (currentTime < 6) {
         if (!activeContentRef.current.some(item => item.id === 'helping-gif')) {
           updatedContent = [{
             id: 'helping-gif',
-            type: 'image',
+            type: 'image' as ContentType,
             data: {
               type: 'image',
               url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
@@ -126,7 +126,7 @@ const LessonDetail = () => {
         if (!activeContentRef.current.some(item => item.id === 'fixing-gif')) {
           updatedContent = [{
             id: 'fixing-gif',
-            type: 'image',
+            type: 'image' as ContentType,
             data: {
               type: 'image',
               url: 'https://hlearn.b-cdn.net/what%20is%20work/fixing.gif',
@@ -140,7 +140,7 @@ const LessonDetail = () => {
         if (!activeContentRef.current.some(item => item.id === 'reward-gif')) {
           updatedContent = [{
             id: 'reward-gif',
-            type: 'image',
+            type: 'image' as ContentType,
             data: {
               type: 'image',
               url: 'https://hlearn.b-cdn.net/what%20is%20work/reward.gif',
@@ -162,18 +162,18 @@ const LessonDetail = () => {
   const handleSectionEnd = () => {
     if (lessonId === '4001' && currentSectionIndex === 0 && !hasMovedToSecondPart) {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
-      const helpingGifContent = [{
+      const helpingGifContent: ContentItem = {
         id: 'helping-gif',
-        type: 'image',
+        type: 'image' as ContentType,
         data: {
           type: 'image',
           url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
           alt: 'People Helping Each Other'
         },
         timing: 0
-      }];
-      setActiveContent(helpingGifContent);
-      activeContentRef.current = helpingGifContent;
+      };
+      setActiveContent([helpingGifContent]);
+      activeContentRef.current = [helpingGifContent];
       setIsSecondPartActive(true);
       setSecondPartPlaybackTime(0);
       setHasMovedToSecondPart(true);
