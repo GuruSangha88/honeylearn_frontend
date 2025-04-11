@@ -21,7 +21,6 @@ const LessonDetail = () => {
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
   const [hasMovedToSecondPart, setHasMovedToSecondPart] = useState(false);
   
-  // These variables track audio playback for the second part of the lesson
   const [isSecondPartActive, setIsSecondPartActive] = useState(false);
   const [secondPartPlaybackTime, setSecondPartPlaybackTime] = useState(0);
   
@@ -77,9 +76,7 @@ const LessonDetail = () => {
     : 0;
   
   const handleTimeUpdate = (currentTime: number) => {
-    // For the first part of the intro
     if (!isSecondPartActive && currentSection) {
-      // Standard content from section
       const contentToShow = currentSection.content?.filter(
         item => item.timing <= currentTime && 
                (!activeContent.some(ac => ac.id === item.id))
@@ -89,7 +86,6 @@ const LessonDetail = () => {
         setActiveContent(prev => [...prev, ...contentToShow]);
       }
       
-      // For the specific lesson, replace with high five gif at 41 seconds of actual playback time
       if (lessonId === '4001' && currentSectionIndex === 0 && currentTime >= 41 && 
           !activeContent.some(item => item.id === 'high-five-gif')) {
         setActiveContent([{
@@ -103,14 +99,10 @@ const LessonDetail = () => {
           timing: 41
         }]);
       }
-    } 
-    // For the second part of the intro (the sequence of gifs)
-    else if (isSecondPartActive) {
+    } else if (isSecondPartActive) {
       setSecondPartPlaybackTime(currentTime);
       
-      // Display different gifs based on audio playback time
       if (currentTime < 6) {
-        // Only update if not already showing the helping gif
         if (!activeContent.some(item => item.id === 'helping-gif')) {
           setActiveContent([{
             id: 'helping-gif',
@@ -124,7 +116,6 @@ const LessonDetail = () => {
           }]);
         }
       } else if (currentTime >= 6 && currentTime < 12) {
-        // Only update if not already showing the fixing gif
         if (!activeContent.some(item => item.id === 'fixing-gif')) {
           setActiveContent([{
             id: 'fixing-gif',
@@ -138,7 +129,6 @@ const LessonDetail = () => {
           }]);
         }
       } else if (currentTime >= 12) {
-        // Only update if not already showing the reward gif
         if (!activeContent.some(item => item.id === 'reward-gif')) {
           setActiveContent([{
             id: 'reward-gif',
@@ -159,7 +149,6 @@ const LessonDetail = () => {
     if (lessonId === '4001' && currentSectionIndex === 0 && !hasMovedToSecondPart) {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
       
-      // Set initial content for second part
       setActiveContent([{
         id: 'helping-gif',
         type: 'image',
@@ -171,7 +160,6 @@ const LessonDetail = () => {
         timing: 0
       }]);
       
-      // Activate second part mode to use the time-based gif switching
       setIsSecondPartActive(true);
       setSecondPartPlaybackTime(0);
       setHasMovedToSecondPart(true);
@@ -214,7 +202,7 @@ const LessonDetail = () => {
           <p className="text-sm text-gray-400">From: {topicTitle}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="glass-card p-6 flex flex-col items-center justify-center">
+          <div className="glass-card p-6 flex flex-col items-center justify-center h-[500px]">
             <AudioPlayer 
               audioUrl={getAudioUrl()} 
               onTimeUpdate={handleTimeUpdate}
@@ -224,7 +212,7 @@ const LessonDetail = () => {
             />
           </div>
           <div className="h-[500px]">
-            <ScrollArea className="h-full pr-4">
+            <ScrollArea className="h-full">
               <ChatBox 
                 contentItems={activeContent}
                 initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
