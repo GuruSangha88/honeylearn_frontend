@@ -3,12 +3,14 @@ import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ContentType } from '@/types';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+
 interface ChatMessage {
   id: string;
   type: 'text' | 'media' | 'quiz' | 'question';
   content: any;
   isUser: boolean;
 }
+
 interface ChatBoxProps {
   initialMessage?: string;
   contentItems?: {
@@ -19,6 +21,7 @@ interface ChatBoxProps {
   hideInputField?: boolean;
   preventAutoScroll?: boolean;
 }
+
 const ChatBox = ({
   initialMessage = "Say something to start the conversation",
   contentItems = [],
@@ -28,6 +31,7 @@ const ChatBox = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     // Add content items as messages
     if (contentItems.length > 0) {
@@ -40,16 +44,19 @@ const ChatBox = ({
       setMessages(contentMessages);
     }
   }, [contentItems]);
+
   useEffect(() => {
     if (!preventAutoScroll) {
       scrollToBottom();
     }
   }, [messages, preventAutoScroll]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
       behavior: 'smooth'
     });
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
@@ -74,6 +81,7 @@ const ChatBox = ({
       }, 1000);
     }
   };
+
   const renderMessage = (message: ChatMessage) => {
     switch (message.type) {
       case 'text':
@@ -123,8 +131,9 @@ const ChatBox = ({
         return <p>{JSON.stringify(message.content)}</p>;
     }
   };
+
   return <div className="flex flex-col h-full glass-card w-full">
-      <div className="glass-card p-6 flex flex-col items-center justify-center h-[500px] w-full">
+      <div className="glass-card p-6 flex flex-col items-center justify-center h-[500px] w-full overflow-hidden">
         {messages.length === 0 ? <div className="text-center text-gray-400 h-full flex items-center justify-center">
             <p>{initialMessage}</p>
           </div> : <div className="flex flex-col space-y-4 w-full">
@@ -144,4 +153,5 @@ const ChatBox = ({
         </form>}
     </div>;
 };
+
 export default ChatBox;
