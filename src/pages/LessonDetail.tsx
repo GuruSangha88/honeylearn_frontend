@@ -24,7 +24,6 @@ const LessonDetail = () => {
   const [secondPartPlaybackTime, setSecondPartPlaybackTime] = useState(0);
   const [audioKey, setAudioKey] = useState<string>('initial');
   
-  // Load the lesson data
   useEffect(() => {
     let foundLesson = null;
     let foundTopicTitle = '';
@@ -44,7 +43,6 @@ const LessonDetail = () => {
     setTopicTitle(foundTopicTitle);
     setLessonTitle(foundLessonTitle);
     
-    // Reset states when lesson changes
     setCurrentSectionIndex(0);
     setActiveContent([]);
     activeContentRef.current = [];
@@ -53,18 +51,15 @@ const LessonDetail = () => {
     setSecondPartPlaybackTime(0);
     setCustomAudioUrl(null);
     
-    // Generate a new audio key to force proper initialization
     setAudioKey(`lesson-${lessonId}-${Date.now()}`);
   }, [lessonId]);
 
-  // Handle section changes
   useEffect(() => {
     if (!lesson || lesson.sections.length === 0) return;
     
     const newSection = lesson.sections[currentSectionIndex];
     setCurrentSection(newSection);
     
-    // Setup for special lesson 4001
     if (lessonId === '4001' && currentSectionIndex === 0) {
       const initialImage: ContentItem = {
         id: 'intro-image',
@@ -83,7 +78,6 @@ const LessonDetail = () => {
       setSecondPartPlaybackTime(0);
       setHasMovedToSecondPart(false);
       
-      // Update audio key when changing audio source
       setAudioKey(`lesson-${lessonId}-section-${currentSectionIndex}-${Date.now()}`);
     } else {
       setActiveContent([]);
@@ -97,17 +91,13 @@ const LessonDetail = () => {
     }
   }, [lesson, currentSectionIndex, lessonId]);
 
-  // Daily goal calculations
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
   const dailyGoalPercentage = todayGoal ? Math.min(Math.round(todayGoal.completedMinutes / todayGoal.targetMinutes * 100), 100) : 0;
 
-  // Handle audio time updates with the modified function to preserve initial image
   const handleTimeUpdate = useCallback((currentTime: number) => {
     if (!isSecondPartActive && currentSection) {
-      // First check if we need to keep the initial image
       const hasInitialImage = activeContentRef.current.some(item => item.id === 'intro-image');
       
-      // Find new content to show based on timing
       const contentToShow = currentSection.content?.filter(item => 
         item.timing <= currentTime && 
         !activeContentRef.current.some(ac => ac.id === item.id)
@@ -119,7 +109,6 @@ const LessonDetail = () => {
         activeContentRef.current = updatedContent;
       }
       
-      // Special case for high-five gif - INTENTIONALLY replaces all content at time 41
       if (lessonId === '4001' && currentSectionIndex === 0 && currentTime >= 41 && 
           !activeContentRef.current.some(item => item.id === 'high-five-gif')) {
         const highFiveContent: ContentItem = {
@@ -132,12 +121,10 @@ const LessonDetail = () => {
           },
           timing: 41
         };
-        setActiveContent([highFiveContent]); // This is intentional replacement
+        setActiveContent([highFiveContent]);
         activeContentRef.current = [highFiveContent];
       }
-      // Make sure we don't accidentally clear content if there's nothing new to show
       else if (contentToShow.length === 0 && hasInitialImage && activeContentRef.current.length === 0) {
-        // If we lost our content somehow, restore the initial image
         const initialImage: ContentItem = {
           id: 'intro-image',
           type: 'image' as ContentType,
@@ -153,7 +140,6 @@ const LessonDetail = () => {
       }
     } 
     else if (isSecondPartActive) {
-      // The second part logic that replaces images is intentional, so keep it
       setSecondPartPlaybackTime(currentTime);
       let updatedContent: ContentItem[] = [...activeContentRef.current];
       let contentUpdated = false;
@@ -209,10 +195,8 @@ const LessonDetail = () => {
     }
   }, [currentSection, isSecondPartActive, lessonId, currentSectionIndex]);
 
-  // Handle section completion
   const handleSectionEnd = useCallback(() => {
     if (lessonId === '4001' && currentSectionIndex === 0 && !hasMovedToSecondPart) {
-      // Special handling for lesson 4001 first section completion
       const newAudioUrl = 'https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3';
       setCustomAudioUrl(newAudioUrl);
       
@@ -237,17 +221,13 @@ const LessonDetail = () => {
         setCurrentSectionIndex(prevIndex => prevIndex + 1);
       }
     } else if (lesson && currentSectionIndex < lesson.sections.length - 1) {
-      // Move to next section
       setCurrentSectionIndex(prevIndex => prevIndex + 1);
       setAudioKey(`lesson-${lessonId}-section-${currentSectionIndex + 1}-${Date.now()}`);
     } else {
-      // Lesson completed
       console.log('Lesson completed');
-      // Could navigate away or show completion screen
     }
   }, [lesson, currentSectionIndex, lessonId, hasMovedToSecondPart]);
 
-  // Get the current audio URL
   const getAudioUrl = useCallback(() => {
     if (customAudioUrl) {
       return customAudioUrl;
@@ -255,7 +235,6 @@ const LessonDetail = () => {
     return currentSection?.audioUrl || '';
   }, [customAudioUrl, currentSection]);
 
-  // Show loading state if lesson is not loaded
   if (!lesson) {
     return (
       <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
