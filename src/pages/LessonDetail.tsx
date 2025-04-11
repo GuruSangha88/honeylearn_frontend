@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,11 +7,11 @@ import ChatBox from '@/components/ChatBox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { mockTopics, currentStudent } from '@/data/mockData';
 import { LessonSection, ContentItem } from '@/types';
-
 const LessonDetail = () => {
   const navigate = useNavigate();
-  const { lessonId } = useParams();
-  
+  const {
+    lessonId
+  } = useParams();
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentSection, setCurrentSection] = useState<LessonSection | null>(null);
   const [activeContent, setActiveContent] = useState<ContentItem[]>([]);
@@ -21,17 +20,14 @@ const LessonDetail = () => {
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
   const [hasMovedToSecondPart, setHasMovedToSecondPart] = useState(false);
-  
   const [isSecondPartActive, setIsSecondPartActive] = useState(false);
   const [secondPartPlaybackTime, setSecondPartPlaybackTime] = useState(0);
-  
   useEffect(() => {
     let foundLesson = null;
     let foundTopicTitle = '';
     let foundLessonTitle = '';
-    
     for (const topic of mockTopics) {
-      const found = topic.lessons.find((l) => l.id === lessonId);
+      const found = topic.lessons.find(l => l.id === lessonId);
       if (found) {
         foundLesson = found;
         foundTopicTitle = topic.title;
@@ -39,16 +35,13 @@ const LessonDetail = () => {
         break;
       }
     }
-    
     setLesson(foundLesson);
     setTopicTitle(foundTopicTitle);
     setLessonTitle(foundLessonTitle);
   }, [lessonId]);
-  
   useEffect(() => {
     if (lesson && lesson.sections.length > 0) {
       setCurrentSection(lesson.sections[currentSectionIndex]);
-      
       if (lessonId === '4001' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'intro-image',
@@ -70,25 +63,15 @@ const LessonDetail = () => {
       }
     }
   }, [lesson, currentSectionIndex, lessonId]);
-  
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
-  const dailyGoalPercentage = todayGoal 
-    ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
-    : 0;
-  
+  const dailyGoalPercentage = todayGoal ? Math.min(Math.round(todayGoal.completedMinutes / todayGoal.targetMinutes * 100), 100) : 0;
   const handleTimeUpdate = (currentTime: number) => {
     if (!isSecondPartActive && currentSection) {
-      const contentToShow = currentSection.content?.filter(
-        item => item.timing <= currentTime && 
-               (!activeContent.some(ac => ac.id === item.id))
-      );
-      
+      const contentToShow = currentSection.content?.filter(item => item.timing <= currentTime && !activeContent.some(ac => ac.id === item.id));
       if (contentToShow && contentToShow.length > 0) {
         setActiveContent(prev => [...prev, ...contentToShow]);
       }
-      
-      if (lessonId === '4001' && currentSectionIndex === 0 && currentTime >= 41 && 
-          !activeContent.some(item => item.id === 'high-five-gif')) {
+      if (lessonId === '4001' && currentSectionIndex === 0 && currentTime >= 41 && !activeContent.some(item => item.id === 'high-five-gif')) {
         setActiveContent([{
           id: 'high-five-gif',
           type: 'image',
@@ -102,7 +85,6 @@ const LessonDetail = () => {
       }
     } else if (isSecondPartActive) {
       setSecondPartPlaybackTime(currentTime);
-      
       if (currentTime < 6) {
         if (!activeContent.some(item => item.id === 'helping-gif')) {
           setActiveContent([{
@@ -145,11 +127,9 @@ const LessonDetail = () => {
       }
     }
   };
-  
   const handleSectionEnd = () => {
     if (lessonId === '4001' && currentSectionIndex === 0 && !hasMovedToSecondPart) {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
-      
       setActiveContent([{
         id: 'helping-gif',
         type: 'image',
@@ -160,11 +140,9 @@ const LessonDetail = () => {
         },
         timing: 0
       }]);
-      
       setIsSecondPartActive(true);
       setSecondPartPlaybackTime(0);
       setHasMovedToSecondPart(true);
-      
       if (lesson && currentSectionIndex < lesson.sections.length - 1) {
         setCurrentSectionIndex(prevIndex => prevIndex + 1);
       }
@@ -174,28 +152,21 @@ const LessonDetail = () => {
       console.log('Lesson completed');
     }
   };
-  
   const getAudioUrl = () => {
     if (customAudioUrl) {
       return customAudioUrl;
     }
-    
     return currentSection?.audioUrl || '';
   };
-  
   if (!lesson) {
-    return (
-      <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
+    return <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Lesson Not Found</h1>
           <Button onClick={() => navigate('/curriculum')}>Back to Curriculum</Button>
         </div>
-      </div>
-    );
+      </div>;
   }
-  
-  return (
-    <div className="min-h-screen bg-tutor-dark text-white pt-4">
+  return <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
         <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
         <div className="mb-6">
@@ -203,29 +174,16 @@ const LessonDetail = () => {
           <p className="text-sm text-gray-400">From: {topicTitle}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="glass-card p-6 flex flex-col items-center justify-center h-[500px] w-full">
-            <AudioPlayer 
-              audioUrl={getAudioUrl()} 
-              onTimeUpdate={handleTimeUpdate}
-              onEnded={handleSectionEnd}
-              autoPlay={true}
-              key={getAudioUrl()}
-            />
+          <div className="glass-card p-6 flex flex-col items-center justify-center h-[450px] w-full overflow-hidden">
+            <AudioPlayer audioUrl={getAudioUrl()} onTimeUpdate={handleTimeUpdate} onEnded={handleSectionEnd} autoPlay={true} key={getAudioUrl()} />
           </div>
           <div className="h-[500px] w-full">
             <ScrollArea className="h-full w-full">
-              <ChatBox 
-                contentItems={activeContent}
-                initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
-                hideInputField={true}
-                preventAutoScroll={true}
-              />
+              <ChatBox contentItems={activeContent} initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`} hideInputField={true} preventAutoScroll={true} />
             </ScrollArea>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default LessonDetail;
