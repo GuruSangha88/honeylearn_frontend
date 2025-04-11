@@ -150,11 +150,21 @@ const ChatBox = ({
         {messages.length === 0 ? <div className="text-center text-gray-400 h-full flex items-center justify-center">
             <p>{initialMessage}</p>
           </div> : <div className="flex flex-col gap-4 h-full w-full mx-0 my-0">
-            {messages.map(message => <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[75%] rounded-lg p-3 ${message.isUser ? 'bg-tutor-purple/30 text-white' : 'bg-tutor-dark-gray text-white'}`}>
-                  {renderMessage(message)}
+            {messages.map(message => {
+              const isImageMessage = message.type === 'media' && message.content.type === 'image';
+              
+              return (
+                <div 
+                  key={message.id} 
+                  className={`flex ${isImageMessage ? 'justify-center' : 
+                    (message.isUser ? 'justify-end' : 'justify-start')}`}
+                >
+                  <div className={`${isImageMessage ? 'max-w-[90%]' : 'max-w-[75%]'} rounded-lg p-3 ${message.isUser ? 'bg-tutor-purple/30 text-white' : 'bg-tutor-dark-gray text-white'}`}>
+                    {renderMessage(message)}
+                  </div>
                 </div>
-              </div>)}
+              );
+            })}
             <div ref={messagesEndRef} />
           </div>}
       </div>
