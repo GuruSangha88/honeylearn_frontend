@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,8 +20,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
   const [isPulsing, setIsPulsing] = useState(false);
   const [hasError, setHasError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Initialize audio when URL changes
+  
   useEffect(() => {
     setHasError(false);
     
@@ -32,7 +30,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       return;
     }
     
-    // Reset player state when URL changes
     setCurrentTime(0);
     setIsPulsing(false);
     setIsPlaying(false);
@@ -40,23 +37,19 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
     if (audioRef.current) {
       const audio = audioRef.current;
       
-      // Event listeners for audio element
       audio.addEventListener('loadedmetadata', handleLoadedMetadata);
       audio.addEventListener('timeupdate', handleTimeUpdate);
       audio.addEventListener('ended', handleEnded);
       audio.addEventListener('error', handleError);
       audio.addEventListener('canplay', handleCanPlay);
       
-      // Set volume
       audio.volume = volume;
       audio.muted = isMuted;
       
-      // Try to play if autoPlay is true
       if (autoPlay) {
         tryAutoPlay();
       }
       
-      // Cleanup function
       return () => {
         audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
         audio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -103,6 +96,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
     setIsPlaying(false);
     setIsPulsing(false);
     toast.error("Failed to load audio file");
+    onEnded?.();
   };
 
   const handleLoadedMetadata = () => {
@@ -179,17 +173,10 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
     <div className="w-full flex flex-col items-center">
       <audio ref={audioRef} src={audioUrl} preload="metadata" />
       
-      {/* New Audio Circle Design */}
       <div className="relative mb-8">
-        {/* Outer glow ring */}
         <div className={`absolute inset-0 rounded-full bg-gradient-to-br from-tutor-blue to-tutor-purple opacity-30 blur-md transform scale-125 ${isPulsing ? 'animate-pulse-glow' : ''}`}></div>
-        
-        {/* Outer circle with gradient */}
         <div className="relative flex items-center justify-center w-56 h-56 rounded-full bg-gradient-to-br from-tutor-blue to-tutor-purple p-1.5">
-          
-          {/* Inner dark circle */}
           <div className="w-full h-full rounded-full bg-tutor-dark-gray flex items-center justify-center cursor-pointer" onClick={togglePlay}>
-            
             {hasError ? (
               <div className="text-center text-red-400 px-4">
                 <p>Audio unavailable</p>
@@ -197,7 +184,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
               </div>
             ) : (
               <>
-                {/* Audio wave visualization */}
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <div className={`h-10 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave1_1.2s_ease-in-out_infinite]' : ''}`}></div>
                   <div className={`h-14 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave2_1s_ease-in-out_infinite]' : ''}`}></div>
@@ -205,8 +191,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
                   <div className={`h-16 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave4_0.9s_ease-in-out_infinite]' : ''}`}></div>
                   <div className={`h-8 w-2.5 rounded-full bg-tutor-purple ${isPulsing ? 'animate-[audio-wave5_1.1s_ease-in-out_infinite]' : ''}`}></div>
                 </div>
-
-                {/* Play/Pause overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 rounded-full flex items-center justify-center transition-opacity duration-200">
                   {!isPulsing && (
                     <div className="flex items-center justify-center w-16 h-16 rounded-full bg-tutor-purple bg-opacity-80">
@@ -220,7 +204,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
         </div>
       </div>
 
-      {/* Hidden Progress Bar (for seeking functionality) */}
       <div className="w-full hidden">
         <Slider
           value={[currentTime]}
@@ -231,7 +214,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
         />
       </div>
 
-      {/* Volume Control */}
       <div className="flex items-center gap-2 mt-2 self-end">
         <Button variant="ghost" size="icon" onClick={toggleMute} className="h-8 w-8">
           {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}

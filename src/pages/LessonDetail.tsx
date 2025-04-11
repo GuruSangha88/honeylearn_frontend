@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -15,6 +14,7 @@ const LessonDetail = () => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentSection, setCurrentSection] = useState<LessonSection | null>(null);
   const [activeContent, setActiveContent] = useState<ContentItem[]>([]);
+  const activeContentRef = useRef<ContentItem[]>([]);
   const [topicTitle, setTopicTitle] = useState('');
   const [lessonTitle, setLessonTitle] = useState('');
   const [lesson, setLesson] = useState<any>(null);
@@ -47,6 +47,7 @@ const LessonDetail = () => {
     // Reset states when lesson changes
     setCurrentSectionIndex(0);
     setActiveContent([]);
+    activeContentRef.current = [];
     setHasMovedToSecondPart(false);
     setIsSecondPartActive(false);
     setSecondPartPlaybackTime(0);
@@ -76,6 +77,7 @@ const LessonDetail = () => {
         timing: 0
       };
       setActiveContent([initialImage]);
+      activeContentRef.current = [initialImage];
       setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
       setIsSecondPartActive(false);
       setSecondPartPlaybackTime(0);
@@ -85,6 +87,7 @@ const LessonDetail = () => {
       setAudioKey(`lesson-${lessonId}-section-${currentSectionIndex}-${Date.now()}`);
     } else {
       setActiveContent([]);
+      activeContentRef.current = [];
       
       if (customAudioUrl) {
         setAudioKey(`lesson-${lessonId}-section-${currentSectionIndex}-custom-${Date.now()}`);
@@ -98,22 +101,27 @@ const LessonDetail = () => {
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
   const dailyGoalPercentage = todayGoal ? Math.min(Math.round(todayGoal.completedMinutes / todayGoal.targetMinutes * 100), 100) : 0;
 
-  // Handle audio time updates
+  // Handle audio time updates with the modified function to preserve initial image
   const handleTimeUpdate = useCallback((currentTime: number) => {
     if (!isSecondPartActive && currentSection) {
-      // Show content based on timing
+      // First check if we need to keep the initial image
+      const hasInitialImage = activeContentRef.current.some(item => item.id === 'intro-image');
+      
+      // Find new content to show based on timing
       const contentToShow = currentSection.content?.filter(item => 
         item.timing <= currentTime && 
-        !activeContent.some(ac => ac.id === item.id)
-      );
+        !activeContentRef.current.some(ac => ac.id === item.id)
+      ) || [];
       
-      if (contentToShow && contentToShow.length > 0) {
-        setActiveContent(prevContent => [...prevContent, ...contentToShow]);
+      if (contentToShow.length > 0) {
+        const updatedContent = [...activeContentRef.current, ...contentToShow];
+        setActiveContent(updatedContent);
+        activeContentRef.current = updatedContent;
       }
       
-      // Special handling for lesson 4001
+      // Special case for high-five gif - INTENTIONALLY replaces all content at time 41
       if (lessonId === '4001' && currentSectionIndex === 0 && currentTime >= 41 && 
-          !activeContent.some(item => item.id === 'high-five-gif')) {
+          !activeContentRef.current.some(item => item.id === 'high-five-gif')) {
         const highFiveContent: ContentItem = {
           id: 'high-five-gif',
           type: 'image' as ContentType,
@@ -124,15 +132,35 @@ const LessonDetail = () => {
           },
           timing: 41
         };
-        setActiveContent([highFiveContent]);
+        setActiveContent([highFiveContent]); // This is intentional replacement
+        activeContentRef.current = [highFiveContent];
       }
-    } else if (isSecondPartActive) {
+      // Make sure we don't accidentally clear content if there's nothing new to show
+      else if (contentToShow.length === 0 && hasInitialImage && activeContentRef.current.length === 0) {
+        // If we lost our content somehow, restore the initial image
+        const initialImage: ContentItem = {
+          id: 'intro-image',
+          type: 'image' as ContentType,
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/whatswork.png',
+            alt: 'What Is Work?'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        activeContentRef.current = [initialImage];
+      }
+    } 
+    else if (isSecondPartActive) {
+      // The second part logic that replaces images is intentional, so keep it
       setSecondPartPlaybackTime(currentTime);
+      let updatedContent: ContentItem[] = [...activeContentRef.current];
+      let contentUpdated = false;
       
-      // Show content based on timing for second part
       if (currentTime < 6) {
-        if (!activeContent.some(item => item.id === 'helping-gif')) {
-          const newContent: ContentItem = {
+        if (!activeContentRef.current.some(item => item.id === 'helping-gif')) {
+          updatedContent = [{
             id: 'helping-gif',
             type: 'image' as ContentType,
             data: {
@@ -141,12 +169,12 @@ const LessonDetail = () => {
               alt: 'People Helping Each Other'
             },
             timing: 0
-          };
-          setActiveContent([newContent]);
+          }];
+          contentUpdated = true;
         }
       } else if (currentTime >= 6 && currentTime < 12) {
-        if (!activeContent.some(item => item.id === 'fixing-gif')) {
-          const newContent: ContentItem = {
+        if (!activeContentRef.current.some(item => item.id === 'fixing-gif')) {
+          updatedContent = [{
             id: 'fixing-gif',
             type: 'image' as ContentType,
             data: {
@@ -155,12 +183,12 @@ const LessonDetail = () => {
               alt: 'People Fixing Things'
             },
             timing: 6
-          };
-          setActiveContent([newContent]);
+          }];
+          contentUpdated = true;
         }
       } else if (currentTime >= 12) {
-        if (!activeContent.some(item => item.id === 'reward-gif')) {
-          const newContent: ContentItem = {
+        if (!activeContentRef.current.some(item => item.id === 'reward-gif')) {
+          updatedContent = [{
             id: 'reward-gif',
             type: 'image' as ContentType,
             data: {
@@ -169,12 +197,17 @@ const LessonDetail = () => {
               alt: 'People Getting Rewards for Work'
             },
             timing: 12
-          };
-          setActiveContent([newContent]);
+          }];
+          contentUpdated = true;
         }
       }
+      
+      if (contentUpdated) {
+        setActiveContent(updatedContent);
+        activeContentRef.current = updatedContent;
+      }
     }
-  }, [currentSection, isSecondPartActive, lessonId, currentSectionIndex, activeContent]);
+  }, [currentSection, isSecondPartActive, lessonId, currentSectionIndex]);
 
   // Handle section completion
   const handleSectionEnd = useCallback(() => {
