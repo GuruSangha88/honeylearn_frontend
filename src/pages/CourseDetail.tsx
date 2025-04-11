@@ -1,12 +1,13 @@
+
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { topics } from "@/data/mockData";
+import { mockTopics } from "@/data/mockData";
 import { ChevronRight } from "lucide-react";
 
 const CourseDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
-  const topic = topics.find((topic) => topic.id === topicId);
+  const topic = mockTopics.find((topic) => topic.id === topicId);
 
   if (!topic) {
     return <div>Topic not found</div>;

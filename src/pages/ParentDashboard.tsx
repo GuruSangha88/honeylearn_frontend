@@ -28,7 +28,6 @@ const ParentDashboard = () => {
   return (
     <div className="min-h-screen bg-tutor-dark text-white">
       <div className="container max-w-6xl mx-auto py-6 px-4">
-        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold gradient-text">Parent Dashboard</h1>
@@ -44,7 +43,6 @@ const ParentDashboard = () => {
           </Button>
         </div>
         
-        {/* Main Content */}
         <div className="mt-8">
           <Tabs defaultValue="overview" onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
@@ -53,7 +51,6 @@ const ParentDashboard = () => {
               <TabsTrigger value="reports">Reports</TabsTrigger>
             </TabsList>
             
-            {/* Overview Tab */}
             <TabsContent value="overview">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-6">
                 <Card>
@@ -151,7 +148,6 @@ const ParentDashboard = () => {
                 </Card>
               </div>
               
-              {/* Recent Activity */}
               <Card>
                 <CardHeader>
                   <CardTitle>Recent Activity</CardTitle>
@@ -179,7 +175,6 @@ const ParentDashboard = () => {
               </Card>
             </TabsContent>
             
-            {/* Students Tab */}
             <TabsContent value="students">
               <div className="mt-6">
                 <div className="flex justify-between items-center mb-4">
@@ -239,12 +234,11 @@ const ParentDashboard = () => {
                             </div>
                           </div>
                           
-                          {/* Course Progress */}
                           <div>
                             <p className="text-sm mb-2">Course Progress</p>
                             {Object.entries(student?.progress?.topicsProgress || {}).map(
                               ([topicId, progress]) => {
-                                const topic = topics.find((t) => t.id === topicId);
+                                const topic = mockTopics.find((t) => t.id === topicId);
                                 if (!topic) return null;
                                 
                                 const lessonsCompleted = progress.lessonsCompleted;
@@ -286,7 +280,6 @@ const ParentDashboard = () => {
               </div>
             </TabsContent>
             
-            {/* Reports Tab */}
             <TabsContent value="reports">
               <div className="glass-card p-8 mt-6 flex items-center justify-center">
                 <div className="text-center">
