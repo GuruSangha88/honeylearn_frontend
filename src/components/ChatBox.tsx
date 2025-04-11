@@ -88,17 +88,18 @@ const ChatBox = ({
       case 'media':
         if (message.content.type === 'image') {
           return (
-            <div className="w-full flex items-center justify-center">
+            <div className="image-container w-full flex items-center justify-center" style={{ minHeight: '200px' }}>
               <img 
                 src={message.content.url} 
                 alt={message.content.alt || 'Lesson image'} 
-                className="rounded-lg max-h-72 object-contain" 
+                className="rounded-lg object-contain" 
+                style={{ maxHeight: '300px', width: 'auto', objectFit: 'contain' }}
               />
             </div>
           );
         } else if (message.content.type === 'video') {
           return (
-            <div className="w-full flex items-center justify-center">
+            <div className="w-full flex items-center justify-center" style={{ minHeight: '200px' }}>
               <video src={message.content.url} controls className="rounded-lg max-h-60 w-full" />
             </div>
           );
@@ -143,23 +144,25 @@ const ChatBox = ({
 
   return (
     <div className="flex flex-col h-full glass-card w-full">
-      <div className="glass-card p-6 h-[450px] w-full overflow-hidden flex items-center justify-center">
+      <div className="glass-card p-6 h-[450px] w-full overflow-hidden">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-400">
+          <div className="text-center text-gray-400 h-full flex items-center justify-center">
             <p>{initialMessage}</p>
           </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            {messages.length > 0 && messages.map(message => (
-              <div 
-                key={message.id} 
-                className="w-full flex items-center justify-center"
-              >
-                <div className={`max-w-[80%] rounded-lg p-3 ${message.isUser ? 'bg-tutor-purple/30 text-white' : 'bg-tutor-dark-gray text-white'}`}>
-                  {renderMessage(message)}
+            <div className="content-container w-full h-full max-w-[80%] flex flex-col items-center justify-center">
+              {messages.length > 0 && 
+                <div 
+                  className="message-wrapper w-full flex items-center justify-center"
+                  style={{ height: '100%' }}
+                >
+                  <div className={`message-content p-3 rounded-lg ${messages[messages.length - 1].isUser ? 'bg-tutor-purple/30' : 'bg-tutor-dark-gray'} text-white`}>
+                    {renderMessage(messages[messages.length - 1])}
+                  </div>
                 </div>
-              </div>
-            ))}
+              }
+            </div>
             <div ref={messagesEndRef} />
           </div>
         )}
