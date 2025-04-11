@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -230,6 +229,7 @@ const LessonDetail = () => {
                 contentItems={activeContent}
                 initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
                 hideInputField={true}
+                preventAutoScroll={true}
               />
             </ScrollArea>
           </div>
