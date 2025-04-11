@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -202,7 +203,7 @@ const LessonDetail = () => {
           <p className="text-sm text-gray-400">From: {topicTitle}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="glass-card p-6 flex flex-col items-center justify-center h-[500px]">
+          <div className="glass-card p-6 flex flex-col items-center justify-center h-[500px] w-full">
             <AudioPlayer 
               audioUrl={getAudioUrl()} 
               onTimeUpdate={handleTimeUpdate}
@@ -211,8 +212,8 @@ const LessonDetail = () => {
               key={getAudioUrl()}
             />
           </div>
-          <div className="h-[500px]">
-            <ScrollArea className="h-full">
+          <div className="h-[500px] w-full">
+            <ScrollArea className="h-full w-full">
               <ChatBox 
                 contentItems={activeContent}
                 initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
