@@ -1,70 +1,105 @@
 
-import { useParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { mockTopics } from "@/data/mockData";
-import { ChevronRight } from "lucide-react";
+import { useNavigate, useParams } from 'react-router-dom';
+import { ChevronLeft, Play, CheckCircle, Circle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Header from '@/components/Header';
+import { mockTopics, currentStudent } from '@/data/mockData';
 
 const CourseDetail = () => {
-  const { topicId } = useParams<{ topicId: string }>();
-  const topic = mockTopics.find((topic) => topic.id === topicId);
-
-  if (!topic) {
-    return <div>Topic not found</div>;
+  const navigate = useNavigate();
+  const { courseId } = useParams();
+  
+  // Find course in topics
+  let course;
+  let topicTitle = '';
+  
+  for (const topic of mockTopics) {
+    const foundCourse = topic.courses.find((c) => c.id === courseId);
+    if (foundCourse) {
+      course = foundCourse;
+      topicTitle = topic.title;
+      break;
+    }
   }
-
-  const totalLessons = topic.lessons.length;
-  const completedLessons = topic.lessons.filter((lesson) => lesson.completed).length;
-  const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
-
+  
+  // Calculate daily goal percentage
+  const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
+  const dailyGoalPercentage = todayGoal 
+    ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
+    : 0;
+  
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Course Not Found</h1>
+          <Button onClick={() => navigate('/curriculum')}>Back to Curriculum</Button>
+        </div>
+      </div>
+    );
+  }
+  
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-center space-x-4 mb-6">
-        <div className="h-16 w-16 bg-tutor-dark-gray rounded-full overflow-hidden border-2 border-tutor-purple/30">
-          {topic.imageUrl ? (
-            <img src={topic.imageUrl} alt={topic.title} className="h-full w-full object-cover" />
-          ) : (
-            <div className="h-full w-full flex items-center justify-center text-3xl font-bold text-tutor-purple">
-              {topic.title.charAt(0)}
-            </div>
-          )}
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold">{topic.title}</h1>
-          <p className="text-gray-400">{topic.description}</p>
-        </div>
-      </div>
-
-      <div className="mb-8">
-        <div className="flex justify-between mb-2">
-          <span>Progress</span>
-          <span>{completedLessons}/{totalLessons} lessons</span>
-        </div>
-        <Progress value={progressPercentage} className="h-2" />
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Lessons</h2>
-        {topic.lessons.map((lesson) => (
-          <div
-            key={lesson.id}
-            className="glass-card p-4 flex justify-between items-center"
+    <div className="min-h-screen bg-tutor-dark text-white pt-4">
+      <div className="container max-w-6xl mx-auto px-4">
+        {/* Header with Student Info */}
+        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        
+        {/* Back Navigation */}
+        <div className="mt-8 mb-6">
+          <Button
+            variant="link"
+            className="flex items-center gap-1 text-gray-300 hover:text-white pl-0"
+            onClick={() => navigate(-1)}
           >
-            <div>
-              <h3 className="font-medium">{lesson.title}</h3>
-              <p className="text-sm text-gray-400">{lesson.description}</p>
-              <div className="flex items-center space-x-2 mt-2">
-                <span className="text-xs">{lesson.duration / 60} min</span>
-                {lesson.completed && (
-                  <span className="text-xs text-green-500">Completed</span>
-                )}
-              </div>
-            </div>
-            <Button variant="ghost" size="icon">
-              <ChevronRight className="h-5 w-5" />
-            </Button>
+            <ChevronLeft size={20} />
+            Back to {topicTitle}
+          </Button>
+        </div>
+        
+        {/* Course Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold gradient-text">{course.title}</h1>
+          <p className="text-gray-400">{course.description}</p>
+          <div className="mt-3 flex items-center gap-1 text-sm text-tutor-purple">
+            <span>{course.completedLessons}/{course.totalLessons} lessons completed</span>
           </div>
-        ))}
+        </div>
+        
+        {/* Lessons List */}
+        <div className="glass-card p-4 mb-8">
+          <h2 className="text-xl font-semibold mb-4">Lessons</h2>
+          <div className="space-y-4">
+            {course.lessons.map((lesson) => (
+              <div key={lesson.id} className="glass-card p-4 hover:border-tutor-purple/40 transition duration-200">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-medium text-lg">{lesson.title}</h3>
+                    <p className="text-sm text-gray-400">{lesson.description}</p>
+                    <div className="text-xs text-tutor-gray mt-1">
+                      {Math.floor(lesson.duration / 60)} minutes • {lesson.sections.length} sections
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {lesson.completed ? (
+                      <CheckCircle className="text-green-500" size={20} />
+                    ) : (
+                      <Circle className="text-gray-500" size={20} />
+                    )}
+                    <Button 
+                      onClick={() => navigate(`/lesson/${lesson.id}`)}
+                      size="sm" 
+                      className="gap-1 bg-tutor-purple hover:bg-tutor-dark-purple"
+                    >
+                      <Play size={14} />
+                      {lesson.completed ? 'Replay' : 'Start'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

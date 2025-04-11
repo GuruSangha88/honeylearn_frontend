@@ -1,17 +1,14 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ContentType } from '@/types';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-
 interface ChatMessage {
   id: string;
   type: 'text' | 'media' | 'quiz' | 'question';
   content: any;
   isUser: boolean;
 }
-
 interface ChatBoxProps {
   initialMessage?: string;
   contentItems?: {
@@ -20,22 +17,17 @@ interface ChatBoxProps {
     data: any;
   }[];
   hideInputField?: boolean;
-  preventAutoScroll?: boolean;
 }
-
 const ChatBox = ({
   initialMessage = "Say something to start the conversation",
   contentItems = [],
-  hideInputField = false,
-  preventAutoScroll = false
+  hideInputField = false
 }: ChatBoxProps) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // Use a single state for displaying messages to prevent flickering/disappearing content
-  const [displayMessages, setDisplayMessages] = useState<ChatMessage[]>([]);
-  
-  // This effect runs when contentItems from props changes
   useEffect(() => {
+    // Add content items as messages
     if (contentItems.length > 0) {
       const contentMessages = contentItems.map(item => ({
         id: item.id,
@@ -43,24 +35,17 @@ const ChatBox = ({
         content: item.data,
         isUser: false
       }));
-      
-      // Update display messages with a function to ensure we get the latest state
-      setDisplayMessages(contentMessages);
+      setMessages(contentMessages);
     }
   }, [contentItems]);
-
   useEffect(() => {
-    if (!preventAutoScroll) {
-      scrollToBottom();
-    }
-  }, [displayMessages, preventAutoScroll]);
-
+    scrollToBottom();
+  }, [messages]);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
       behavior: 'smooth'
     });
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
@@ -70,10 +55,10 @@ const ChatBox = ({
         content: input,
         isUser: true
       };
-      
-      setDisplayMessages(prev => [...prev, newMessage]);
+      setMessages([...messages, newMessage]);
       setInput('');
 
+      // Simulate a response (in a real app, this would call an API)
       setTimeout(() => {
         const responseMessage = {
           id: (Date.now() + 1).toString(),
@@ -81,41 +66,21 @@ const ChatBox = ({
           content: "I understand. Let's continue with the lesson.",
           isUser: false
         };
-        
-        setDisplayMessages(prev => [...prev, responseMessage]);
+        setMessages(prev => [...prev, responseMessage]);
       }, 1000);
     }
   };
-
   const renderMessage = (message: ChatMessage) => {
     switch (message.type) {
       case 'text':
         return <p>{message.content}</p>;
       case 'media':
         if (message.content.type === 'image') {
-          return (
-            <div className="image-container w-full flex items-center justify-center" 
-                 style={{ minHeight: '240px', maxHeight: '320px' }}>
-              <img 
-                src={message.content.url} 
-                alt={message.content.alt || 'Lesson image'} 
-                className="rounded-lg object-contain" 
-                style={{ 
-                  height: 'auto',
-                  maxHeight: '280px', 
-                  width: 'auto', 
-                  maxWidth: '100%',
-                  objectFit: 'contain'
-                }}
-              />
-            </div>
-          );
+          return <img src={message.content.url} alt={message.content.alt || 'Lesson image'} className="mx-auto rounded-lg max-h-72 object-contain" />;
         } else if (message.content.type === 'video') {
-          return (
-            <div className="w-full flex items-center justify-center" style={{ minHeight: '240px' }}>
-              <video src={message.content.url} controls className="rounded-lg w-full" style={{ maxHeight: '280px' }} />
-            </div>
-          );
+          return <div className="flex justify-center w-full">
+              <video src={message.content.url} controls className="rounded-lg max-h-60 w-full" />
+            </div>;
         }
         return null;
       case 'quiz':
@@ -124,7 +89,7 @@ const ChatBox = ({
             <div className="flex flex-col gap-2">
               {message.content.options.map((option: string, idx: number) => <button key={idx} className={`text-left p-2 rounded-md text-sm ${message.content.userAnswer === idx ? message.content.correctAnswerIndex === idx ? 'bg-green-600/30 border border-green-600' : 'bg-red-600/30 border border-red-600' : 'bg-gray-700/50 hover:bg-gray-700 border border-gray-700'}`} onClick={() => {
               if (message.content.userAnswer === undefined) {
-                setDisplayMessages(msgs => msgs.map(m => m.id === message.id ? {
+                setMessages(messages.map(m => m.id === message.id ? {
                   ...m,
                   content: {
                     ...m.content,
@@ -154,51 +119,25 @@ const ChatBox = ({
         return <p>{JSON.stringify(message.content)}</p>;
     }
   };
-
-  const currentMessage = displayMessages.length > 0 ? displayMessages[displayMessages.length - 1] : null;
-
-  return (
-    <div className="flex flex-col h-full glass-card w-full">
-      <div className="glass-card p-6 h-[450px] w-full overflow-hidden">
-        {displayMessages.length === 0 ? (
-          <div className="text-center text-gray-400 h-full flex items-center justify-center">
+  return <div className="flex flex-col h-full glass-card">
+      <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
+        {messages.length === 0 ? <div className="text-center text-gray-400 h-full flex items-center justify-center">
             <p>{initialMessage}</p>
-          </div>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="content-container w-full h-full max-w-[90%] flex flex-col items-center justify-center">
-              {currentMessage && 
-                <div 
-                  className="message-wrapper w-full flex items-center justify-center"
-                  style={{ height: '100%' }}
-                >
-                  <div 
-                    className={`message-content p-3 rounded-lg ${currentMessage.isUser ? 'bg-tutor-purple/30' : 'bg-tutor-dark-gray'} text-white w-full`}
-                  >
-                    {renderMessage(currentMessage)}
-                  </div>
+          </div> : <div className="flex items-center justify-center h-full w-full mx-[50px]">
+            {messages.map(message => <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[75%] rounded-lg p-3 ${message.isUser ? 'bg-tutor-purple/30 text-white' : 'bg-tutor-dark-gray text-white'}`}>
+                  {renderMessage(message)}
                 </div>
-              }
-            </div>
+              </div>)}
             <div ref={messagesEndRef} />
-          </div>
-        )}
+          </div>}
       </div>
-      {!hideInputField && (
-        <form onSubmit={handleSubmit} className="border-t border-gray-800 p-3 flex">
-          <input 
-            type="text" 
-            value={input} 
-            onChange={e => setInput(e.target.value)} 
-            className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-500" 
-          />
+      {!hideInputField && <form onSubmit={handleSubmit} className="border-t border-gray-800 p-3 flex">
+          <input type="text" value={input} onChange={e => setInput(e.target.value)} className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-500" />
           <Button type="submit" size="icon" variant="ghost" className="text-tutor-purple">
             <Send size={18} />
           </Button>
-        </form>
-      )}
-    </div>
-  );
+        </form>}
+    </div>;
 };
-
 export default ChatBox;

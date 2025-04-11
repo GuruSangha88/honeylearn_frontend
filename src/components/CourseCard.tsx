@@ -1,54 +1,46 @@
 
-import { ChevronRight } from 'lucide-react';
-import { Topic } from '@/types';
+import { ArrowRight } from 'lucide-react';
+import { Course } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
 
 interface CourseCardProps {
-  topic: Topic;
+  course: Course;
 }
 
-const CourseCard = ({ topic }: CourseCardProps) => {
+const CourseCard = ({ course }: CourseCardProps) => {
   const navigate = useNavigate();
-  
-  // Calculate total lessons and completed lessons
-  const totalLessons = topic.totalLessons || topic.lessons.length;
-  const completedLessons = topic.completedLessons || topic.lessons.filter(lesson => lesson.completed).length;
-  
-  // Calculate progress percentage
-  const progress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+  const progress = (course.completedLessons / course.totalLessons) * 100;
 
   return (
-    <div 
-      className="glass-card p-5 cursor-pointer hover:border-tutor-purple/40 transition duration-200"
-      onClick={() => navigate(`/topic/${topic.id}`)}
-    >
-      <div className="flex justify-between items-center">
+    <div className="glass-card p-5 cursor-pointer hover:border-tutor-purple/40 transition duration-200">
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <h2 className="font-semibold text-xl mb-1">{topic.title}</h2>
-          <p className="text-sm text-gray-400">{topic.description}</p>
-          <p className="text-xs mt-3 text-tutor-purple">
-            {completedLessons}/{totalLessons} lessons completed
-          </p>
+          <h3 className="font-semibold text-lg mb-1">{course.title}</h3>
+          <p className="text-sm text-gray-400">{course.description}</p>
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-16 w-16 bg-tutor-dark-gray rounded-full overflow-hidden border-2 border-tutor-purple/30">
-            {topic.imageUrl ? (
-              <img src={topic.imageUrl} alt={topic.title} className="h-full w-full object-cover" />
-            ) : (
-              <div className="h-full w-full flex items-center justify-center text-3xl font-bold text-tutor-purple">
-                {topic.title.charAt(0)}
-              </div>
-            )}
+        {course.imageUrl && (
+          <div className="h-14 w-14 bg-tutor-dark-gray rounded-md overflow-hidden">
+            <img src={course.imageUrl} alt={course.title} className="h-full w-full object-cover" />
           </div>
-          <ChevronRight className="text-tutor-purple" size={20} />
-        </div>
+        )}
       </div>
-      
-      <div className="mt-4 h-1.5 rounded-full bg-gray-700 overflow-hidden">
-        <div 
-          className="h-full bg-gradient-to-r from-tutor-purple to-tutor-blue rounded-full" 
-          style={{ width: `${progress}%` }}
-        />
+      <div>
+        <div className="flex justify-between items-center text-sm mb-1">
+          <span>{Math.round(progress)}% complete</span>
+          <span>{course.completedLessons}/{course.totalLessons} lessons</span>
+        </div>
+        <Progress value={progress} className="h-1.5" />
+      </div>
+      <div className="mt-4 flex justify-end">
+        <Button 
+          size="sm" 
+          className="gap-1 bg-tutor-purple hover:bg-tutor-dark-purple"
+          onClick={() => navigate(`/course/${course.id}`)}
+        >
+          Continue <ArrowRight size={16} />
+        </Button>
       </div>
     </div>
   );
