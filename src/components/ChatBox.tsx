@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,6 +31,7 @@ const ChatBox = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [stabilizedContent, setStabilizedContent] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
     if (contentItems.length > 0) {
@@ -41,7 +41,9 @@ const ChatBox = ({
         content: item.data,
         isUser: false
       }));
+      
       setMessages(contentMessages);
+      setStabilizedContent(contentMessages);
     }
   }, [contentItems]);
 
@@ -67,6 +69,7 @@ const ChatBox = ({
         isUser: true
       };
       setMessages([...messages, newMessage]);
+      setStabilizedContent(prev => [...prev, newMessage]);
       setInput('');
 
       setTimeout(() => {
@@ -77,6 +80,7 @@ const ChatBox = ({
           isUser: false
         };
         setMessages(prev => [...prev, responseMessage]);
+        setStabilizedContent(prev => [...prev, responseMessage]);
       }, 1000);
     }
   };
@@ -88,19 +92,25 @@ const ChatBox = ({
       case 'media':
         if (message.content.type === 'image') {
           return (
-            <div className="image-container w-full flex items-center justify-center" style={{ minHeight: '200px' }}>
+            <div className="image-container w-full flex items-center justify-center" style={{ minHeight: '240px', maxHeight: '320px' }}>
               <img 
                 src={message.content.url} 
                 alt={message.content.alt || 'Lesson image'} 
                 className="rounded-lg object-contain" 
-                style={{ maxHeight: '300px', width: 'auto', objectFit: 'contain' }}
+                style={{ 
+                  height: 'auto',
+                  maxHeight: '280px', 
+                  width: 'auto', 
+                  maxWidth: '100%',
+                  objectFit: 'contain'
+                }}
               />
             </div>
           );
         } else if (message.content.type === 'video') {
           return (
-            <div className="w-full flex items-center justify-center" style={{ minHeight: '200px' }}>
-              <video src={message.content.url} controls className="rounded-lg max-h-60 w-full" />
+            <div className="w-full flex items-center justify-center" style={{ minHeight: '240px' }}>
+              <video src={message.content.url} controls className="rounded-lg w-full" style={{ maxHeight: '280px' }} />
             </div>
           );
         }
@@ -112,6 +122,13 @@ const ChatBox = ({
               {message.content.options.map((option: string, idx: number) => <button key={idx} className={`text-left p-2 rounded-md text-sm ${message.content.userAnswer === idx ? message.content.correctAnswerIndex === idx ? 'bg-green-600/30 border border-green-600' : 'bg-red-600/30 border border-red-600' : 'bg-gray-700/50 hover:bg-gray-700 border border-gray-700'}`} onClick={() => {
               if (message.content.userAnswer === undefined) {
                 setMessages(messages.map(m => m.id === message.id ? {
+                  ...m,
+                  content: {
+                    ...m.content,
+                    userAnswer: idx
+                  }
+                } : m));
+                setStabilizedContent(prev => prev.map(m => m.id === message.id ? {
                   ...m,
                   content: {
                     ...m.content,
@@ -142,23 +159,28 @@ const ChatBox = ({
     }
   };
 
+  const displayMessages = stabilizedContent.length > 0 ? stabilizedContent : messages;
+  const currentMessage = displayMessages.length > 0 ? displayMessages[displayMessages.length - 1] : null;
+
   return (
     <div className="flex flex-col h-full glass-card w-full">
       <div className="glass-card p-6 h-[450px] w-full overflow-hidden">
-        {messages.length === 0 ? (
+        {displayMessages.length === 0 ? (
           <div className="text-center text-gray-400 h-full flex items-center justify-center">
             <p>{initialMessage}</p>
           </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <div className="content-container w-full h-full max-w-[80%] flex flex-col items-center justify-center">
-              {messages.length > 0 && 
+            <div className="content-container w-full h-full max-w-[90%] flex flex-col items-center justify-center">
+              {currentMessage && 
                 <div 
                   className="message-wrapper w-full flex items-center justify-center"
                   style={{ height: '100%' }}
                 >
-                  <div className={`message-content p-3 rounded-lg ${messages[messages.length - 1].isUser ? 'bg-tutor-purple/30' : 'bg-tutor-dark-gray'} text-white`}>
-                    {renderMessage(messages[messages.length - 1])}
+                  <div 
+                    className={`message-content p-3 rounded-lg ${currentMessage.isUser ? 'bg-tutor-purple/30' : 'bg-tutor-dark-gray'} text-white w-full`}
+                  >
+                    {renderMessage(currentMessage)}
                   </div>
                 </div>
               }
