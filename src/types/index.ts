@@ -50,6 +50,7 @@ export interface ContentItem {
   type: ContentType;
   timing: number; // when to show content (seconds into audio)
   data: any; // content data, depends on type
+  onComplete?: () => void; // Add the onComplete callback property
 }
 
 export interface Quiz {
