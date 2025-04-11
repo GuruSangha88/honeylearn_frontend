@@ -19,6 +19,7 @@ const LessonDetail = () => {
   const [lessonTitle, setLessonTitle] = useState('');
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
+  const [isSecondPartPlayed, setIsSecondPartPlayed] = useState(false);
   
   const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
   const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -60,6 +61,7 @@ const LessonDetail = () => {
         };
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
+        setIsSecondPartPlayed(false);
       } else {
         setActiveContent([]);
       }
@@ -96,8 +98,9 @@ const LessonDetail = () => {
   }, []);
   
   const handleSectionEnd = () => {
-    if (lessonId === '4001' && currentSectionIndex === 0) {
+    if (lessonId === '4001' && currentSectionIndex === 0 && !isSecondPartPlayed) {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
+      setIsSecondPartPlayed(true);
       
       setActiveContent([{
         id: 'helping-gif',
@@ -142,14 +145,26 @@ const LessonDetail = () => {
           }]);
         }, 6000);
       }, 6000);
-      
-      if (lesson && currentSectionIndex < lesson.sections.length - 1) {
-        setCurrentSectionIndex(prevIndex => prevIndex + 1);
-      }
     } else if (lesson && currentSectionIndex < lesson.sections.length - 1) {
       setCurrentSectionIndex(prevIndex => prevIndex + 1);
     } else {
       console.log('Lesson completed');
+      
+      // Add navigation to the next lesson or back to topic detail
+      if (lesson && lesson.nextLessonId) {
+        navigate(`/lesson/${lesson.nextLessonId}`);
+      } else {
+        // If there's no next lesson, navigate back to the topic
+        const topicId = mockTopics.find(topic => 
+          topic.lessons.some(l => l.id === lessonId)
+        )?.id;
+        
+        if (topicId) {
+          navigate(`/topic/${topicId}`);
+        } else {
+          navigate('/curriculum');
+        }
+      }
     }
   };
   
@@ -187,7 +202,7 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={getAudioUrl()}
+              key={`${getAudioUrl()}-${isSecondPartPlayed}`}
             />
           </div>
           <div className="h-[500px]">
