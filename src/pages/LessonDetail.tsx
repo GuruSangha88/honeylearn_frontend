@@ -22,6 +22,7 @@ const LessonDetail = () => {
   const [isSecondPartPlayed, setIsSecondPartPlayed] = useState(false);
   const [secondPartFinished, setSecondPartFinished] = useState(false);
   const [isThirdPartPlayed, setIsThirdPartPlayed] = useState(false);
+  const [videoCompleted, setVideoCompleted] = useState(false);
   
   const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
   const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -49,6 +50,7 @@ const LessonDetail = () => {
     setIsSecondPartPlayed(false);
     setSecondPartFinished(false);
     setIsThirdPartPlayed(false);
+    setVideoCompleted(false);
   }, [lessonId]);
   
   useEffect(() => {
@@ -71,6 +73,7 @@ const LessonDetail = () => {
         setIsSecondPartPlayed(false);
         setSecondPartFinished(false);
         setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
       } else {
         setActiveContent([]);
       }
@@ -105,6 +108,11 @@ const LessonDetail = () => {
       }
     };
   }, []);
+  
+  const handleVideoComplete = () => {
+    setVideoCompleted(true);
+    console.log("Video has been completely watched!");
+  };
   
   const handleSectionEnd = () => {
     if (lessonId === '4001' && currentSectionIndex === 0) {
@@ -171,10 +179,11 @@ const LessonDetail = () => {
             url: 'https://hlearn.b-cdn.net/what%20is%20work/whatiswork56.mp4',
             alt: 'What Is Work Video'
           },
-          timing: 0
+          timing: 0,
+          onComplete: handleVideoComplete
         }]);
-      } else if (secondPartFinished && isThirdPartPlayed) {
-        // Third audio part has finished
+      } else if (secondPartFinished && isThirdPartPlayed && videoCompleted) {
+        // Third audio part has finished AND video is completed
         
         // Navigate to next lesson/section
         if (lesson && lesson.nextLessonId) {
@@ -257,6 +266,7 @@ const LessonDetail = () => {
               contentItems={activeContent}
               initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
               hideInputField={true}
+              onVideoComplete={handleVideoComplete}
             />
           </div>
         </div>
