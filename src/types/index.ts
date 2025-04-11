@@ -9,6 +9,17 @@ export interface Topic {
   lessons: Lesson[];
   totalLessons?: number;
   completedLessons?: number;
+  courses?: Course[]; // Adding courses property
+}
+
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  lessons: Lesson[];
+  totalLessons: number;
+  completedLessons: number;
 }
 
 export interface Lesson {
@@ -20,6 +31,7 @@ export interface Lesson {
   duration: number; // in seconds
   completed: boolean;
   sections: LessonSection[];
+  nextLessonId?: string; // Add support for next lesson navigation
 }
 
 export interface LessonSection {
@@ -65,12 +77,23 @@ export interface DailyGoal {
 
 export interface StudentProgress {
   topicsProgress: {
-    [topicId: string]: {
-      lessonsCompleted: number;
-      totalLessons: number;
-      lastAccessedLessonId?: string;
-    };
+    [topicId: string]: TopicProgress;
   };
+}
+
+export interface TopicProgress {
+  lessonsCompleted: number;
+  totalLessons: number;
+  lastAccessedLessonId?: string;
+  coursesProgress?: {
+    [courseId: string]: CourseProgress;
+  };
+}
+
+export interface CourseProgress {
+  lessonsCompleted: number;
+  totalLessons: number;
+  lastAccessedLessonId?: string;
 }
 
 export interface Parent {

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Users, BookOpen, Award, Clock, Calendar, PieChart, LineChart, BarChart } from 'lucide-react';
@@ -29,7 +28,6 @@ const ParentDashboard = () => {
   return (
     <div className="min-h-screen bg-tutor-dark text-white">
       <div className="container max-w-6xl mx-auto py-6 px-4">
-        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold gradient-text">Parent Dashboard</h1>
@@ -45,7 +43,6 @@ const ParentDashboard = () => {
           </Button>
         </div>
         
-        {/* Main Content */}
         <div className="mt-8">
           <Tabs defaultValue="overview" onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
@@ -54,7 +51,6 @@ const ParentDashboard = () => {
               <TabsTrigger value="reports">Reports</TabsTrigger>
             </TabsList>
             
-            {/* Overview Tab */}
             <TabsContent value="overview">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-6">
                 <Card>
@@ -152,7 +148,6 @@ const ParentDashboard = () => {
                 </Card>
               </div>
               
-              {/* Recent Activity */}
               <Card>
                 <CardHeader>
                   <CardTitle>Recent Activity</CardTitle>
@@ -180,7 +175,6 @@ const ParentDashboard = () => {
               </Card>
             </TabsContent>
             
-            {/* Students Tab */}
             <TabsContent value="students">
               <div className="mt-6">
                 <div className="flex justify-between items-center mb-4">
@@ -240,18 +234,33 @@ const ParentDashboard = () => {
                             </div>
                           </div>
                           
-                          {/* Course Progress */}
                           <div>
                             <p className="text-sm mb-2">Course Progress</p>
-                            {Object.entries(student.progress.topicsProgress).flatMap(([topicId, topicProgress]) => 
-                              Object.entries(topicProgress.coursesProgress).map(([courseId, courseProgress]) => {
-                                const topic = mockParent.students[0].progress.topicsProgress[topicId];
-                                const courseName = mockTopics
-                                  .find(t => t.id === topicId)
-                                  ?.courses.find(c => c.id === courseId)?.title || 'Unknown Course';
+                            {Object.entries(student.progress.topicsProgress).map(([topicId, topicProgress]) => {
+                              const topic = mockTopics.find(t => t.id === topicId);
+                              
+                              if (!topicProgress.coursesProgress || !topic?.courses) {
+                                return (
+                                  <div key={topicId} className="mb-2">
+                                    <div className="flex justify-between mb-1">
+                                      <span className="text-xs">{topic?.title || 'Unknown Topic'}</span>
+                                      <span className="text-xs text-gray-400">
+                                        {topicProgress.lessonsCompleted}/{topicProgress.totalLessons} lessons
+                                      </span>
+                                    </div>
+                                    <Progress 
+                                      value={(topicProgress.lessonsCompleted / topicProgress.totalLessons) * 100} 
+                                      className="h-1" 
+                                    />
+                                  </div>
+                                );
+                              }
+                              
+                              return Object.entries(topicProgress.coursesProgress || {}).map(([courseId, courseProgress]) => {
+                                const courseName = topic?.courses?.find(c => c.id === courseId)?.title || 'Unknown Course';
                                 
                                 return (
-                                  <div key={courseId} className="mb-2">
+                                  <div key={`${topicId}-${courseId}`} className="mb-2">
                                     <div className="flex justify-between mb-1">
                                       <span className="text-xs">{courseName}</span>
                                       <span className="text-xs text-gray-400">
@@ -264,8 +273,8 @@ const ParentDashboard = () => {
                                     />
                                   </div>
                                 );
-                              })
-                            )}
+                              });
+                            })}
                           </div>
                         </div>
                       </CardContent>
@@ -287,7 +296,6 @@ const ParentDashboard = () => {
               </div>
             </TabsContent>
             
-            {/* Reports Tab */}
             <TabsContent value="reports">
               <div className="glass-card p-8 mt-6 flex items-center justify-center">
                 <div className="text-center">

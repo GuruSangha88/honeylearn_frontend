@@ -4,21 +4,24 @@ import { ChevronLeft, Play, CheckCircle, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import { mockTopics, currentStudent } from '@/data/mockData';
+import { Course } from '@/types';
 
 const CourseDetail = () => {
   const navigate = useNavigate();
   const { courseId } = useParams();
   
   // Find course in topics
-  let course;
+  let course: Course | undefined;
   let topicTitle = '';
   
   for (const topic of mockTopics) {
-    const foundCourse = topic.courses.find((c) => c.id === courseId);
-    if (foundCourse) {
-      course = foundCourse;
-      topicTitle = topic.title;
-      break;
+    if (topic.courses) {
+      const foundCourse = topic.courses.find((c) => c.id === courseId);
+      if (foundCourse) {
+        course = foundCourse;
+        topicTitle = topic.title;
+        break;
+      }
     }
   }
   
