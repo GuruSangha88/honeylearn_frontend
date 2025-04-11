@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import AudioPlayer from '@/components/AudioPlayer';
 import ChatBox from '@/components/ChatBox';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { mockTopics, currentStudent } from '@/data/mockData';
 import { LessonSection, ContentItem } from '@/types';
 
@@ -19,6 +20,7 @@ const LessonDetail = () => {
   const [lessonTitle, setLessonTitle] = useState('');
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
+  const [hasMovedToSecondPart, setHasMovedToSecondPart] = useState(false);
   
   // These variables track audio playback for the second part of the lesson
   const [isSecondPartActive, setIsSecondPartActive] = useState(false);
@@ -63,6 +65,7 @@ const LessonDetail = () => {
         setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
         setIsSecondPartActive(false);
         setSecondPartPlaybackTime(0);
+        setHasMovedToSecondPart(false);
       } else {
         setActiveContent([]);
       }
@@ -154,7 +157,7 @@ const LessonDetail = () => {
   };
   
   const handleSectionEnd = () => {
-    if (lessonId === '4001' && currentSectionIndex === 0) {
+    if (lessonId === '4001' && currentSectionIndex === 0 && !hasMovedToSecondPart) {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
       
       // Set initial content for second part
@@ -172,6 +175,7 @@ const LessonDetail = () => {
       // Activate second part mode to use the time-based gif switching
       setIsSecondPartActive(true);
       setSecondPartPlaybackTime(0);
+      setHasMovedToSecondPart(true);
       
       if (lesson && currentSectionIndex < lesson.sections.length - 1) {
         setCurrentSectionIndex(prevIndex => prevIndex + 1);
@@ -221,11 +225,13 @@ const LessonDetail = () => {
             />
           </div>
           <div className="h-[500px]">
-            <ChatBox 
-              contentItems={activeContent}
-              initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
-              hideInputField={true}
-            />
+            <ScrollArea className="h-full pr-4">
+              <ChatBox 
+                contentItems={activeContent}
+                initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
+                hideInputField={true}
+              />
+            </ScrollArea>
           </div>
         </div>
       </div>
