@@ -21,6 +21,7 @@ const LessonDetail = () => {
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
   const [isSecondPartPlayed, setIsSecondPartPlayed] = useState(false);
   const [secondPartFinished, setSecondPartFinished] = useState(false);
+  const [isThirdPartPlayed, setIsThirdPartPlayed] = useState(false);
   
   const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
   const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -47,6 +48,7 @@ const LessonDetail = () => {
     // Reset states when lesson changes
     setIsSecondPartPlayed(false);
     setSecondPartFinished(false);
+    setIsThirdPartPlayed(false);
   }, [lessonId]);
   
   useEffect(() => {
@@ -68,6 +70,7 @@ const LessonDetail = () => {
         setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
         setIsSecondPartPlayed(false);
         setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
       } else {
         setActiveContent([]);
       }
@@ -153,9 +156,25 @@ const LessonDetail = () => {
             }]);
           }, 6000);
         }, 6000);
-      } else if (!secondPartFinished) {
-        // Second audio part has finished
+      } else if (isSecondPartPlayed && !secondPartFinished) {
+        // Second audio part has finished, now play the third part
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/letswatch.mp3');
         setSecondPartFinished(true);
+        setIsThirdPartPlayed(true);
+        
+        // Show video in the chatbox
+        setActiveContent([{
+          id: 'work-video',
+          type: 'video',
+          data: {
+            type: 'video',
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/whatiswork56.mp4',
+            alt: 'What Is Work Video'
+          },
+          timing: 0
+        }]);
+      } else if (secondPartFinished && isThirdPartPlayed) {
+        // Third audio part has finished
         
         // Navigate to next lesson/section
         if (lesson && lesson.nextLessonId) {
@@ -230,7 +249,7 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}`}
+              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}-${isThirdPartPlayed}`}
             />
           </div>
           <div className="h-[500px]">
