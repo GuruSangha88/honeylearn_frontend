@@ -20,6 +20,7 @@ const LessonDetail = () => {
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
   const [isSecondPartPlayed, setIsSecondPartPlayed] = useState(false);
+  const [secondPartFinished, setSecondPartFinished] = useState(false);
   
   const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
   const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,6 +43,10 @@ const LessonDetail = () => {
     setLesson(foundLesson);
     setTopicTitle(foundTopicTitle);
     setLessonTitle(foundLessonTitle);
+    
+    // Reset states when lesson changes
+    setIsSecondPartPlayed(false);
+    setSecondPartFinished(false);
   }, [lessonId]);
   
   useEffect(() => {
@@ -62,6 +67,7 @@ const LessonDetail = () => {
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
         setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
       } else {
         setActiveContent([]);
       }
@@ -98,53 +104,75 @@ const LessonDetail = () => {
   }, []);
   
   const handleSectionEnd = () => {
-    if (lessonId === '4001' && currentSectionIndex === 0 && !isSecondPartPlayed) {
-      setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
-      setIsSecondPartPlayed(true);
-      
-      setActiveContent([{
-        id: 'helping-gif',
-        type: 'image',
-        data: {
-          type: 'image',
-          url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
-          alt: 'People Helping Each Other'
-        },
-        timing: 0
-      }]);
-      
-      if (gifTimerRef.current) {
-        clearTimeout(gifTimerRef.current);
-      }
-      if (secondGifTimerRef.current) {
-        clearTimeout(secondGifTimerRef.current);
-      }
-      
-      gifTimerRef.current = setTimeout(() => {
+    if (lessonId === '4001' && currentSectionIndex === 0) {
+      if (!isSecondPartPlayed) {
+        // First audio part ended, now play second part
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
+        setIsSecondPartPlayed(true);
+        
         setActiveContent([{
-          id: 'fixing-gif',
+          id: 'helping-gif',
           type: 'image',
           data: {
             type: 'image',
-            url: 'https://hlearn.b-cdn.net/what%20is%20work/fixing.gif',
-            alt: 'People Fixing Things'
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
+            alt: 'People Helping Each Other'
           },
           timing: 0
         }]);
         
-        secondGifTimerRef.current = setTimeout(() => {
+        if (gifTimerRef.current) {
+          clearTimeout(gifTimerRef.current);
+        }
+        if (secondGifTimerRef.current) {
+          clearTimeout(secondGifTimerRef.current);
+        }
+        
+        gifTimerRef.current = setTimeout(() => {
           setActiveContent([{
-            id: 'reward-gif',
+            id: 'fixing-gif',
             type: 'image',
             data: {
               type: 'image',
-              url: 'https://hlearn.b-cdn.net/what%20is%20work/reward.gif',
-              alt: 'People Getting Rewards for Work'
+              url: 'https://hlearn.b-cdn.net/what%20is%20work/fixing.gif',
+              alt: 'People Fixing Things'
             },
             timing: 0
           }]);
+          
+          secondGifTimerRef.current = setTimeout(() => {
+            setActiveContent([{
+              id: 'reward-gif',
+              type: 'image',
+              data: {
+                type: 'image',
+                url: 'https://hlearn.b-cdn.net/what%20is%20work/reward.gif',
+                alt: 'People Getting Rewards for Work'
+              },
+              timing: 0
+            }]);
+          }, 6000);
         }, 6000);
-      }, 6000);
+      } else if (!secondPartFinished) {
+        // Second audio part has finished
+        setSecondPartFinished(true);
+        
+        // Navigate to next lesson/section
+        if (lesson && lesson.nextLessonId) {
+          navigate(`/lesson/${lesson.nextLessonId}`);
+        } else {
+          // If there's no next lesson, navigate back to the topic
+          const topicId = mockTopics.find(topic => 
+            topic.lessons.some(l => l.id === lessonId)
+          )?.id;
+          
+          if (topicId) {
+            navigate(`/topic/${topicId}`);
+          } else {
+            navigate('/curriculum');
+          }
+        }
+      }
     } else if (lesson && currentSectionIndex < lesson.sections.length - 1) {
       setCurrentSectionIndex(prevIndex => prevIndex + 1);
     } else {
@@ -202,7 +230,7 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={`${getAudioUrl()}-${isSecondPartPlayed}`}
+              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}`}
             />
           </div>
           <div className="h-[500px]">
