@@ -20,8 +20,9 @@ const LessonDetail = () => {
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
   
-  const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // These variables track audio playback for the second part of the lesson
+  const [isSecondPartActive, setIsSecondPartActive] = useState(false);
+  const [secondPartPlaybackTime, setSecondPartPlaybackTime] = useState(0);
   
   useEffect(() => {
     let foundLesson = null;
@@ -60,6 +61,8 @@ const LessonDetail = () => {
         };
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
+        setIsSecondPartActive(false);
+        setSecondPartPlaybackTime(0);
       } else {
         setActiveContent([]);
       }
@@ -72,7 +75,9 @@ const LessonDetail = () => {
     : 0;
   
   const handleTimeUpdate = (currentTime: number) => {
-    if (currentSection) {
+    // For the first part of the intro
+    if (!isSecondPartActive && currentSection) {
+      // Standard content from section
       const contentToShow = currentSection.content?.filter(
         item => item.timing <= currentTime && 
                (!activeContent.some(ac => ac.id === item.id))
@@ -96,24 +101,63 @@ const LessonDetail = () => {
           timing: 41
         }]);
       }
+    } 
+    // For the second part of the intro (the sequence of gifs)
+    else if (isSecondPartActive) {
+      setSecondPartPlaybackTime(currentTime);
+      
+      // Display different gifs based on audio playback time
+      if (currentTime < 6) {
+        // Only update if not already showing the helping gif
+        if (!activeContent.some(item => item.id === 'helping-gif')) {
+          setActiveContent([{
+            id: 'helping-gif',
+            type: 'image',
+            data: {
+              type: 'image',
+              url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
+              alt: 'People Helping Each Other'
+            },
+            timing: 0
+          }]);
+        }
+      } else if (currentTime >= 6 && currentTime < 12) {
+        // Only update if not already showing the fixing gif
+        if (!activeContent.some(item => item.id === 'fixing-gif')) {
+          setActiveContent([{
+            id: 'fixing-gif',
+            type: 'image',
+            data: {
+              type: 'image',
+              url: 'https://hlearn.b-cdn.net/what%20is%20work/fixing.gif',
+              alt: 'People Fixing Things'
+            },
+            timing: 6
+          }]);
+        }
+      } else if (currentTime >= 12) {
+        // Only update if not already showing the reward gif
+        if (!activeContent.some(item => item.id === 'reward-gif')) {
+          setActiveContent([{
+            id: 'reward-gif',
+            type: 'image',
+            data: {
+              type: 'image',
+              url: 'https://hlearn.b-cdn.net/what%20is%20work/reward.gif',
+              alt: 'People Getting Rewards for Work'
+            },
+            timing: 12
+          }]);
+        }
+      }
     }
   };
-  
-  useEffect(() => {
-    return () => {
-      if (gifTimerRef.current) {
-        clearTimeout(gifTimerRef.current);
-      }
-      if (secondGifTimerRef.current) {
-        clearTimeout(secondGifTimerRef.current);
-      }
-    };
-  }, []);
   
   const handleSectionEnd = () => {
     if (lessonId === '4001' && currentSectionIndex === 0) {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
       
+      // Set initial content for second part
       setActiveContent([{
         id: 'helping-gif',
         type: 'image',
@@ -125,38 +169,9 @@ const LessonDetail = () => {
         timing: 0
       }]);
       
-      if (gifTimerRef.current) {
-        clearTimeout(gifTimerRef.current);
-      }
-      if (secondGifTimerRef.current) {
-        clearTimeout(secondGifTimerRef.current);
-      }
-      
-      gifTimerRef.current = setTimeout(() => {
-        setActiveContent([{
-          id: 'fixing-gif',
-          type: 'image',
-          data: {
-            type: 'image',
-            url: 'https://hlearn.b-cdn.net/what%20is%20work/fixing.gif',
-            alt: 'People Fixing Things'
-          },
-          timing: 0
-        }]);
-        
-        secondGifTimerRef.current = setTimeout(() => {
-          setActiveContent([{
-            id: 'reward-gif',
-            type: 'image',
-            data: {
-              type: 'image',
-              url: 'https://hlearn.b-cdn.net/what%20is%20work/reward.gif',
-              alt: 'People Getting Rewards for Work'
-            },
-            timing: 0
-          }]);
-        }, 6000);
-      }, 6000);
+      // Activate second part mode to use the time-based gif switching
+      setIsSecondPartActive(true);
+      setSecondPartPlaybackTime(0);
       
       if (lesson && currentSectionIndex < lesson.sections.length - 1) {
         setCurrentSectionIndex(prevIndex => prevIndex + 1);
