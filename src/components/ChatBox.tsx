@@ -23,13 +23,15 @@ interface ChatBoxProps {
   }[];
   hideInputField?: boolean;
   onVideoComplete?: () => void;
+  onQuizAnswered?: (isCorrect: boolean) => void;
 }
 
 const ChatBox = ({
   initialMessage = "Say something to start the conversation",
   contentItems = [],
   hideInputField = false,
-  onVideoComplete
+  onVideoComplete,
+  onQuizAnswered
 }: ChatBoxProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -89,6 +91,29 @@ const ChatBox = ({
     }
   };
 
+  const handleQuizAnswer = (message: ChatMessage, selectedAnswer: boolean) => {
+    // Update the message to show which option was selected
+    const updatedMessages = messages.map(msg => {
+      if (msg.id === message.id) {
+        return {
+          ...msg,
+          content: {
+            ...msg.content,
+            userAnswer: selectedAnswer
+          }
+        };
+      }
+      return msg;
+    });
+    
+    setMessages(updatedMessages);
+    
+    // Notify parent component of the answer
+    if (onQuizAnswered) {
+      onQuizAnswered(selectedAnswer);
+    }
+  };
+
   const renderMessage = (message: ChatMessage) => {
     switch (message.type) {
       case 'text':
@@ -109,27 +134,40 @@ const ChatBox = ({
         }
         return null;
       case 'quiz':
-        return <div className="bg-tutor-dark-gray p-4 rounded-lg">
-            <h4 className="text-md font-medium mb-2">{message.content.question}</h4>
-            <div className="flex flex-col gap-2">
-              {message.content.options.map((option: string, idx: number) => <button key={idx} className={`text-left p-2 rounded-md text-sm ${message.content.userAnswer === idx ? message.content.correctAnswerIndex === idx ? 'bg-green-600/30 border border-green-600' : 'bg-red-600/30 border border-red-600' : 'bg-gray-700/50 hover:bg-gray-700 border border-gray-700'}`} onClick={() => {
-              if (message.content.userAnswer === undefined) {
-                setMessages(messages.map(m => m.id === message.id ? {
-                  ...m,
-                  content: {
-                    ...m.content,
-                    userAnswer: idx
-                  }
-                } : m));
-              }
-            }} disabled={message.content.userAnswer !== undefined}>
-                  {option}
-                </button>)}
+        return (
+          <div className="bg-tutor-dark-gray p-4 rounded-lg w-full">
+            <h4 className="text-md font-medium mb-4">{message.content.question}</h4>
+            <div className="flex flex-col gap-3">
+              {message.content.options.map((option: any, idx: number) => (
+                <Button 
+                  key={idx}
+                  className={`text-white text-left justify-start h-auto py-3 px-4 ${
+                    message.content.userAnswer !== undefined ? 
+                      idx === message.content.correctOptionIndex ? 
+                        'bg-green-600 hover:bg-green-700' : 
+                        'bg-red-600 hover:bg-red-700' : 
+                      option.color === 'blue' ? 
+                        'bg-blue-600 hover:bg-blue-700' : 
+                        'bg-pink-600 hover:bg-pink-700'
+                  }`}
+                  onClick={() => {
+                    if (message.content.userAnswer === undefined) {
+                      handleQuizAnswer(message, idx === message.content.correctOptionIndex);
+                    }
+                  }}
+                  disabled={message.content.userAnswer !== undefined}
+                >
+                  {option.text}
+                </Button>
+              ))}
             </div>
-            {message.content.userAnswer !== undefined && <p className={`mt-3 text-sm ${message.content.userAnswer === message.content.correctAnswerIndex ? 'text-green-400' : 'text-red-400'}`}>
-                {message.content.userAnswer === message.content.correctAnswerIndex ? 'Correct! 🎉' : `Incorrect. The correct answer is: ${message.content.options[message.content.correctAnswerIndex]}`}
-              </p>}
-          </div>;
+            {message.content.userAnswer !== undefined && (
+              <p className={`mt-4 text-sm ${message.content.userAnswer ? 'text-green-400' : 'text-red-400'}`}>
+                {message.content.userAnswer ? 'Correct! 🎉' : 'Incorrect. Please try again.'}
+              </p>
+            )}
+          </div>
+        );
       case 'question':
         return <div className="bg-tutor-dark-gray p-4 rounded-lg">
             <h4 className="text-md font-medium mb-2">{message.content.question}</h4>
