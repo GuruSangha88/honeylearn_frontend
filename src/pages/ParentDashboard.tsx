@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Users, BookOpen, Award, Clock, Calendar, PieChart, LineChart, BarChart } from 'lucide-react';
@@ -243,28 +242,28 @@ const ParentDashboard = () => {
                           {/* Course Progress */}
                           <div>
                             <p className="text-sm mb-2">Course Progress</p>
-                            {Object.entries(student.progress.topicsProgress).flatMap(([topicId, topicProgress]) => 
-                              Object.entries(topicProgress.coursesProgress).map(([courseId, courseProgress]) => {
-                                const topic = mockParent.students[0].progress.topicsProgress[topicId];
-                                const courseName = mockTopics
-                                  .find(t => t.id === topicId)
-                                  ?.courses.find(c => c.id === courseId)?.title || 'Unknown Course';
+                            {Object.entries(student?.progress?.topicsProgress || {}).map(
+                              ([topicId, progress]) => {
+                                const topic = topics.find((t) => t.id === topicId);
+                                if (!topic) return null;
+                                
+                                const lessonsCompleted = progress.lessonsCompleted;
+                                const totalLessons = progress.totalLessons;
+                                const progressPercentage = 
+                                  totalLessons > 0 ? (lessonsCompleted / totalLessons) * 100 : 0;
                                 
                                 return (
-                                  <div key={courseId} className="mb-2">
+                                  <div key={topicId} className="mb-3">
                                     <div className="flex justify-between mb-1">
-                                      <span className="text-xs">{courseName}</span>
-                                      <span className="text-xs text-gray-400">
-                                        {courseProgress.lessonsCompleted}/{courseProgress.totalLessons} lessons
+                                      <span className="text-sm">{topic.title}</span>
+                                      <span className="text-sm text-gray-400">
+                                        {lessonsCompleted}/{totalLessons}
                                       </span>
                                     </div>
-                                    <Progress 
-                                      value={(courseProgress.lessonsCompleted / courseProgress.totalLessons) * 100} 
-                                      className="h-1" 
-                                    />
+                                    <Progress value={progressPercentage} className="h-2" />
                                   </div>
                                 );
-                              })
+                              }
                             )}
                           </div>
                         </div>
