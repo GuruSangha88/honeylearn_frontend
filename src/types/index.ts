@@ -6,25 +6,17 @@ export interface Topic {
   title: string;
   description: string;
   imageUrl?: string;
-  courses: Course[];
+  lessons: Lesson[];
+  totalLessons?: number;
+  completedLessons?: number;
 }
 
-export interface Course {
+export interface Lesson {
   id: string;
   topicId: string;
   title: string;
   description: string;
   imageUrl?: string;
-  totalLessons: number;
-  completedLessons: number;
-  lessons: Lesson[];
-}
-
-export interface Lesson {
-  id: string;
-  courseId: string;
-  title: string;
-  description: string;
   duration: number; // in seconds
   completed: boolean;
   sections: LessonSection[];
@@ -74,13 +66,9 @@ export interface DailyGoal {
 export interface StudentProgress {
   topicsProgress: {
     [topicId: string]: {
-      coursesProgress: {
-        [courseId: string]: {
-          lessonsCompleted: number;
-          totalLessons: number;
-          lastAccessedLessonId?: string;
-        };
-      };
+      lessonsCompleted: number;
+      totalLessons: number;
+      lastAccessedLessonId?: string;
     };
   };
 }

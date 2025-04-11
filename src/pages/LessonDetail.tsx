@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,7 @@ const LessonDetail = () => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentSection, setCurrentSection] = useState<LessonSection | null>(null);
   const [activeContent, setActiveContent] = useState<ContentItem[]>([]);
-  const [courseTitle, setCourseTitle] = useState('');
+  const [topicTitle, setTopicTitle] = useState('');
   const [lessonTitle, setLessonTitle] = useState('');
   const [lesson, setLesson] = useState<any>(null);
   const [customAudioUrl, setCustomAudioUrl] = useState<string | null>(null);
@@ -24,24 +25,21 @@ const LessonDetail = () => {
   
   useEffect(() => {
     let foundLesson = null;
-    let foundCourseTitle = '';
+    let foundTopicTitle = '';
     let foundLessonTitle = '';
     
     for (const topic of mockTopics) {
-      for (const course of topic.courses) {
-        const found = course.lessons.find((l) => l.id === lessonId);
-        if (found) {
-          foundLesson = found;
-          foundCourseTitle = course.title;
-          foundLessonTitle = found.title;
-          break;
-        }
+      const found = topic.lessons.find((l) => l.id === lessonId);
+      if (found) {
+        foundLesson = found;
+        foundTopicTitle = topic.title;
+        foundLessonTitle = found.title;
+        break;
       }
-      if (foundLesson) break;
     }
     
     setLesson(foundLesson);
-    setCourseTitle(foundCourseTitle);
+    setTopicTitle(foundTopicTitle);
     setLessonTitle(foundLessonTitle);
   }, [lessonId]);
   
@@ -180,6 +178,7 @@ const LessonDetail = () => {
         <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
         <div className="mb-6">
           <h1 className="text-2xl font-semibold gradient-text">{lessonTitle}</h1>
+          <p className="text-sm text-gray-400">From: {topicTitle}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="glass-card p-6 flex flex-col items-center justify-center">

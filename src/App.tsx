@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Curriculum from "./pages/Curriculum";
 import TopicDetail from "./pages/TopicDetail";
-import CourseDetail from "./pages/CourseDetail";
 import LessonDetail from "./pages/LessonDetail";
 import ParentDashboard from "./pages/ParentDashboard";
 import NotFound from "./pages/NotFound";
@@ -28,7 +27,6 @@ const App = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/curriculum" element={<Curriculum />} />
             <Route path="/topic/:topicId" element={<TopicDetail />} />
-            <Route path="/course/:courseId" element={<CourseDetail />} />
             <Route path="/lesson/:lessonId" element={<LessonDetail />} />
             <Route path="/parents" element={<ParentDashboard />} />
             <Route path="*" element={<NotFound />} />

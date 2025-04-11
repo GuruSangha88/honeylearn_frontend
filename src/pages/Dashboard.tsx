@@ -18,6 +18,23 @@ const Dashboard = () => {
     ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
     : 0;
 
+  // Find the last accessed lesson
+  const lastAccessedLesson = Object.entries(currentStudent.progress.topicsProgress)
+    .reduce((found, [topicId, topicProgress]) => {
+      if (found) return found;
+      
+      if (topicProgress.lastAccessedLessonId) {
+        const topic = mockTopics.find(t => t.id === topicId);
+        if (topic) {
+          const lesson = topic.lessons.find(l => l.id === topicProgress.lastAccessedLessonId);
+          if (lesson) {
+            return { topic, lesson };
+          }
+        }
+      }
+      return null;
+    }, null as { topic: any; lesson: any } | null);
+
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
@@ -66,37 +83,40 @@ const Dashboard = () => {
         </div>
         
         {/* Continue Learning */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <BookOpen className="text-tutor-purple" size={20} />
-              Continue Learning
-            </h2>
-            <Button 
-              variant="link" 
-              size="sm" 
-              className="text-tutor-purple"
-              onClick={() => navigate('/curriculum')}
-            >
-              See All
-            </Button>
-          </div>
-          <div className="glass-card p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-lg">Multiplication Fundamentals</h3>
-                <p className="text-sm text-gray-400">Learn how to multiply numbers</p>
-              </div>
+        {lastAccessedLesson && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <BookOpen className="text-tutor-purple" size={20} />
+                Continue Learning
+              </h2>
               <Button 
+                variant="link" 
                 size="sm" 
-                className="bg-tutor-purple hover:bg-tutor-dark-purple"
-                onClick={() => navigate('/lesson/1003')}
+                className="text-tutor-purple"
+                onClick={() => navigate('/curriculum')}
               >
-                Continue
+                See All
               </Button>
             </div>
+            <div className="glass-card p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-lg">{lastAccessedLesson.lesson.title}</h3>
+                  <p className="text-sm text-gray-400">{lastAccessedLesson.lesson.description}</p>
+                  <p className="text-xs text-tutor-purple mt-1">From: {lastAccessedLesson.topic.title}</p>
+                </div>
+                <Button 
+                  size="sm" 
+                  className="bg-tutor-purple hover:bg-tutor-dark-purple"
+                  onClick={() => navigate(`/lesson/${lastAccessedLesson.lesson.id}`)}
+                >
+                  Continue
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
         
         {/* Goal Tracker */}
         <GoalTracker dailyGoals={currentStudent.dailyGoals} />

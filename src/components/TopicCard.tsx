@@ -10,9 +10,9 @@ interface TopicCardProps {
 const TopicCard = ({ topic }: TopicCardProps) => {
   const navigate = useNavigate();
   
-  // Calculate total lessons and completed lessons across all courses
-  const totalLessons = topic.courses.reduce((sum, course) => sum + course.totalLessons, 0);
-  const completedLessons = topic.courses.reduce((sum, course) => sum + course.completedLessons, 0);
+  // Calculate total lessons and completed lessons
+  const totalLessons = topic.totalLessons || topic.lessons.length;
+  const completedLessons = topic.completedLessons || topic.lessons.filter(lesson => lesson.completed).length;
   
   // Calculate progress percentage
   const progress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
@@ -27,7 +27,7 @@ const TopicCard = ({ topic }: TopicCardProps) => {
           <h2 className="font-semibold text-xl mb-1">{topic.title}</h2>
           <p className="text-sm text-gray-400">{topic.description}</p>
           <p className="text-xs mt-3 text-tutor-purple">
-            {topic.courses.length} courses • {completedLessons}/{totalLessons} lessons completed
+            {completedLessons}/{totalLessons} lessons completed
           </p>
         </div>
         <div className="flex flex-col items-center gap-2">

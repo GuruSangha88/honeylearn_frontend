@@ -1,3 +1,4 @@
+
 import { Topic, Student, Parent } from '../types';
 
 export const mockTopics: Topic[] = [
@@ -6,143 +7,125 @@ export const mockTopics: Topic[] = [
     title: 'Mathematics',
     description: 'Learn foundational math concepts',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
-    courses: [
+    totalLessons: 7,
+    completedLessons: 2,
+    lessons: [
       {
-        id: '101',
+        id: '1001',
         topicId: '1',
-        title: 'Basic Arithmetic',
-        description: 'Addition, subtraction, multiplication, and division',
-        totalLessons: 4,
-        completedLessons: 2,
-        lessons: [
+        title: 'Introduction to Addition',
+        description: 'Learn the basics of adding numbers',
+        duration: 600, // 10 minutes
+        completed: true,
+        sections: [
           {
-            id: '1001',
-            courseId: '101',
-            title: 'Introduction to Addition',
-            description: 'Learn the basics of adding numbers',
-            duration: 600, // 10 minutes
+            id: '10001',
+            title: 'What is Addition?',
+            audioUrl: '/audio/math/addition/intro.mp3',
             completed: true,
-            sections: [
+            durationInSeconds: 120,
+            content: [
               {
-                id: '10001',
-                title: 'What is Addition?',
-                audioUrl: '/audio/math/addition/intro.mp3',
-                completed: true,
-                durationInSeconds: 120,
-                content: [
-                  {
-                    id: '100001',
-                    type: 'image',
-                    timing: 30,
-                    data: {
-                      url: '/images/math/addition_1.png',
-                      alt: 'Addition example'
-                    }
-                  }
-                ]
-              },
-              {
-                id: '10002',
-                title: 'Adding Single Digits',
-                audioUrl: '/audio/math/addition/single_digits.mp3',
-                completed: true,
-                durationInSeconds: 180,
-                content: [
-                  {
-                    id: '100002',
-                    type: 'quiz',
-                    timing: 60,
-                    data: {
-                      question: 'What is 3 + 4?',
-                      options: ['5', '6', '7', '8'],
-                      correctAnswerIndex: 2
-                    }
-                  }
-                ]
+                id: '100001',
+                type: 'image',
+                timing: 30,
+                data: {
+                  url: '/images/math/addition_1.png',
+                  alt: 'Addition example'
+                }
               }
             ]
           },
           {
-            id: '1002',
-            courseId: '101',
-            title: 'Subtraction Basics',
-            description: 'Master the fundamentals of subtraction',
-            duration: 720, // 12 minutes
+            id: '10002',
+            title: 'Adding Single Digits',
+            audioUrl: '/audio/math/addition/single_digits.mp3',
             completed: true,
-            sections: [
+            durationInSeconds: 180,
+            content: [
               {
-                id: '10003',
-                title: 'Understanding Subtraction',
-                audioUrl: '/audio/math/subtraction/intro.mp3',
-                completed: true,
-                durationInSeconds: 150,
-                content: []
-              }
-            ]
-          },
-          {
-            id: '1003',
-            courseId: '101',
-            title: 'Multiplication Fundamentals',
-            description: 'Learn how to multiply numbers',
-            duration: 840, // 14 minutes
-            completed: false,
-            sections: [
-              {
-                id: '10004',
-                title: 'What is Multiplication?',
-                audioUrl: '/audio/math/multiplication/intro.mp3',
-                completed: false,
-                durationInSeconds: 180,
-                content: []
-              }
-            ]
-          },
-          {
-            id: '1004',
-            courseId: '101',
-            title: 'Division Made Easy',
-            description: 'Understand division step by step',
-            duration: 900, // 15 minutes
-            completed: false,
-            sections: [
-              {
-                id: '10005',
-                title: 'Introduction to Division',
-                audioUrl: '/audio/math/division/intro.mp3',
-                completed: false,
-                durationInSeconds: 200,
-                content: []
+                id: '100002',
+                type: 'quiz',
+                timing: 60,
+                data: {
+                  question: 'What is 3 + 4?',
+                  options: ['5', '6', '7', '8'],
+                  correctAnswerIndex: 2
+                }
               }
             ]
           }
         ]
       },
       {
-        id: '102',
+        id: '1002',
         topicId: '1',
-        title: 'Geometry',
-        description: 'Explore shapes and spatial relationships',
-        totalLessons: 3,
-        completedLessons: 0,
-        lessons: [
+        title: 'Subtraction Basics',
+        description: 'Master the fundamentals of subtraction',
+        duration: 720, // 12 minutes
+        completed: true,
+        sections: [
           {
-            id: '1005',
-            courseId: '102',
-            title: 'Introduction to Shapes',
-            description: 'Learn about basic geometric shapes',
-            duration: 600,
+            id: '10003',
+            title: 'Understanding Subtraction',
+            audioUrl: '/audio/math/subtraction/intro.mp3',
+            completed: true,
+            durationInSeconds: 150,
+            content: []
+          }
+        ]
+      },
+      {
+        id: '1003',
+        topicId: '1',
+        title: 'Multiplication Fundamentals',
+        description: 'Learn how to multiply numbers',
+        duration: 840, // 14 minutes
+        completed: false,
+        sections: [
+          {
+            id: '10004',
+            title: 'What is Multiplication?',
+            audioUrl: '/audio/math/multiplication/intro.mp3',
             completed: false,
-            sections: [
-              {
-                id: '10006',
-                title: 'Basic Shapes',
-                audioUrl: '/audio/geometry/shapes/intro.mp3',
-                completed: false,
-                durationInSeconds: 180,
-                content: []
-              }
-            ]
+            durationInSeconds: 180,
+            content: []
+          }
+        ]
+      },
+      {
+        id: '1004',
+        topicId: '1',
+        title: 'Division Made Easy',
+        description: 'Understand division step by step',
+        duration: 900, // 15 minutes
+        completed: false,
+        sections: [
+          {
+            id: '10005',
+            title: 'Introduction to Division',
+            audioUrl: '/audio/math/division/intro.mp3',
+            completed: false,
+            durationInSeconds: 200,
+            content: []
+          }
+        ]
+      },
+      {
+        id: '1005',
+        topicId: '1',
+        title: 'Introduction to Shapes',
+        description: 'Learn about basic geometric shapes',
+        duration: 600,
+        completed: false,
+        sections: [
+          {
+            id: '10006',
+            title: 'Basic Shapes',
+            audioUrl: '/audio/geometry/shapes/intro.mp3',
+            completed: false,
+            durationInSeconds: 180,
+            content: []
           }
         ]
       }
@@ -153,32 +136,24 @@ export const mockTopics: Topic[] = [
     title: 'Language Arts',
     description: 'Develop reading and writing skills',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
-    courses: [
+    totalLessons: 5,
+    completedLessons: 1,
+    lessons: [
       {
-        id: '201',
+        id: '2001',
         topicId: '2',
-        title: 'Phonics',
-        description: 'Learn letter sounds and word formation',
-        totalLessons: 5,
-        completedLessons: 1,
-        lessons: [
+        title: 'Letter Sounds',
+        description: 'Learn the sounds of each letter',
+        duration: 540,
+        completed: true,
+        sections: [
           {
-            id: '2001',
-            courseId: '201',
-            title: 'Letter Sounds',
-            description: 'Learn the sounds of each letter',
-            duration: 540,
+            id: '20001',
+            title: 'Vowel Sounds',
+            audioUrl: '/audio/language/phonics/vowels.mp3',
             completed: true,
-            sections: [
-              {
-                id: '20001',
-                title: 'Vowel Sounds',
-                audioUrl: '/audio/language/phonics/vowels.mp3',
-                completed: true,
-                durationInSeconds: 160,
-                content: []
-              }
-            ]
+            durationInSeconds: 160,
+            content: []
           }
         ]
       }
@@ -189,32 +164,24 @@ export const mockTopics: Topic[] = [
     title: 'Science',
     description: 'Explore the natural world and scientific concepts',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
-    courses: [
+    totalLessons: 4,
+    completedLessons: 0,
+    lessons: [
       {
-        id: '301',
+        id: '3001',
         topicId: '3',
-        title: 'Biology Basics',
-        description: 'Introduction to living organisms',
-        totalLessons: 4,
-        completedLessons: 0,
-        lessons: [
+        title: 'Plants and Animals',
+        description: 'Learn about different living things',
+        duration: 660,
+        completed: false,
+        sections: [
           {
-            id: '3001',
-            courseId: '301',
-            title: 'Plants and Animals',
-            description: 'Learn about different living things',
-            duration: 660,
+            id: '30001',
+            title: 'What Are Living Things?',
+            audioUrl: '/audio/science/biology/living_things.mp3',
             completed: false,
-            sections: [
-              {
-                id: '30001',
-                title: 'What Are Living Things?',
-                audioUrl: '/audio/science/biology/living_things.mp3',
-                completed: false,
-                durationInSeconds: 200,
-                content: []
-              }
-            ]
+            durationInSeconds: 200,
+            content: []
           }
         ]
       }
@@ -225,139 +192,131 @@ export const mockTopics: Topic[] = [
     title: 'Money Explorers',
     description: 'Learn about money, work, and economics for kids',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
-    courses: [
+    totalLessons: 3,
+    completedLessons: 0,
+    lessons: [
       {
-        id: '401',
+        id: '4001',
         topicId: '4',
-        title: 'Introduction to Money',
-        description: 'Learn the basics of money and how it works',
-        totalLessons: 3,
-        completedLessons: 0,
-        lessons: [
+        title: 'What Is Work?',
+        description: 'Understanding jobs, work, and earning money',
+        duration: 720, // 12 minutes
+        completed: false,
+        sections: [
           {
-            id: '4001',
-            courseId: '401',
-            title: 'What Is Work?',
-            description: 'Understanding jobs, work, and earning money',
-            duration: 720, // 12 minutes
+            id: '40001',
+            title: 'Introduction to Work',
+            audioUrl: '/audio/money/work/intro.mp3',
             completed: false,
-            sections: [
+            durationInSeconds: 180,
+            content: [
               {
-                id: '40001',
-                title: 'Introduction to Work',
-                audioUrl: '/audio/money/work/intro.mp3',
-                completed: false,
-                durationInSeconds: 180,
-                content: [
-                  {
-                    id: '400001',
-                    type: 'image',
-                    timing: 10,
-                    data: {
-                      url: '/images/money/work_intro.png',
-                      alt: 'People working at different jobs'
-                    }
-                  },
-                  {
-                    id: '400002',
-                    type: 'text',
-                    timing: 60,
-                    data: {
-                      text: "Work is how people use their skills to help others and earn money. Everyone has different talents they can share!"
-                    }
-                  },
-                  {
-                    id: '400003',
-                    type: 'quiz',
-                    timing: 120,
-                    data: {
-                      question: 'Why do people work?',
-                      options: [
-                        'To have fun only', 
-                        'To earn money and help others', 
-                        'Because they have to', 
-                        'To get toys'
-                      ],
-                      correctAnswerIndex: 1
-                    }
-                  }
-                ]
+                id: '400001',
+                type: 'image',
+                timing: 10,
+                data: {
+                  url: '/images/money/work_intro.png',
+                  alt: 'People working at different jobs'
+                }
               },
               {
-                id: '40002',
-                title: 'Different Types of Jobs',
-                audioUrl: '/audio/money/work/job_types.mp3',
-                completed: false,
-                durationInSeconds: 240,
-                content: [
-                  {
-                    id: '400004',
-                    type: 'image',
-                    timing: 30,
-                    data: {
-                      url: '/images/money/job_types.png',
-                      alt: 'Different types of jobs'
-                    }
-                  },
-                  {
-                    id: '400005',
-                    type: 'text',
-                    timing: 90,
-                    data: {
-                      text: "There are many different jobs! Doctors help sick people. Teachers help students learn. Farmers grow food. Artists make beautiful things. What job sounds interesting to you?"
-                    }
-                  },
-                  {
-                    id: '400006',
-                    type: 'question',
-                    timing: 180,
-                    data: {
-                      question: "What job would you like to have when you grow up?",
-                      responseType: "open"
-                    }
-                  }
-                ]
+                id: '400002',
+                type: 'text',
+                timing: 60,
+                data: {
+                  text: "Work is how people use their skills to help others and earn money. Everyone has different talents they can share!"
+                }
               },
               {
-                id: '40003',
-                title: 'Earning and Saving',
-                audioUrl: '/audio/money/work/earning.mp3',
-                completed: false,
-                durationInSeconds: 210,
-                content: [
-                  {
-                    id: '400007',
-                    type: 'text',
-                    timing: 30,
-                    data: {
-                      text: "When people work, they earn money. They can use this money to buy things they need, like food and clothes. They can also save some money for later."
-                    }
-                  },
-                  {
-                    id: '400008',
-                    type: 'image',
-                    timing: 120,
-                    data: {
-                      url: '/images/money/piggy_bank.png',
-                      alt: 'Child putting coins in a piggy bank'
-                    }
-                  },
-                  {
-                    id: '400009',
-                    type: 'quiz',
-                    timing: 180,
-                    data: {
-                      question: 'What can you do with money you earn?',
-                      options: [
-                        'Only spend it right away', 
-                        'Only save it forever', 
-                        'Spend some and save some', 
-                        'Give it all away'
-                      ],
-                      correctAnswerIndex: 2
-                    }
-                  }
-                ]
+                id: '400003',
+                type: 'quiz',
+                timing: 120,
+                data: {
+                  question: 'Why do people work?',
+                  options: [
+                    'To have fun only', 
+                    'To earn money and help others', 
+                    'Because they have to', 
+                    'To get toys'
+                  ],
+                  correctAnswerIndex: 1
+                }
+              }
+            ]
+          },
+          {
+            id: '40002',
+            title: 'Different Types of Jobs',
+            audioUrl: '/audio/money/work/job_types.mp3',
+            completed: false,
+            durationInSeconds: 240,
+            content: [
+              {
+                id: '400004',
+                type: 'image',
+                timing: 30,
+                data: {
+                  url: '/images/money/job_types.png',
+                  alt: 'Different types of jobs'
+                }
+              },
+              {
+                id: '400005',
+                type: 'text',
+                timing: 90,
+                data: {
+                  text: "There are many different jobs! Doctors help sick people. Teachers help students learn. Farmers grow food. Artists make beautiful things. What job sounds interesting to you?"
+                }
+              },
+              {
+                id: '400006',
+                type: 'question',
+                timing: 180,
+                data: {
+                  question: "What job would you like to have when you grow up?",
+                  responseType: "open"
+                }
+              }
+            ]
+          },
+          {
+            id: '40003',
+            title: 'Earning and Saving',
+            audioUrl: '/audio/money/work/earning.mp3',
+            completed: false,
+            durationInSeconds: 210,
+            content: [
+              {
+                id: '400007',
+                type: 'text',
+                timing: 30,
+                data: {
+                  text: "When people work, they earn money. They can use this money to buy things they need, like food and clothes. They can also save some money for later."
+                }
+              },
+              {
+                id: '400008',
+                type: 'image',
+                timing: 120,
+                data: {
+                  url: '/images/money/piggy_bank.png',
+                  alt: 'Child putting coins in a piggy bank'
+                }
+              },
+              {
+                id: '400009',
+                type: 'quiz',
+                timing: 180,
+                data: {
+                  question: 'What can you do with money you earn?',
+                  options: [
+                    'Only spend it right away', 
+                    'Only save it forever', 
+                    'Spend some and save some', 
+                    'Give it all away'
+                  ],
+                  correctAnswerIndex: 2
+                }
               }
             ]
           }
@@ -414,22 +373,14 @@ export const mockStudents: Student[] = [
     progress: {
       topicsProgress: {
         '1': {
-          coursesProgress: {
-            '101': {
-              lessonsCompleted: 2,
-              totalLessons: 4,
-              lastAccessedLessonId: '1003'
-            }
-          }
+          lessonsCompleted: 2,
+          totalLessons: 5,
+          lastAccessedLessonId: '1003'
         },
         '2': {
-          coursesProgress: {
-            '201': {
-              lessonsCompleted: 1,
-              totalLessons: 5,
-              lastAccessedLessonId: '2001'
-            }
-          }
+          lessonsCompleted: 1,
+          totalLessons: 5,
+          lastAccessedLessonId: '2001'
         }
       }
     }
@@ -460,13 +411,9 @@ export const mockStudents: Student[] = [
     progress: {
       topicsProgress: {
         '1': {
-          coursesProgress: {
-            '101': {
-              lessonsCompleted: 1,
-              totalLessons: 4,
-              lastAccessedLessonId: '1002'
-            }
-          }
+          lessonsCompleted: 1,
+          totalLessons: 5,
+          lastAccessedLessonId: '1002'
         }
       }
     }
