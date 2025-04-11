@@ -22,7 +22,6 @@ const LessonDetail = () => {
   
   const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
   const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const highFiveTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     let foundLesson = null;
@@ -61,34 +60,10 @@ const LessonDetail = () => {
         };
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
-
-        // Add high five gif after 41 seconds
-        if (highFiveTimerRef.current) {
-          clearTimeout(highFiveTimerRef.current);
-        }
-        
-        highFiveTimerRef.current = setTimeout(() => {
-          setActiveContent([{
-            id: 'high-five-gif',
-            type: 'image',
-            data: {
-              type: 'image',
-              url: 'https://hlearn.b-cdn.net/what%20is%20work/high%20five.gif',
-              alt: 'High Five'
-            },
-            timing: 41
-          }]);
-        }, 41000); // 41 seconds
       } else {
         setActiveContent([]);
       }
     }
-    
-    return () => {
-      if (highFiveTimerRef.current) {
-        clearTimeout(highFiveTimerRef.current);
-      }
-    };
   }, [lesson, currentSectionIndex, lessonId]);
   
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
@@ -107,7 +82,7 @@ const LessonDetail = () => {
         setActiveContent(prev => [...prev, ...contentToShow]);
       }
       
-      // For the specific lesson, replace with high five gif at 41 seconds
+      // For the specific lesson, replace with high five gif at 41 seconds of actual playback time
       if (lessonId === '4001' && currentSectionIndex === 0 && currentTime >= 41 && 
           !activeContent.some(item => item.id === 'high-five-gif')) {
         setActiveContent([{
@@ -132,9 +107,6 @@ const LessonDetail = () => {
       if (secondGifTimerRef.current) {
         clearTimeout(secondGifTimerRef.current);
       }
-      if (highFiveTimerRef.current) {
-        clearTimeout(highFiveTimerRef.current);
-      }
     };
   }, []);
   
@@ -158,9 +130,6 @@ const LessonDetail = () => {
       }
       if (secondGifTimerRef.current) {
         clearTimeout(secondGifTimerRef.current);
-      }
-      if (highFiveTimerRef.current) {
-        clearTimeout(highFiveTimerRef.current);
       }
       
       gifTimerRef.current = setTimeout(() => {
