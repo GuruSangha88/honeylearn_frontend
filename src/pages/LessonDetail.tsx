@@ -21,6 +21,7 @@ const LessonDetail = () => {
   const [isSecondPartPlayed, setIsSecondPartPlayed] = useState(false);
   const [secondPartFinished, setSecondPartFinished] = useState(false);
   const [isThirdPartPlayed, setIsThirdPartPlayed] = useState(false);
+  const [thirdPartFinished, setThirdPartFinished] = useState(false);
   const [videoCompleted, setVideoCompleted] = useState(false);
   const [quizDisplayed, setQuizDisplayed] = useState(false);
   const [isQuizAnswered, setIsQuizAnswered] = useState(false);
@@ -53,6 +54,7 @@ const LessonDetail = () => {
     setIsSecondPartPlayed(false);
     setSecondPartFinished(false);
     setIsThirdPartPlayed(false);
+    setThirdPartFinished(false);
     setVideoCompleted(false);
     setQuizDisplayed(false);
     setIsQuizAnswered(false);
@@ -81,6 +83,7 @@ const LessonDetail = () => {
         setIsSecondPartPlayed(false);
         setSecondPartFinished(false);
         setIsThirdPartPlayed(false);
+        setThirdPartFinished(false);
         setVideoCompleted(false);
         setQuizDisplayed(false);
       } else if (lessonId === '4001' && currentSectionIndex === 0) {
@@ -109,13 +112,15 @@ const LessonDetail = () => {
   
   useEffect(() => {
     if (isSecondPartPlayed && !secondPartFinished) {
-      setProgressPercentage(50);
-    } else if (secondPartFinished && isThirdPartPlayed && videoCompleted && !quizDisplayed) {
+      setProgressPercentage(40);
+    } else if (secondPartFinished && isThirdPartPlayed && !thirdPartFinished) {
+      setProgressPercentage(60);
+    } else if (thirdPartFinished && videoCompleted && !quizDisplayed) {
       setProgressPercentage(75);
     } else if (lessonCompleted) {
       setProgressPercentage(100);
     }
-  }, [isSecondPartPlayed, secondPartFinished, isThirdPartPlayed, videoCompleted, quizDisplayed, lessonCompleted]);
+  }, [isSecondPartPlayed, secondPartFinished, isThirdPartPlayed, thirdPartFinished, videoCompleted, quizDisplayed, lessonCompleted]);
   
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
   const dailyGoalPercentage = lessonCompleted ? 100 : (
@@ -141,9 +146,11 @@ const LessonDetail = () => {
     return () => {
       if (gifTimerRef.current) {
         clearTimeout(gifTimerRef.current);
+        gifTimerRef.current = null;
       }
       if (secondGifTimerRef.current) {
         clearTimeout(secondGifTimerRef.current);
+        secondGifTimerRef.current = null;
       }
     };
   }, []);
@@ -370,9 +377,23 @@ const LessonDetail = () => {
           }, 6000);
         }, 6000);
       } else if (isSecondPartPlayed && !secondPartFinished) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/letswatch.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney3.mp3');
         setSecondPartFinished(true);
         setIsThirdPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'banana-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/banana.gif',
+            alt: 'Banana and Money'
+          },
+          timing: 0
+        }]);
+      } else if (isThirdPartPlayed && !thirdPartFinished) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/letswatch.mp3');
+        setThirdPartFinished(true);
         
         setActiveContent([{
           id: 'money-video',
@@ -455,7 +476,7 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}-${isThirdPartPlayed}-${isQuizAnswered}-${isAnswerCorrect}-${lessonCompleted}`}
+              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}-${isThirdPartPlayed}-${thirdPartFinished}-${isQuizAnswered}-${isAnswerCorrect}-${lessonCompleted}`}
             />
           </div>
           <div className="h-[500px]">
