@@ -65,25 +65,7 @@ const LessonDetail = () => {
     if (lesson && lesson.sections.length > 0) {
       setCurrentSection(lesson.sections[currentSectionIndex]);
       
-      if (lessonId === '4001' && currentSectionIndex === 0) {
-        const initialImage: ContentItem = {
-          id: 'intro-image',
-          type: 'image',
-          data: {
-            type: 'image',
-            url: 'https://hlearn.b-cdn.net/what%20is%20work/whatswork.png',
-            alt: 'What Is Work?'
-          },
-          timing: 0
-        };
-        setActiveContent([initialImage]);
-        setCustomAudioUrl('https://hlearn.b-cdn.net/intro.mp3');
-        setIsSecondPartPlayed(false);
-        setSecondPartFinished(false);
-        setIsThirdPartPlayed(false);
-        setVideoCompleted(false);
-        setQuizDisplayed(false);
-      } else if (lessonId === '4002' && currentSectionIndex === 0) {
+      if (lessonId === '4002' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'money-intro-image',
           type: 'image',
@@ -327,8 +309,8 @@ const LessonDetail = () => {
           type: 'image',
           data: {
             type: 'image',
-            url: 'https://hlearn.b-cdn.net/what%20is%20money/coins.gif',
-            alt: 'Coins and Money'
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/catmoney.gif',
+            alt: 'Cat and Money'
           },
           timing: 0
         }]);
