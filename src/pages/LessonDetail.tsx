@@ -468,16 +468,16 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (isThirdPartPlayed && !thirdPartFinished) {
-        setThirdPartFinished(true);
-        setVideoCompleted(true);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds4.mp3');
+        setIsThirdPartPlayed(true);
         
         setActiveContent([{
-          id: 'wants-image',
+          id: 'wants-need-wantit-image',
           type: 'image',
           data: {
             type: 'image',
-            url: 'https://images.unsplash.com/photo-1472396961693-142e6e269027',
-            alt: 'Toys - something we want'
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/wantit.gif',
+            alt: 'Wanting something'
           },
           timing: 0
         }]);
