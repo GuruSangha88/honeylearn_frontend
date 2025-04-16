@@ -306,19 +306,18 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (isThirdPartPlayed && !thirdPartFinished) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/letswatch.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney4.mp3');
         setThirdPartFinished(true);
         
         setActiveContent([{
-          id: 'money-video',
-          type: 'video',
+          id: 'cookie-image',
+          type: 'image',
           data: {
-            type: 'video',
-            url: 'https://hlearn.b-cdn.net/what%20is%20money/whatismoney.mp4',
-            alt: 'What Is Money Video'
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/cookie.gif',
+            alt: 'Cookie and Money'
           },
-          timing: 0,
-          onComplete: handleVideoComplete
+          timing: 0
         }]);
       } else if (lessonCompleted) {
         if (lesson && lesson.nextLessonId) {
