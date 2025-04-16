@@ -29,9 +29,6 @@ const LessonDetail = () => {
   const [lessonCompleted, setLessonCompleted] = useState(false);
   const [progressPercentage, setProgressPercentage] = useState(0);
   
-  const gifTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const secondGifTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
   useEffect(() => {
     let foundLesson = null;
     let foundTopicTitle = '';
@@ -142,19 +139,6 @@ const LessonDetail = () => {
     }
   };
   
-  useEffect(() => {
-    return () => {
-      if (gifTimerRef.current) {
-        clearTimeout(gifTimerRef.current);
-        gifTimerRef.current = null;
-      }
-      if (secondGifTimerRef.current) {
-        clearTimeout(secondGifTimerRef.current);
-        secondGifTimerRef.current = null;
-      }
-    };
-  }, []);
-  
   const handleVideoComplete = () => {
     setVideoCompleted(true);
     console.log("Video has been completely watched!");
@@ -260,41 +244,6 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
-        
-        if (gifTimerRef.current) {
-          clearTimeout(gifTimerRef.current);
-          gifTimerRef.current = null;
-        }
-        if (secondGifTimerRef.current) {
-          clearTimeout(secondGifTimerRef.current);
-          secondGifTimerRef.current = null;
-        }
-        
-        gifTimerRef.current = setTimeout(() => {
-          setActiveContent([{
-            id: 'fixing-gif',
-            type: 'image',
-            data: {
-              type: 'image',
-              url: 'https://hlearn.b-cdn.net/what%20is%20work/fixing.gif',
-              alt: 'People Fixing Things'
-            },
-            timing: 0
-          }]);
-          
-          secondGifTimerRef.current = setTimeout(() => {
-            setActiveContent([{
-              id: 'reward-gif',
-              type: 'image',
-              data: {
-                type: 'image',
-                url: 'https://hlearn.b-cdn.net/what%20is%20work/reward.gif',
-                alt: 'People Getting Rewards for Work'
-              },
-              timing: 0
-            }]);
-          }, 6000);
-        }, 6000);
       } else if (isSecondPartPlayed && !secondPartFinished) {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/letswatch.mp3');
         setSecondPartFinished(true);
@@ -341,41 +290,6 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
-        
-        if (gifTimerRef.current) {
-          clearTimeout(gifTimerRef.current);
-          gifTimerRef.current = null;
-        }
-        if (secondGifTimerRef.current) {
-          clearTimeout(secondGifTimerRef.current);
-          secondGifTimerRef.current = null;
-        }
-        
-        gifTimerRef.current = setTimeout(() => {
-          setActiveContent([{
-            id: 'buying-gif',
-            type: 'image',
-            data: {
-              type: 'image',
-              url: 'https://hlearn.b-cdn.net/what%20is%20money/buying.gif',
-              alt: 'Buying with Money'
-            },
-            timing: 0
-          }]);
-          
-          secondGifTimerRef.current = setTimeout(() => {
-            setActiveContent([{
-              id: 'saving-gif',
-              type: 'image',
-              data: {
-                type: 'image',
-                url: 'https://hlearn.b-cdn.net/what%20is%20money/saving.gif',
-                alt: 'Saving Money'
-              },
-              timing: 0
-            }]);
-          }, 6000);
-        }, 6000);
       } else if (isSecondPartPlayed && !secondPartFinished) {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney3.mp3');
         setSecondPartFinished(true);
