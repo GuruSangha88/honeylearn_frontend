@@ -256,9 +256,11 @@ const LessonDetail = () => {
         
         if (gifTimerRef.current) {
           clearTimeout(gifTimerRef.current);
+          gifTimerRef.current = null;
         }
         if (secondGifTimerRef.current) {
           clearTimeout(secondGifTimerRef.current);
+          secondGifTimerRef.current = null;
         }
         
         gifTimerRef.current = setTimeout(() => {
@@ -335,9 +337,11 @@ const LessonDetail = () => {
         
         if (gifTimerRef.current) {
           clearTimeout(gifTimerRef.current);
+          gifTimerRef.current = null;
         }
         if (secondGifTimerRef.current) {
           clearTimeout(secondGifTimerRef.current);
+          secondGifTimerRef.current = null;
         }
         
         gifTimerRef.current = setTimeout(() => {
