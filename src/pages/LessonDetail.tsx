@@ -319,9 +319,9 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
-      } else if (thirdPartFinished && !isThirdPartPlayed) {
+      } else if (thirdPartFinished && !videoCompleted) {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney5.mp3');
-        setIsThirdPartPlayed(true);
+        setVideoCompleted(true);
         
         setActiveContent([{
           id: 'credit-card-image',
