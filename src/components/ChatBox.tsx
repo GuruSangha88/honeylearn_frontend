@@ -128,7 +128,7 @@ const ChatBox = ({
         } else if (message.content.type === 'video') {
           return (
             <div className="flex items-center justify-center w-full h-full">
-              <video ref={videoRef} src={message.content.url} controls className="rounded-lg max-h-60 w-full" onEnded={handleVideoEnded} />
+              <video ref={videoRef} src={message.content.url} controls className="rounded-lg max-h-60 w-full object-contain" onEnded={handleVideoEnded} />
             </div>
           );
         }

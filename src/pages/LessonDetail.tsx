@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -51,7 +50,6 @@ const LessonDetail = () => {
     setTopicTitle(foundTopicTitle);
     setLessonTitle(foundLessonTitle);
     
-    // Reset states when lesson changes
     setIsSecondPartPlayed(false);
     setSecondPartFinished(false);
     setIsThirdPartPlayed(false);
@@ -60,7 +58,7 @@ const LessonDetail = () => {
     setIsQuizAnswered(false);
     setIsAnswerCorrect(false);
     setLessonCompleted(false);
-    setProgressPercentage(25); // Start with 25% progress
+    setProgressPercentage(25);
   }, [lessonId]);
   
   useEffect(() => {
@@ -85,13 +83,30 @@ const LessonDetail = () => {
         setIsThirdPartPlayed(false);
         setVideoCompleted(false);
         setQuizDisplayed(false);
+      } else if (lessonId === '4002' && currentSectionIndex === 0) {
+        const initialImage: ContentItem = {
+          id: 'money-intro-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/money.gif',
+            alt: 'What Is Money?'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney1.mp3');
+        setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
+        setQuizDisplayed(false);
       } else {
         setActiveContent([]);
       }
     }
   }, [lesson, currentSectionIndex, lessonId]);
   
-  // Update student's progress
   useEffect(() => {
     if (isSecondPartPlayed && !secondPartFinished) {
       setProgressPercentage(50);
@@ -137,11 +152,9 @@ const LessonDetail = () => {
     setVideoCompleted(true);
     console.log("Video has been completely watched!");
     
-    // After video completes, play the fourth audio and show quiz
     if (lessonId === '4001') {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio5.mp3');
       
-      // Display quiz after a short delay
       setTimeout(() => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
@@ -158,6 +171,25 @@ const LessonDetail = () => {
           timing: 0
         }]);
       }, 1000);
+    } else if (lessonId === '4002') {
+      setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/quiz_intro.mp3');
+      
+      setTimeout(() => {
+        setQuizDisplayed(true);
+        setActiveContent(prev => [...prev, {
+          id: 'money-quiz',
+          type: 'quiz',
+          data: {
+            question: "Why do we need money?",
+            options: [
+              { text: "To buy things we need and want", color: "blue" },
+              { text: "Only to make paper airplanes", color: "pink" }
+            ],
+            correctOptionIndex: 0
+          },
+          timing: 0
+        }]);
+      }, 1000);
     }
   };
   
@@ -166,25 +198,32 @@ const LessonDetail = () => {
     setIsAnswerCorrect(isCorrect);
     
     if (isCorrect) {
-      // Play success audio
-      setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/welldone.mp3');
+      if (lessonId === '4001') {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/welldone.mp3');
+      } else if (lessonId === '4002') {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/welldone.mp3');
+      }
       
-      // After the success audio completes, play the congratulations audio
       setTimeout(() => {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/congrats.mp3');
+        if (lessonId === '4001') {
+          setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/congrats.mp3');
+        } else if (lessonId === '4002') {
+          setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/congrats.mp3');
+        }
         setLessonCompleted(true);
-      }, 3000); // Approximate duration of the welldone.mp3
+      }, 3000);
     } else {
-      // Play try again audio
-      setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/tryagain.mp3');
+      if (lessonId === '4001') {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/tryagain.mp3');
+      } else if (lessonId === '4002') {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/tryagain.mp3');
+      }
       
-      // Reset quiz state to allow another attempt
       setTimeout(() => {
         setIsQuizAnswered(false);
         
-        // Update the quiz in activeContent to reset it
         setActiveContent(prev => prev.map(item => 
-          item.id === 'work-quiz' 
+          item.id === 'work-quiz' || item.id === 'money-quiz' 
             ? {
                 ...item, 
                 data: {
@@ -194,14 +233,13 @@ const LessonDetail = () => {
               } 
             : item
         ));
-      }, 3000); // Approximate duration of the tryagain.mp3
+      }, 3000);
     }
   };
   
   const handleSectionEnd = () => {
     if (lessonId === '4001' && currentSectionIndex === 0) {
       if (!isSecondPartPlayed) {
-        // First audio part ended, now play second part
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
         setIsSecondPartPlayed(true);
         
@@ -249,12 +287,10 @@ const LessonDetail = () => {
           }, 6000);
         }, 6000);
       } else if (isSecondPartPlayed && !secondPartFinished) {
-        // Second audio part has finished, now play the third part
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/letswatch.mp3');
         setSecondPartFinished(true);
         setIsThirdPartPlayed(true);
         
-        // Show video in the chatbox
         setActiveContent([{
           id: 'work-video',
           type: 'video',
@@ -267,11 +303,88 @@ const LessonDetail = () => {
           onComplete: handleVideoComplete
         }]);
       } else if (lessonCompleted) {
-        // Final audio has finished, navigate to next lesson/section
         if (lesson && lesson.nextLessonId) {
           navigate(`/lesson/${lesson.nextLessonId}`);
         } else {
-          // If there's no next lesson, navigate back to the topic
+          const topicId = mockTopics.find(topic => 
+            topic.lessons.some(l => l.id === lessonId)
+          )?.id;
+          
+          if (topicId) {
+            navigate(`/topic/${topicId}`);
+          } else {
+            navigate('/curriculum');
+          }
+        }
+      }
+    } else if (lessonId === '4002' && currentSectionIndex === 0) {
+      if (!isSecondPartPlayed) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney2.mp3');
+        setIsSecondPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'coins-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/coins.gif',
+            alt: 'Coins and Money'
+          },
+          timing: 0
+        }]);
+        
+        if (gifTimerRef.current) {
+          clearTimeout(gifTimerRef.current);
+        }
+        if (secondGifTimerRef.current) {
+          clearTimeout(secondGifTimerRef.current);
+        }
+        
+        gifTimerRef.current = setTimeout(() => {
+          setActiveContent([{
+            id: 'buying-gif',
+            type: 'image',
+            data: {
+              type: 'image',
+              url: 'https://hlearn.b-cdn.net/what%20is%20money/buying.gif',
+              alt: 'Buying with Money'
+            },
+            timing: 0
+          }]);
+          
+          secondGifTimerRef.current = setTimeout(() => {
+            setActiveContent([{
+              id: 'saving-gif',
+              type: 'image',
+              data: {
+                type: 'image',
+                url: 'https://hlearn.b-cdn.net/what%20is%20money/saving.gif',
+                alt: 'Saving Money'
+              },
+              timing: 0
+            }]);
+          }, 6000);
+        }, 6000);
+      } else if (isSecondPartPlayed && !secondPartFinished) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/letswatch.mp3');
+        setSecondPartFinished(true);
+        setIsThirdPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'money-video',
+          type: 'video',
+          data: {
+            type: 'video',
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/whatismoney.mp4',
+            alt: 'What Is Money Video'
+          },
+          timing: 0,
+          onComplete: handleVideoComplete
+        }]);
+      } else if (lessonCompleted) {
+        if (lesson && lesson.nextLessonId) {
+          navigate(`/lesson/${lesson.nextLessonId}`);
+        } else {
           const topicId = mockTopics.find(topic => 
             topic.lessons.some(l => l.id === lessonId)
           )?.id;
@@ -288,11 +401,9 @@ const LessonDetail = () => {
     } else {
       console.log('Lesson completed');
       
-      // Add navigation to the next lesson or back to topic detail
       if (lesson && lesson.nextLessonId) {
         navigate(`/lesson/${lesson.nextLessonId}`);
       } else {
-        // If there's no next lesson, navigate back to the topic
         const topicId = mockTopics.find(topic => 
           topic.lessons.some(l => l.id === lessonId)
         )?.id;
