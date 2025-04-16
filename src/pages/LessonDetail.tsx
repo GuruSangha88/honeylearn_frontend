@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -103,6 +102,24 @@ const LessonDetail = () => {
         setIsThirdPartPlayed(false);
         setVideoCompleted(false);
         setQuizDisplayed(false);
+      } else if (lessonId === '4003' && currentSectionIndex === 0) {
+        const initialImage: ContentItem = {
+          id: 'wants-needs-intro',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/toystore.gif',
+            alt: 'Toy store with many toys'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds1.mp3');
+        setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
+        setQuizDisplayed(false);
       } else {
         setActiveContent([]);
       }
@@ -185,6 +202,25 @@ const LessonDetail = () => {
           timing: 0
         }]);
       }, 1000);
+    } else if (lessonId === '4003') {
+      setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds1.mp3');
+      
+      setTimeout(() => {
+        setQuizDisplayed(true);
+        setActiveContent(prev => [...prev, {
+          id: 'wants-needs-quiz',
+          type: 'quiz',
+          data: {
+            question: "What's the difference between wants and needs?",
+            options: [
+              { text: "Wants are things we must have, needs are extra", color: "blue" },
+              { text: "Needs are things we must have, wants are extra", color: "purple" }
+            ],
+            correctOptionIndex: 1
+          },
+          timing: 0
+        }]);
+      }, 1000);
     }
   };
   
@@ -197,12 +233,16 @@ const LessonDetail = () => {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/welldone.mp3');
       } else if (lessonId === '4002') {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney8.mp3');
+      } else if (lessonId === '4003') {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/welldone.mp3');
       }
       
       setTimeout(() => {
         if (lessonId === '4001') {
           setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/congrats.mp3');
         } else if (lessonId === '4002') {
+          setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/congrats.mp3');
+        } else if (lessonId === '4003') {
           setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/congrats.mp3');
         }
         setLessonCompleted(true);
@@ -212,13 +252,15 @@ const LessonDetail = () => {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/tryagain.mp3');
       } else if (lessonId === '4002') {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/tryagain.mp3');
+      } else if (lessonId === '4003') {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/tryagain.mp3');
       }
       
       setTimeout(() => {
         setIsQuizAnswered(false);
         
         setActiveContent(prev => prev.map(item => 
-          item.id === 'work-quiz' || item.id === 'money-quiz' 
+          item.id === 'work-quiz' || item.id === 'money-quiz' || item.id === 'wants-needs-quiz'
             ? {
                 ...item, 
                 data: {
@@ -366,6 +408,79 @@ const LessonDetail = () => {
           },
           timing: 0,
           onComplete: handleVideoComplete
+        }]);
+      } else if (lessonCompleted) {
+        if (lesson && lesson.nextLessonId) {
+          navigate(`/lesson/${lesson.nextLessonId}`);
+        } else {
+          const topicId = mockTopics.find(topic => 
+            topic.lessons.some(l => l.id === lessonId)
+          )?.id;
+          
+          if (topicId) {
+            navigate(`/topic/${topicId}`);
+          } else {
+            navigate('/curriculum');
+          }
+        }
+      }
+    } else if (lessonId === '4003' && currentSectionIndex === 0) {
+      if (!isSecondPartPlayed) {
+        setIsSecondPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'wants-needs-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9',
+            alt: 'Food - something we need'
+          },
+          timing: 0
+        }]);
+      } else if (isSecondPartPlayed && !secondPartFinished) {
+        setSecondPartFinished(true);
+        setIsThirdPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'needs-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04',
+            alt: 'Home - something we need'
+          },
+          timing: 0
+        }]);
+      } else if (isThirdPartPlayed && !thirdPartFinished) {
+        setThirdPartFinished(true);
+        setVideoCompleted(true);
+        
+        setActiveContent([{
+          id: 'wants-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://images.unsplash.com/photo-1472396961693-142e6e269027',
+            alt: 'Toys - something we want'
+          },
+          timing: 0
+        }]);
+      } else if (videoCompleted && !quizDisplayed) {
+        setQuizDisplayed(true);
+        
+        setActiveContent([{
+          id: 'wants-needs-quiz',
+          type: 'quiz',
+          data: {
+            question: "What's the difference between wants and needs?",
+            options: [
+              { text: "Wants are things we must have, needs are extra", color: "blue" },
+              { text: "Needs are things we must have, wants are extra", color: "purple" }
+            ],
+            correctOptionIndex: 1
+          },
+          timing: 0
         }]);
       } else if (lessonCompleted) {
         if (lesson && lesson.nextLessonId) {
