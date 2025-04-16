@@ -498,6 +498,20 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
+      } else if (thirdPartFinished && !videoCompleted) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds5.mp3');
+        setVideoCompleted(true);
+        
+        setActiveContent([{
+          id: 'wants-needs-candy-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/candy.gif',
+            alt: 'Candy - a want'
+          },
+          timing: 0
+        }]);
       } else if (lessonCompleted) {
         if (lesson && lesson.nextLessonId) {
           navigate(`/lesson/${lesson.nextLessonId}`);
