@@ -118,6 +118,7 @@ const LessonDetail = () => {
         setIsSecondPartPlayed(false);
         setSecondPartFinished(false);
         setIsThirdPartPlayed(false);
+        setThirdPartFinished(false);
         setVideoCompleted(false);
         setQuizDisplayed(false);
       } else {
@@ -453,21 +454,7 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
-      } else if (secondPartFinished && !thirdPartFinished) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds3.mp3');
-        setThirdPartFinished(true);
-        
-        setActiveContent([{
-          id: 'needs-image',
-          type: 'image',
-          data: {
-            type: 'image',
-            url: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04',
-            alt: 'Home - something we need'
-          },
-          timing: 0
-        }]);
-      } else if (isThirdPartPlayed && !thirdPartFinished) {
+      } else if (secondPartFinished && !isThirdPartPlayed) {
         setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds4.mp3');
         setIsThirdPartPlayed(true);
         
@@ -478,6 +465,20 @@ const LessonDetail = () => {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/wantit.gif',
             alt: 'Wanting something'
+          },
+          timing: 0
+        }]);
+      } else if (isThirdPartPlayed && !thirdPartFinished) {
+        setThirdPartFinished(true);
+        setVideoCompleted(true);
+        
+        setActiveContent([{
+          id: 'needs-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04',
+            alt: 'Home - something we need'
           },
           timing: 0
         }]);
