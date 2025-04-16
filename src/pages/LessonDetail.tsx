@@ -440,8 +440,22 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (isSecondPartPlayed && !secondPartFinished) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds3.mp3');
         setSecondPartFinished(true);
-        setIsThirdPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'wants-needs-eating-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/eating.gif',
+            alt: 'Eating - a need'
+          },
+          timing: 0
+        }]);
+      } else if (secondPartFinished && !thirdPartFinished) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds3.mp3');
+        setThirdPartFinished(true);
         
         setActiveContent([{
           id: 'needs-image',
