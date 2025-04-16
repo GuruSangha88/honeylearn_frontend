@@ -191,7 +191,7 @@ export const mockTopics: Topic[] = [
     title: 'Money Explorers',
     description: 'Learn about money, work, and economics for kids',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
-    totalLessons: 3,
+    totalLessons: 4,
     completedLessons: 0,
     lessons: [
       {
@@ -329,6 +329,7 @@ export const mockTopics: Topic[] = [
         description: 'Understanding what money is and how it works',
         duration: 720, // 12 minutes
         completed: false,
+        nextLessonId: '4003', // Update to point to our new lesson
         sections: [
           {
             id: '41001',
@@ -446,6 +447,58 @@ export const mockTopics: Topic[] = [
                 }
               }
             ]
+          }
+        ]
+      },
+      {
+        id: '4003',
+        topicId: '4',
+        title: 'Wants Vs Needs',
+        description: 'Learning the difference between things we want and things we need',
+        duration: 720, // 12 minutes
+        completed: false,
+        sections: [
+          {
+            id: '43001',
+            title: 'Introduction to Wants and Needs',
+            audioUrl: 'https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds1.mp3',
+            completed: false,
+            durationInSeconds: 180,
+            content: [
+              {
+                id: '430001',
+                type: 'image',
+                timing: 10,
+                data: {
+                  url: 'https://hlearn.b-cdn.net/wantsvsneeds/toystore.gif',
+                  alt: 'Toy store with many toys'
+                }
+              },
+              {
+                id: '430002',
+                type: 'text',
+                timing: 60,
+                data: {
+                  text: "Some things we need to live, like food, water, and a home. Other things we just want because they're fun or nice to have, like toys or candy. Today, we'll learn the difference!"
+                }
+              }
+            ]
+          },
+          {
+            id: '43002',
+            title: 'What Are Needs?',
+            audioUrl: '/audio/money/wants_needs/needs.mp3',
+            completed: false,
+            durationInSeconds: 240,
+            content: []
+          },
+          {
+            id: '43003',
+            title: 'What Are Wants?',
+            audioUrl: '/audio/money/wants_needs/wants.mp3',
+            completed: false,
+            durationInSeconds: 210,
+            content: []
           }
         ]
       }
