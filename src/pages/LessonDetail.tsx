@@ -426,15 +426,16 @@ const LessonDetail = () => {
       }
     } else if (lessonId === '4003' && currentSectionIndex === 0) {
       if (!isSecondPartPlayed) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds2.mp3');
         setIsSecondPartPlayed(true);
         
         setActiveContent([{
-          id: 'wants-needs-image',
+          id: 'wants-needs-buy-image',
           type: 'image',
           data: {
             type: 'image',
-            url: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9',
-            alt: 'Food - something we need'
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/buy.gif',
+            alt: 'Buying things'
           },
           timing: 0
         }]);
