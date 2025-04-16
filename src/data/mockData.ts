@@ -1,4 +1,3 @@
-
 import { Topic, Student, Parent } from '../types';
 
 export const mockTopics: Topic[] = [
@@ -202,6 +201,7 @@ export const mockTopics: Topic[] = [
         description: 'Understanding jobs, work, and earning money',
         duration: 720, // 12 minutes
         completed: false,
+        nextLessonId: '4002', // Add this line to point to the next lesson
         sections: [
           {
             id: '40001',
@@ -314,6 +314,133 @@ export const mockTopics: Topic[] = [
                     'Only save it forever', 
                     'Spend some and save some', 
                     'Give it all away'
+                  ],
+                  correctAnswerIndex: 2
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: '4002',
+        topicId: '4',
+        title: 'What Is Money?',
+        description: 'Understanding what money is and how it works',
+        duration: 720, // 12 minutes
+        completed: false,
+        sections: [
+          {
+            id: '41001',
+            title: 'Introduction to Money',
+            audioUrl: '/audio/money/basics/intro.mp3',
+            completed: false,
+            durationInSeconds: 180,
+            content: [
+              {
+                id: '410001',
+                type: 'image',
+                timing: 10,
+                data: {
+                  url: 'https://hlearn.b-cdn.net/what%20is%20money/money_intro.png',
+                  alt: 'Different types of money'
+                }
+              },
+              {
+                id: '410002',
+                type: 'text',
+                timing: 60,
+                data: {
+                  text: "Money is what we use to buy things we need and want. Money can be coins, paper bills, or even digital numbers on a computer!"
+                }
+              },
+              {
+                id: '410003',
+                type: 'quiz',
+                timing: 120,
+                data: {
+                  question: 'Why do we need money?',
+                  options: [
+                    'To play with', 
+                    'To buy things we need and want', 
+                    'To make paper airplanes', 
+                    'Only for grownups'
+                  ],
+                  correctAnswerIndex: 1
+                }
+              }
+            ]
+          },
+          {
+            id: '41002',
+            title: 'How Money Works',
+            audioUrl: '/audio/money/basics/how_works.mp3',
+            completed: false,
+            durationInSeconds: 240,
+            content: [
+              {
+                id: '410004',
+                type: 'image',
+                timing: 30,
+                data: {
+                  url: 'https://hlearn.b-cdn.net/what%20is%20money/exchange.png',
+                  alt: 'Exchanging money for goods'
+                }
+              },
+              {
+                id: '410005',
+                type: 'text',
+                timing: 90,
+                data: {
+                  text: "When we want something, we exchange money for it. The person selling gets the money, and we get what we want. It's like trading, but easier because everyone accepts money!"
+                }
+              },
+              {
+                id: '410006',
+                type: 'video',
+                timing: 180,
+                data: {
+                  url: 'https://hlearn.b-cdn.net/what%20is%20money/money_video.mp4',
+                  alt: 'How money works video'
+                }
+              }
+            ]
+          },
+          {
+            id: '41003',
+            title: 'Saving Money',
+            audioUrl: '/audio/money/basics/saving.mp3',
+            completed: false,
+            durationInSeconds: 210,
+            content: [
+              {
+                id: '410007',
+                type: 'text',
+                timing: 30,
+                data: {
+                  text: "Sometimes it's good to save money instead of spending it right away. We can save money in a piggy bank or at a bank. This helps us buy bigger things later!"
+                }
+              },
+              {
+                id: '410008',
+                type: 'image',
+                timing: 120,
+                data: {
+                  url: 'https://hlearn.b-cdn.net/what%20is%20money/piggy_bank.png',
+                  alt: 'Child putting coins in a piggy bank'
+                }
+              },
+              {
+                id: '410009',
+                type: 'quiz',
+                timing: 180,
+                data: {
+                  question: 'Why do we save money?',
+                  options: [
+                    'To never spend it', 
+                    'To throw it away', 
+                    'To buy bigger things later', 
+                    'Because it looks pretty'
                   ],
                   correctAnswerIndex: 2
                 }
