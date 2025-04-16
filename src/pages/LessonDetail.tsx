@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -166,7 +167,7 @@ const LessonDetail = () => {
         }]);
       }, 1000);
     } else if (lessonId === '4002') {
-      setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/quiz_intro.mp3');
+      setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney7.mp3');
       
       setTimeout(() => {
         setQuizDisplayed(true);
@@ -174,12 +175,12 @@ const LessonDetail = () => {
           id: 'money-quiz',
           type: 'quiz',
           data: {
-            question: "Why do we need money?",
+            question: "What is money?",
             options: [
-              { text: "To buy things we need and want", color: "blue" },
-              { text: "Only to make paper airplanes", color: "pink" }
+              { text: "Money is just paper that adults use", color: "blue" },
+              { text: "Money is a tool to help trade", color: "purple" }
             ],
-            correctOptionIndex: 0
+            correctOptionIndex: 1
           },
           timing: 0
         }]);
@@ -195,7 +196,7 @@ const LessonDetail = () => {
       if (lessonId === '4001') {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/welldone.mp3');
       } else if (lessonId === '4002') {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/welldone.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney8.mp3');
       }
       
       setTimeout(() => {

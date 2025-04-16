@@ -148,6 +148,8 @@ const ChatBox = ({
                         'bg-red-600 hover:bg-red-700' : 
                       option.color === 'blue' ? 
                         'bg-blue-600 hover:bg-blue-700' : 
+                      option.color === 'purple' ?
+                        'bg-purple-600 hover:bg-purple-700' :
                         'bg-pink-600 hover:bg-pink-700'
                   }`}
                   onClick={() => {
