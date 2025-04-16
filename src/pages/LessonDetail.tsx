@@ -84,54 +84,23 @@ const LessonDetail = () => {
         setVideoCompleted(false);
         setQuizDisplayed(false);
       } else if (lessonId === '4002' && currentSectionIndex === 0) {
-        if (!isSecondPartPlayed) {
-          // Update for the second audio and image for "What Is Money?" lesson
-          setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney2.mp3');
-          
-          setActiveContent([{
-            id: 'coins-image',
+        const initialImage: ContentItem = {
+          id: 'money-intro-image',
+          type: 'image',
+          data: {
             type: 'image',
-            data: {
-              type: 'image',
-              url: 'https://hlearn.b-cdn.net/what%20is%20money/catmoney.gif',
-              alt: 'Cat with Money'
-            },
-            timing: 0
-          }]);
-          
-          if (gifTimerRef.current) {
-            clearTimeout(gifTimerRef.current);
-          }
-          if (secondGifTimerRef.current) {
-            clearTimeout(secondGifTimerRef.current);
-          }
-          
-          gifTimerRef.current = setTimeout(() => {
-            setActiveContent([{
-              id: 'buying-gif',
-              type: 'image',
-              data: {
-                type: 'image',
-                url: 'https://hlearn.b-cdn.net/what%20is%20money/buying.gif',
-                alt: 'Buying with Money'
-              },
-              timing: 0
-            }]);
-            
-            secondGifTimerRef.current = setTimeout(() => {
-              setActiveContent([{
-                id: 'saving-gif',
-                type: 'image',
-                data: {
-                  type: 'image',
-                  url: 'https://hlearn.b-cdn.net/what%20is%20money/saving.gif',
-                  alt: 'Saving Money'
-                },
-                timing: 0
-              }]);
-            }, 6000);
-          }, 6000);
-        }
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/money.gif',
+            alt: 'What Is Money?'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney1.mp3');
+        setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
+        setQuizDisplayed(false);
       } else {
         setActiveContent([]);
       }
@@ -358,8 +327,8 @@ const LessonDetail = () => {
           type: 'image',
           data: {
             type: 'image',
-            url: 'https://hlearn.b-cdn.net/what%20is%20money/catmoney.gif',
-            alt: 'Cat with Money'
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/coins.gif',
+            alt: 'Coins and Money'
           },
           timing: 0
         }]);
