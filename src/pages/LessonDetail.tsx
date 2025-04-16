@@ -319,6 +319,20 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
+      } else if (thirdPartFinished && !isThirdPartPlayed) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney5.mp3');
+        setIsThirdPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'credit-card-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20money/creditcard.gif',
+            alt: 'Credit Card and Money'
+          },
+          timing: 0
+        }]);
       } else if (lessonCompleted) {
         if (lesson && lesson.nextLessonId) {
           navigate(`/lesson/${lesson.nextLessonId}`);
