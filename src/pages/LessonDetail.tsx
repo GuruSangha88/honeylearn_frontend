@@ -83,6 +83,24 @@ const LessonDetail = () => {
         setIsThirdPartPlayed(false);
         setVideoCompleted(false);
         setQuizDisplayed(false);
+      } else if (lessonId === '4001' && currentSectionIndex === 0) {
+        const initialImage: ContentItem = {
+          id: 'helping-gif',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
+            alt: 'People Helping Each Other'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio5.mp3');
+        setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
+        setQuizDisplayed(false);
       } else {
         setActiveContent([]);
       }
