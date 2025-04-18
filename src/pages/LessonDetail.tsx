@@ -504,16 +504,30 @@ const LessonDetail = () => {
         setVideoCompleted(true);
         
         setActiveContent([{
-          id: 'needs-image',
+          id: 'needs-empty-pockets',
           type: 'image',
           data: {
             type: 'image',
-            url: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04',
-            alt: 'Home - something we need'
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/emptypockets.gif',
+            alt: 'Empty pockets - making choices about money'
           },
           timing: 0
         }]);
-      } else if (videoCompleted && !quizDisplayed) {
+      } else if (videoCompleted && !isSixthPartPlayed) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds6.mp3');
+        setIsSixthPartPlayed(true);
+        
+        setActiveContent([{
+          id: 'needs-empty-pockets',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/emptypockets.gif',
+            alt: 'Empty pockets - making choices about money'
+          },
+          timing: 0
+        }]);
+      } else if (isSixthPartPlayed && !quizDisplayed) {
         setQuizDisplayed(true);
         
         setActiveContent([{
