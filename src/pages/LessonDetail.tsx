@@ -501,7 +501,9 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (thirdPartFinished && !videoCompleted) {
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds6.mp3');
         setVideoCompleted(true);
+        setIsSixthPartPlayed(true);
         
         setActiveContent([{
           id: 'needs-empty-pockets',
