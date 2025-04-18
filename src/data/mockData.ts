@@ -191,7 +191,7 @@ export const mockTopics: Topic[] = [
     title: 'Money Explorers',
     description: 'Learn about money, work, and economics for kids',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
-    totalLessons: 4,
+    totalLessons: 5,
     completedLessons: 0,
     lessons: [
       {
@@ -499,6 +499,34 @@ export const mockTopics: Topic[] = [
             completed: false,
             durationInSeconds: 210,
             content: []
+          }
+        ]
+      },
+      {
+        id: '4004',
+        topicId: '4',
+        title: 'How Do I Make Money?',
+        description: 'Learn different ways kids can earn and make money',
+        duration: 720, // 12 minutes
+        completed: false,
+        sections: [
+          {
+            id: '44001',
+            title: 'Introduction to Making Money',
+            audioUrl: 'https://hlearn.b-cdn.net/How%20do%20I%20make%20money/howdoimakemoney.mp3',
+            completed: false,
+            durationInSeconds: 180,
+            content: [
+              {
+                id: '440001',
+                type: 'image',
+                timing: 10,
+                data: {
+                  url: 'https://hlearn.b-cdn.net/How%20do%20I%20make%20money/dog.gif',
+                  alt: 'Dog walking - a way to make money'
+                }
+              }
+            ]
           }
         ]
       }
