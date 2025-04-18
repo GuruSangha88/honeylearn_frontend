@@ -121,6 +121,24 @@ const LessonDetail = () => {
         setThirdPartFinished(false);
         setVideoCompleted(false);
         setQuizDisplayed(false);
+      } else if (lessonId === '4004' && currentSectionIndex === 0) {
+        const initialImage: ContentItem = {
+          id: 'make-money-dog-image',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/How%20do%20I%20make%20money/dog.gif',
+            alt: 'Dog walking - a way to make money'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/How%20do%20I%20make%20money/howdoimakemoney.mp3');
+        setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
+        setQuizDisplayed(false);
       } else {
         setActiveContent([]);
       }
@@ -511,6 +529,24 @@ const LessonDetail = () => {
           },
           timing: 0
         }]);
+      } else if (lessonCompleted) {
+        if (lesson && lesson.nextLessonId) {
+          navigate(`/lesson/${lesson.nextLessonId}`);
+        } else {
+          const topicId = mockTopics.find(topic => 
+            topic.lessons.some(l => l.id === lessonId)
+          )?.id;
+          
+          if (topicId) {
+            navigate(`/topic/${topicId}`);
+          } else {
+            navigate('/curriculum');
+          }
+        }
+      }
+    } else if (lessonId === '4004' && currentSectionIndex === 0) {
+      if (!isSecondPartPlayed) {
+        setLessonCompleted(true);
       } else if (lessonCompleted) {
         if (lesson && lesson.nextLessonId) {
           navigate(`/lesson/${lesson.nextLessonId}`);
