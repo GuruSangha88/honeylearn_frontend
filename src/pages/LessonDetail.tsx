@@ -294,7 +294,7 @@ const LessonDetail = () => {
   };
   
   const handleSectionEnd = () => {
-    if (lessonId === '4001' && currentSectionIndex === 0) {
+    if (lessonId === '4001') {
       if (!isSecondPartPlayed) {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
         setIsSecondPartPlayed(true);
@@ -355,7 +355,7 @@ const LessonDetail = () => {
           }
         }
       }
-    } else if (lessonId === '4002' && currentSectionIndex === 0) {
+    } else if (lessonId === '4002') {
       if (!isSecondPartPlayed) {
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney2.mp3');
         setIsSecondPartPlayed(true);
@@ -503,7 +503,6 @@ const LessonDetail = () => {
       } else if (thirdPartFinished && !videoCompleted) {
         setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds6.mp3');
         setVideoCompleted(true);
-        setIsSixthPartPlayed(true);
         
         setActiveContent([{
           id: 'needs-empty-pockets',
@@ -516,18 +515,19 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (videoCompleted && !isSixthPartPlayed) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds6.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds7.mp3');
         setIsSixthPartPlayed(true);
         
         setActiveContent([{
-          id: 'needs-empty-pockets',
-          type: 'image',
+          id: 'wants-needs-video',
+          type: 'video',
           data: {
-            type: 'image',
-            url: 'https://hlearn.b-cdn.net/wantsvsneeds/emptypockets.gif',
-            alt: 'Empty pockets - making choices about money'
+            type: 'video',
+            url: 'https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneds56.mp4',
+            alt: 'Wants vs Needs Video'
           },
-          timing: 0
+          timing: 0,
+          onComplete: handleVideoComplete
         }]);
       } else if (isSixthPartPlayed && !quizDisplayed) {
         setQuizDisplayed(true);
@@ -560,7 +560,7 @@ const LessonDetail = () => {
           }
         }
       }
-    } else if (lessonId === '4004' && currentSectionIndex === 0) {
+    } else if (lessonId === '4004') {
       if (!isSecondPartPlayed) {
         setLessonCompleted(true);
       } else if (lessonCompleted) {
