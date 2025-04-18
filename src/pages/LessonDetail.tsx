@@ -25,6 +25,7 @@ const LessonDetail = () => {
   const [videoCompleted, setVideoCompleted] = useState(false);
   const [isSixthPartPlayed, setIsSixthPartPlayed] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
+  const [audioSevenPlayed, setAudioSevenPlayed] = useState(false);
   const [quizDisplayed, setQuizDisplayed] = useState(false);
   const [isQuizAnswered, setIsQuizAnswered] = useState(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
@@ -56,6 +57,7 @@ const LessonDetail = () => {
     setThirdPartFinished(false);
     setVideoCompleted(false);
     setVideoStarted(false);
+    setAudioSevenPlayed(false);
     setQuizDisplayed(false);
     setIsQuizAnswered(false);
     setIsAnswerCorrect(false);
@@ -86,6 +88,7 @@ const LessonDetail = () => {
         setThirdPartFinished(false);
         setVideoCompleted(false);
         setVideoStarted(false);
+        setAudioSevenPlayed(false);
         setQuizDisplayed(false);
       } else if (lessonId === '4001' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
@@ -105,6 +108,7 @@ const LessonDetail = () => {
         setIsThirdPartPlayed(false);
         setVideoCompleted(false);
         setVideoStarted(false);
+        setAudioSevenPlayed(false);
         setQuizDisplayed(false);
       } else if (lessonId === '4003' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
@@ -125,6 +129,7 @@ const LessonDetail = () => {
         setThirdPartFinished(false);
         setVideoCompleted(false);
         setVideoStarted(false);
+        setAudioSevenPlayed(false);
         setQuizDisplayed(false);
       } else if (lessonId === '4004' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
@@ -144,6 +149,7 @@ const LessonDetail = () => {
         setIsThirdPartPlayed(false);
         setVideoCompleted(false);
         setVideoStarted(false);
+        setAudioSevenPlayed(false);
         setQuizDisplayed(false);
       } else {
         setActiveContent([]);
@@ -228,8 +234,6 @@ const LessonDetail = () => {
         }]);
       }, 1000);
     } else if (lessonId === '4003') {
-      setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds1.mp3');
-      
       setTimeout(() => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
@@ -642,7 +646,7 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}-${isThirdPartPlayed}-${thirdPartFinished}-${isSixthPartPlayed}-${videoStarted}-${isQuizAnswered}-${isAnswerCorrect}-${lessonCompleted}`}
+              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}-${isThirdPartPlayed}-${thirdPartFinished}-${isSixthPartPlayed}-${videoStarted}-${audioSevenPlayed}-${isQuizAnswered}-${isAnswerCorrect}-${lessonCompleted}`}
             />
           </div>
           <div className="h-[500px]">
