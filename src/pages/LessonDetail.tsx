@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import AudioPlayer from '@/components/AudioPlayer';
 import ChatBox from '@/components/ChatBox';
 import { mockTopics, currentStudent } from '@/data/mockData';
-import { LessonSection, ContentItem, ContentType } from '@/types';
+import { LessonSection, ContentItem } from '@/types';
 
 const LessonDetail = () => {
   const navigate = useNavigate();
@@ -63,43 +63,16 @@ const LessonDetail = () => {
     setIsAnswerCorrect(false);
     setLessonCompleted(false);
     setProgressPercentage(25);
-    
-    setCustomAudioUrl(null);
   }, [lessonId]);
   
   useEffect(() => {
     if (lesson && lesson.sections.length > 0) {
       setCurrentSection(lesson.sections[currentSectionIndex]);
       
-      if (lessonId === '4001') {
-        const initialImage: ContentItem = {
-          id: 'helping-gif',
-          type: 'image' as ContentType,
-          data: {
-            type: 'image',
-            url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
-            alt: 'People Helping Each Other'
-          },
-          timing: 0
-        };
-        setActiveContent([initialImage]);
-        
-        const audioUrl = 'https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio1.mp3';
-        console.log("Setting initial audio for 'What is Work':", audioUrl);
-        setCustomAudioUrl(audioUrl);
-        
-        setIsSecondPartPlayed(false);
-        setSecondPartFinished(false);
-        setIsThirdPartPlayed(false);
-        setThirdPartFinished(false);
-        setVideoCompleted(false);
-        setVideoStarted(false);
-        setAudioSevenPlayed(false);
-        setQuizDisplayed(false);
-      } else if (lessonId === '4002' && currentSectionIndex === 0) {
+      if (lessonId === '4002' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'money-intro-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/money.gif',
@@ -117,10 +90,30 @@ const LessonDetail = () => {
         setVideoStarted(false);
         setAudioSevenPlayed(false);
         setQuizDisplayed(false);
+      } else if (lessonId === '4001' && currentSectionIndex === 0) {
+        const initialImage: ContentItem = {
+          id: 'helping-gif',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
+            alt: 'People Helping Each Other'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio1.mp3');
+        setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
+        setVideoStarted(false);
+        setAudioSevenPlayed(false);
+        setQuizDisplayed(false);
       } else if (lessonId === '4003' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'wants-needs-intro',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/toystore.gif',
@@ -141,7 +134,7 @@ const LessonDetail = () => {
       } else if (lessonId === '4004' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'make-money-dog-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/How%20do%20I%20make%20money/dog.gif',
@@ -209,7 +202,7 @@ const LessonDetail = () => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
           id: 'work-quiz',
-          type: 'quiz' as ContentType,
+          type: 'quiz',
           data: {
             question: "What is work?",
             options: [
@@ -228,7 +221,7 @@ const LessonDetail = () => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
           id: 'money-quiz',
-          type: 'quiz' as ContentType,
+          type: 'quiz',
           data: {
             question: "What is money?",
             options: [
@@ -245,7 +238,7 @@ const LessonDetail = () => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
           id: 'wants-needs-quiz',
-          type: 'quiz' as ContentType,
+          type: 'quiz',
           data: {
             question: "What's the difference between wants and needs?",
             options: [
@@ -318,7 +311,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'helping-gif',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
@@ -333,7 +326,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'work-video',
-          type: 'video' as ContentType,
+          type: 'video',
           data: {
             type: 'video',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/whatiswork56.mp4',
@@ -348,7 +341,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'money-video',
-          type: 'video' as ContentType,
+          type: 'video',
           data: {
             type: 'video',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/whatiswork56.mp4',
@@ -379,7 +372,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'coins-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/catmoney.gif',
@@ -394,7 +387,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'banana-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/banana.gif',
@@ -408,7 +401,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'cookie-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/cookie.gif',
@@ -422,7 +415,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'credit-card-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/creditcard.gif',
@@ -436,7 +429,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'money-video',
-          type: 'video' as ContentType,
+          type: 'video',
           data: {
             type: 'video',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/whatismoney56.mp4',
@@ -467,7 +460,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-buy-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/buy.gif',
@@ -481,7 +474,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-eating-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/eating.gif',
@@ -495,7 +488,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-need-wantit-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/wantit.gif',
@@ -509,7 +502,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-candy-image',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/candy.gif',
@@ -523,7 +516,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'needs-empty-pockets',
-          type: 'image' as ContentType,
+          type: 'image',
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/emptypockets.gif',
@@ -539,7 +532,7 @@ const LessonDetail = () => {
           
           setActiveContent([{
             id: 'wants-needs-video',
-            type: 'video' as ContentType,
+            type: 'video',
             data: {
               type: 'video',
               url: 'https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneds56.mp4',
@@ -554,7 +547,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-quiz',
-          type: 'quiz' as ContentType,
+          type: 'quiz',
           data: {
             question: "What's the difference between wants and needs?",
             options: [
@@ -621,7 +614,6 @@ const LessonDetail = () => {
   
   const getAudioUrl = () => {
     if (customAudioUrl) {
-      console.log("Using custom audio URL:", customAudioUrl);
       return customAudioUrl;
     }
     
@@ -654,13 +646,13 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={`audio-player-${lessonId}-${currentSectionIndex}-${customAudioUrl}`}
+              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}-${isThirdPartPlayed}-${thirdPartFinished}-${isSixthPartPlayed}-${videoStarted}-${audioSevenPlayed}-${isQuizAnswered}-${isAnswerCorrect}-${lessonCompleted}`}
             />
           </div>
           <div className="h-[500px]">
             <ChatBox 
               contentItems={activeContent}
-              initialMessage={`Listening to ${currentSection?.title || lessonTitle}... Content will appear here as the lesson progresses.`}
+              initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
               hideInputField={true}
               onVideoComplete={handleVideoComplete}
               onQuizAnswered={handleQuizAnswered}
