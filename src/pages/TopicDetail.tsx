@@ -1,4 +1,5 @@
 
+import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, Play, CheckCircle, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -101,4 +102,3 @@ const TopicDetail = () => {
 };
 
 export default TopicDetail;
-
