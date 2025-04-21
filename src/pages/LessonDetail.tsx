@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import AudioPlayer from '@/components/AudioPlayer';
 import ChatBox from '@/components/ChatBox';
 import { mockTopics, currentStudent } from '@/data/mockData';
-import { LessonSection, ContentItem } from '@/types';
+import { LessonSection, ContentItem, ContentType } from '@/types';
 
 const LessonDetail = () => {
   const navigate = useNavigate();
@@ -72,9 +72,9 @@ const LessonDetail = () => {
       setCurrentSection(lesson.sections[currentSectionIndex]);
       
       if (lessonId === '4001') {
-        const initialImage = {
+        const initialImage: ContentItem = {
           id: 'helping-gif',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
@@ -98,7 +98,7 @@ const LessonDetail = () => {
       } else if (lessonId === '4002' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'money-intro-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/money.gif',
@@ -119,7 +119,7 @@ const LessonDetail = () => {
       } else if (lessonId === '4003' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'wants-needs-intro',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/toystore.gif',
@@ -140,7 +140,7 @@ const LessonDetail = () => {
       } else if (lessonId === '4004' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'make-money-dog-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/How%20do%20I%20make%20money/dog.gif',
@@ -208,7 +208,7 @@ const LessonDetail = () => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
           id: 'work-quiz',
-          type: 'quiz',
+          type: 'quiz' as ContentType,
           data: {
             question: "What is work?",
             options: [
@@ -227,7 +227,7 @@ const LessonDetail = () => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
           id: 'money-quiz',
-          type: 'quiz',
+          type: 'quiz' as ContentType,
           data: {
             question: "What is money?",
             options: [
@@ -244,7 +244,7 @@ const LessonDetail = () => {
         setQuizDisplayed(true);
         setActiveContent(prev => [...prev, {
           id: 'wants-needs-quiz',
-          type: 'quiz',
+          type: 'quiz' as ContentType,
           data: {
             question: "What's the difference between wants and needs?",
             options: [
@@ -317,7 +317,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'helping-gif',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
@@ -332,7 +332,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'work-video',
-          type: 'video',
+          type: 'video' as ContentType,
           data: {
             type: 'video',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/whatiswork56.mp4',
@@ -347,7 +347,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'money-video',
-          type: 'video',
+          type: 'video' as ContentType,
           data: {
             type: 'video',
             url: 'https://hlearn.b-cdn.net/what%20is%20work/whatiswork56.mp4',
@@ -378,7 +378,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'coins-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/catmoney.gif',
@@ -393,7 +393,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'banana-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/banana.gif',
@@ -407,7 +407,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'cookie-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/cookie.gif',
@@ -421,7 +421,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'credit-card-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/creditcard.gif',
@@ -435,7 +435,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'money-video',
-          type: 'video',
+          type: 'video' as ContentType,
           data: {
             type: 'video',
             url: 'https://hlearn.b-cdn.net/what%20is%20money/whatismoney56.mp4',
@@ -466,7 +466,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-buy-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/buy.gif',
@@ -480,7 +480,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-eating-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/eating.gif',
@@ -494,7 +494,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-need-wantit-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/wantit.gif',
@@ -508,7 +508,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-candy-image',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/candy.gif',
@@ -522,7 +522,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'needs-empty-pockets',
-          type: 'image',
+          type: 'image' as ContentType,
           data: {
             type: 'image',
             url: 'https://hlearn.b-cdn.net/wantsvsneeds/emptypockets.gif',
@@ -538,7 +538,7 @@ const LessonDetail = () => {
           
           setActiveContent([{
             id: 'wants-needs-video',
-            type: 'video',
+            type: 'video' as ContentType,
             data: {
               type: 'video',
               url: 'https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneds56.mp4',
@@ -553,7 +553,7 @@ const LessonDetail = () => {
         
         setActiveContent([{
           id: 'wants-needs-quiz',
-          type: 'quiz',
+          type: 'quiz' as ContentType,
           data: {
             question: "What's the difference between wants and needs?",
             options: [
