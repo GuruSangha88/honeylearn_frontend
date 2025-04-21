@@ -1,17 +1,16 @@
 
 import { useNavigate } from 'react-router-dom';
-import { BookOpen } from 'lucide-react';
 import Header from '@/components/Header';
 import TopicCard from '@/components/TopicCard';
-import { Button } from '@/components/ui/button';
 import { mockTopics, currentStudent } from '@/data/mockData';
+import Footer from '@/components/Footer';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-tutor-dark text-white pt-4">
-      <div className="container max-w-6xl mx-auto px-4">
+    <div className="min-h-screen bg-tutor-dark text-white pt-4 flex flex-col">
+      <div className="container max-w-6xl mx-auto px-4 flex-grow">
         <Header student={currentStudent} />
         
         {/* Topics Grid */}
@@ -24,6 +23,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
