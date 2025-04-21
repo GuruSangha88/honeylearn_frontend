@@ -1,4 +1,3 @@
-
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, Play, CheckCircle, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
