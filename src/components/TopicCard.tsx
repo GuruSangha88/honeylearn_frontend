@@ -33,7 +33,16 @@ const TopicCard = ({ topic }: TopicCardProps) => {
         <div className="flex flex-col items-center gap-2">
           <div className="h-16 w-16 bg-tutor-dark-gray rounded-full overflow-hidden border-2 border-tutor-purple/30">
             {topic.imageUrl ? (
-              <img src={topic.imageUrl} alt={topic.title} className="h-full w-full object-cover" />
+              <img 
+                src={topic.imageUrl} 
+                alt={topic.title} 
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  // If image fails to load, display first letter of topic title
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement.innerHTML = `<div class="h-full w-full flex items-center justify-center text-3xl font-bold text-tutor-purple">${topic.title.charAt(0)}</div>`;
+                }}
+              />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-3xl font-bold text-tutor-purple">
                 {topic.title.charAt(0)}

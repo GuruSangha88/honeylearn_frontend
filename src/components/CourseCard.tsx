@@ -20,11 +20,24 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <h3 className="font-semibold text-lg mb-1">{course.title}</h3>
           <p className="text-sm text-gray-400">{course.description}</p>
         </div>
-        {course.imageUrl && (
-          <div className="h-14 w-14 bg-tutor-dark-gray rounded-md overflow-hidden">
-            <img src={course.imageUrl} alt={course.title} className="h-full w-full object-cover" />
-          </div>
-        )}
+        <div className="h-14 w-14 bg-tutor-dark-gray rounded-md overflow-hidden">
+          {course.imageUrl ? (
+            <img 
+              src={course.imageUrl} 
+              alt={course.title} 
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                // If image fails to load, display first letter of course title
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement.innerHTML = `<div class="h-full w-full flex items-center justify-center text-xl font-bold text-tutor-purple">${course.title.charAt(0)}</div>`;
+              }}
+            />
+          ) : (
+            <div className="h-full w-full flex items-center justify-center text-xl font-bold text-tutor-purple">
+              {course.title.charAt(0)}
+            </div>
+          )}
+        </div>
       </div>
       <div>
         <div className="flex justify-between items-center text-sm mb-1">
