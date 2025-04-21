@@ -1,7 +1,9 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import { toast } from 'sonner';
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -17,42 +19,85 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [isPulsing, setIsPulsing] = useState(false);
+  const [audioError, setAudioError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Reset state when audio URL changes
+  useEffect(() => {
+    if (audioUrl) {
+      console.log(`Loading new audio: ${audioUrl}`);
+      setAudioError(null);
+      setIsPlaying(false);
+      setIsPulsing(false);
+      setCurrentTime(0);
+    }
+  }, [audioUrl]);
 
   useEffect(() => {
     if (audioRef.current) {
-      if (autoPlay) {
-        const playPromise = audioRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(_ => {
-              setIsPlaying(true);
-              setIsPulsing(true);
-            })
-            .catch(error => {
-              console.log('Autoplay prevented:', error);
-            });
-        }
-      }
-      
       const audio = audioRef.current;
+      
+      const handleCanPlay = () => {
+        console.log("Audio can play now:", audioUrl);
+        if (autoPlay) {
+          playAudio();
+        }
+      };
+      
+      const handleError = (e: ErrorEvent) => {
+        const errorMessage = `Audio error: ${e.message || 'Failed to load audio'}`;
+        console.error(errorMessage, e);
+        setAudioError(errorMessage);
+        toast.error("Audio failed to load. Please try again.");
+      };
+      
       audio.addEventListener('loadedmetadata', handleLoadedMetadata);
       audio.addEventListener('timeupdate', handleTimeUpdate);
       audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('canplay', handleCanPlay);
+      audio.addEventListener('error', handleError as EventListener);
       
       return () => {
         if (audio) {
           audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
           audio.removeEventListener('timeupdate', handleTimeUpdate);
           audio.removeEventListener('ended', handleEnded);
+          audio.removeEventListener('canplay', handleCanPlay);
+          audio.removeEventListener('error', handleError as EventListener);
         }
       };
     }
   }, [audioRef, audioUrl, autoPlay, onEnded, onTimeUpdate]);
 
+  // Function to safely play audio
+  const playAudio = () => {
+    if (audioRef.current) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(_ => {
+            console.log("Audio playing successfully");
+            setIsPlaying(true);
+            setIsPulsing(true);
+          })
+          .catch(error => {
+            console.error('Playback prevented:', error);
+            // Handle autoplay policy restrictions
+            if (error.name === "NotAllowedError") {
+              toast.error("Autoplay was prevented. Please click to play.");
+            } else {
+              setAudioError(`Failed to play: ${error.message}`);
+              toast.error("Could not play audio. Please try again.");
+            }
+          });
+      }
+    }
+  };
+
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
+      console.log(`Audio loaded, duration: ${audioRef.current.duration}s`);
     }
   };
 
@@ -67,6 +112,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
   const handleEnded = () => {
     setIsPlaying(false);
     setIsPulsing(false);
+    console.log("Audio playback ended");
     onEnded?.();
   };
 
@@ -75,11 +121,10 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       if (isPlaying) {
         audioRef.current.pause();
         setIsPulsing(false);
+        setIsPlaying(false);
       } else {
-        audioRef.current.play();
-        setIsPulsing(true);
+        playAudio();
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -108,7 +153,13 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
 
   return (
     <div className="w-full flex flex-col items-center">
-      <audio ref={audioRef} src={audioUrl} preload="metadata" />
+      <audio 
+        ref={audioRef} 
+        src={audioUrl} 
+        preload="metadata" 
+      />
+      
+      {audioError && <p className="text-red-500 text-sm mb-2">{audioError}</p>}
       
       <div className="relative mb-8">
         <div className={`absolute inset-0 rounded-full bg-gradient-to-br from-tutor-blue to-tutor-purple opacity-30 blur-md transform scale-125 ${isPulsing ? 'animate-pulse-glow' : ''}`}></div>
@@ -152,6 +203,12 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
           className="w-24"
         />
       </div>
+      
+      {audioUrl && (
+        <p className="text-xs text-gray-400 mt-2 text-center">
+          {isPlaying ? 'Playing' : 'Paused'}: {audioUrl.split('/').pop()}
+        </p>
+      )}
     </div>
   );
 };

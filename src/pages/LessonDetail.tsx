@@ -63,13 +63,39 @@ const LessonDetail = () => {
     setIsAnswerCorrect(false);
     setLessonCompleted(false);
     setProgressPercentage(25);
+    
+    setCustomAudioUrl(null);
   }, [lessonId]);
   
   useEffect(() => {
     if (lesson && lesson.sections.length > 0) {
       setCurrentSection(lesson.sections[currentSectionIndex]);
       
-      if (lessonId === '4002' && currentSectionIndex === 0) {
+      if (lessonId === '4001') {
+        const initialImage = {
+          id: 'helping-gif',
+          type: 'image',
+          data: {
+            type: 'image',
+            url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
+            alt: 'People Helping Each Other'
+          },
+          timing: 0
+        };
+        setActiveContent([initialImage]);
+        
+        const audioUrl = 'https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio1.mp3';
+        console.log("Setting initial audio for 'What is Work':", audioUrl);
+        setCustomAudioUrl(audioUrl);
+        
+        setIsSecondPartPlayed(false);
+        setSecondPartFinished(false);
+        setIsThirdPartPlayed(false);
+        setVideoCompleted(false);
+        setVideoStarted(false);
+        setAudioSevenPlayed(false);
+        setQuizDisplayed(false);
+      } else if (lessonId === '4002' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'money-intro-image',
           type: 'image',
@@ -86,26 +112,6 @@ const LessonDetail = () => {
         setSecondPartFinished(false);
         setIsThirdPartPlayed(false);
         setThirdPartFinished(false);
-        setVideoCompleted(false);
-        setVideoStarted(false);
-        setAudioSevenPlayed(false);
-        setQuizDisplayed(false);
-      } else if (lessonId === '4001' && currentSectionIndex === 0) {
-        const initialImage: ContentItem = {
-          id: 'helping-gif',
-          type: 'image',
-          data: {
-            type: 'image',
-            url: 'https://hlearn.b-cdn.net/what%20is%20work/helping.gif',
-            alt: 'People Helping Each Other'
-          },
-          timing: 0
-        };
-        setActiveContent([initialImage]);
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio1.mp3');
-        setIsSecondPartPlayed(false);
-        setSecondPartFinished(false);
-        setIsThirdPartPlayed(false);
         setVideoCompleted(false);
         setVideoStarted(false);
         setAudioSevenPlayed(false);
@@ -614,7 +620,9 @@ const LessonDetail = () => {
   
   const getAudioUrl = () => {
     if (customAudioUrl) {
-      return customAudioUrl;
+      const url = customAudioUrl.replace(/ /g, '%20');
+      console.log("Using custom audio URL:", url);
+      return url;
     }
     
     return currentSection?.audioUrl || '';
@@ -646,13 +654,13 @@ const LessonDetail = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSectionEnd}
               autoPlay={true}
-              key={`${getAudioUrl()}-${isSecondPartPlayed}-${secondPartFinished}-${isThirdPartPlayed}-${thirdPartFinished}-${isSixthPartPlayed}-${videoStarted}-${audioSevenPlayed}-${isQuizAnswered}-${isAnswerCorrect}-${lessonCompleted}`}
+              key={`audio-player-${lessonId}-${currentSectionIndex}-${customAudioUrl}`}
             />
           </div>
           <div className="h-[500px]">
             <ChatBox 
               contentItems={activeContent}
-              initialMessage={`Listening to ${currentSection?.title}... Content will appear here as the lesson progresses.`}
+              initialMessage={`Listening to ${currentSection?.title || lessonTitle}... Content will appear here as the lesson progresses.`}
               hideInputField={true}
               onVideoComplete={handleVideoComplete}
               onQuizAnswered={handleQuizAnswered}
