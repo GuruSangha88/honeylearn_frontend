@@ -1,3 +1,4 @@
+
 import { useEffect } from 'react';
 import { ContentItem } from '@/types';
 
@@ -18,6 +19,10 @@ export const useLessonContent = (
 ) => {
   useEffect(() => {
     if (lesson && lesson.sections.length > 0) {
+      // Reset lesson state first to prevent content mixing
+      resetLessonState();
+      
+      // "What Is Work?" lesson (4001)
       if (lessonId === '4001' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'helping-gif',
@@ -31,8 +36,9 @@ export const useLessonContent = (
         };
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio1.mp3');
-        resetLessonState();
-      } else if (lessonId === '4002' && currentSectionIndex === 0) {
+      } 
+      // "What Is Money?" lesson (4002)
+      else if (lessonId === '4002' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'money-intro-image',
           type: 'image',
@@ -45,8 +51,9 @@ export const useLessonContent = (
         };
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney1.mp3');
-        resetLessonState();
-      } else if (lessonId === '4003' && currentSectionIndex === 0) {
+      } 
+      // "Wants vs Needs" lesson (4003)
+      else if (lessonId === '4003' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'wants-needs-intro',
           type: 'image',
@@ -59,8 +66,9 @@ export const useLessonContent = (
         };
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/wantsvsneeds/wantsvsneeds1.mp3');
-        resetLessonState();
-      } else if (lessonId === '4004' && currentSectionIndex === 0) {
+      } 
+      // "How Do I Make Money?" lesson (4004)
+      else if (lessonId === '4004' && currentSectionIndex === 0) {
         const initialImage: ContentItem = {
           id: 'make-money-dog-image',
           type: 'image',
@@ -73,8 +81,9 @@ export const useLessonContent = (
         };
         setActiveContent([initialImage]);
         setCustomAudioUrl('https://hlearn.b-cdn.net/How%20do%20I%20make%20money/howdoimakemoney.mp3');
-        resetLessonState();
-      } else {
+      } 
+      // Default case - clear content
+      else {
         setActiveContent([]);
       }
     }

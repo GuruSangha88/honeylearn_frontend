@@ -22,12 +22,13 @@ export const handleLessonEnd = (
   lessonId: string,
   lesson: any,
   isSecondPartPlayed: boolean,
-  setCustomAudioUrl: (url: string) => void,
+  setCustomAudioUrl: (url: string | null) => void,
   setIsSecondPartPlayed: (value: boolean) => void,
   setLessonCompleted: (value: boolean) => void,
   setActiveContent: (content: any[]) => void,
   navigate: ReturnType<typeof useNavigate>
 ) => {
+  // Handle "What Is Work?" lesson (4001)
   if (lessonId === '4001') {
     if (!isSecondPartPlayed) {
       setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
@@ -46,11 +47,17 @@ export const handleLessonEnd = (
     } else {
       handleLessonNavigation(lesson, lessonId, navigate);
     }
-  } else if (lessonId === '4004') {
+  } 
+  // Handle "How Do I Make Money?" lesson (4004)
+  else if (lessonId === '4004') {
     if (!isSecondPartPlayed) {
       setLessonCompleted(true);
     } else {
       handleLessonNavigation(lesson, lessonId, navigate);
     }
+  }
+  // For all other lessons, navigate to next lesson
+  else {
+    handleLessonNavigation(lesson, lessonId, navigate);
   }
 };

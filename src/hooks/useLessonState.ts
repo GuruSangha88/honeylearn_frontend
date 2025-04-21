@@ -26,6 +26,12 @@ export const useLessonState = (lessonId: string | undefined) => {
   const [progressPercentage, setProgressPercentage] = useState(0);
 
   useEffect(() => {
+    // Clear all state when lessonId changes to prevent mixing lesson content
+    setActiveContent([]);
+    setCustomAudioUrl(null);
+    setCurrentSectionIndex(0);
+    setCurrentSection(null);
+    
     let foundLesson = null;
     let foundTopicTitle = '';
     let foundLessonTitle = '';
@@ -44,6 +50,7 @@ export const useLessonState = (lessonId: string | undefined) => {
     setTopicTitle(foundTopicTitle);
     setLessonTitle(foundLessonTitle);
     
+    // Reset all state variables for the new lesson
     setIsSecondPartPlayed(false);
     setSecondPartFinished(false);
     setIsThirdPartPlayed(false);
