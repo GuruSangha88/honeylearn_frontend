@@ -1,6 +1,5 @@
-
 import { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
@@ -25,22 +24,20 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
   const [loadAttempts, setLoadAttempts] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Process the audio URL to ensure it's properly encoded
   const getProcessedAudioUrl = (url: string): string => {
     if (!url) return '';
     
     try {
-      // First decode to handle any existing encoding, then encode properly
       const decoded = decodeURIComponent(url);
-      // Replace spaces with %20 and handle other special characters
-      return encodeURI(decoded);
+      const encoded = encodeURI(decoded);
+      console.log(`Processing URL: ${url} -> ${encoded}`);
+      return encoded;
     } catch (e) {
-      console.log("Error processing URL:", e);
+      console.error("Error processing URL:", e);
       return encodeURI(url);
     }
   };
 
-  // Reset state when audio URL changes
   useEffect(() => {
     if (audioUrl) {
       const processedUrl = getProcessedAudioUrl(audioUrl);
@@ -60,11 +57,52 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       setAudioError(null);
       setIsLoading(true);
       
-      // Force reload the audio element
-      audioRef.current.load();
+      const audio = audioRef.current;
       
-      console.log(`Retrying audio load (attempt ${loadAttempts + 1}): ${getProcessedAudioUrl(audioUrl)}`);
+      setTimeout(() => {
+        if (audioRef.current) {
+          console.log(`Retrying audio load (attempt ${loadAttempts + 1}) with direct method: ${getProcessedAudioUrl(audioUrl)}`);
+          audioRef.current.load();
+          
+          if (autoPlay) {
+            setTimeout(() => {
+              if (audioRef.current) audioRef.current.play().catch(e => console.error("Auto-play after retry failed:", e));
+            }, 1000);
+          }
+        }
+      }, 500);
     }
+  };
+
+  const tryAlternativeLoading = () => {
+    const processedUrl = getProcessedAudioUrl(audioUrl);
+    console.log("Trying alternative audio loading method for:", processedUrl);
+    
+    const testAudio = new Audio();
+    testAudio.crossOrigin = "anonymous";
+    
+    testAudio.addEventListener("canplaythrough", () => {
+      console.log("Alternative loading method succeeded!");
+      toast.success("Audio loaded successfully with alternative method");
+      setAudioError(null);
+      setIsLoading(false);
+      
+      if (audioRef.current) {
+        audioRef.current.src = processedUrl;
+        audioRef.current.load();
+        if (autoPlay) playAudio();
+      }
+    });
+    
+    testAudio.addEventListener("error", (e) => {
+      console.error("Alternative loading method also failed:", e);
+      toast.error("Audio failed to load with alternative method");
+      setAudioError(`Failed to load audio with multiple methods. The server may be down or blocking access.`);
+      setIsLoading(false);
+    });
+    
+    testAudio.src = processedUrl;
+    testAudio.load();
   };
 
   useEffect(() => {
@@ -80,7 +118,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       };
       
       const handleError = (e: Event) => {
-        const error = e as ErrorEvent;
         const target = e.target as HTMLAudioElement;
         const networkState = target?.networkState || -1;
         const readyState = target?.readyState || -1;
@@ -94,7 +131,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
         
         if (loadAttempts < 2) {
           console.log("Will retry audio load shortly...");
-          setTimeout(retryLoadAudio, 1500);
+          setTimeout(retryLoadAudio, 1000);
         } else {
           toast.error("Audio failed to load after multiple attempts");
         }
@@ -118,7 +155,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
     }
   }, [audioRef, audioUrl, autoPlay, onEnded, onTimeUpdate, loadAttempts]);
 
-  // Function to safely play audio
   const playAudio = () => {
     if (audioRef.current) {
       const playPromise = audioRef.current.play();
@@ -131,7 +167,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
           })
           .catch(error => {
             console.error('Playback prevented:', error);
-            // Handle autoplay policy restrictions
             if (error.name === "NotAllowedError") {
               toast.error("Autoplay was prevented. Please click to play.");
             } else {
@@ -200,7 +235,6 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
     }
   };
 
-  // Check if URL is valid
   const finalAudioUrl = audioUrl ? getProcessedAudioUrl(audioUrl.trim()) : '';
   const isUrlValid = finalAudioUrl && finalAudioUrl !== '';
   
@@ -210,7 +244,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
         <audio 
           ref={audioRef} 
           src={finalAudioUrl} 
-          preload="metadata"
+          preload="auto"
           crossOrigin="anonymous"
         />
       )}
@@ -220,14 +254,24 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
           <AlertDescription className="text-sm">
             <p>{audioError}</p>
             <p className="text-xs mt-1">URL: {finalAudioUrl || 'No URL provided'}</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="mt-2"
-              onClick={retryLoadAudio}
-            >
-              Retry Loading Audio
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-2 mt-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-2"
+                onClick={retryLoadAudio}
+              >
+                <RefreshCw size={14} />
+                Retry Loading
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={tryAlternativeLoading}
+              >
+                Try Alternative Method
+              </Button>
+            </div>
           </AlertDescription>
         </Alert>
       )}
@@ -289,7 +333,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       </div>
       
       {finalAudioUrl && (
-        <p className="text-xs text-gray-400 mt-2 text-center">
+        <p className="text-xs text-gray-400 mt-4 text-center max-w-full break-all">
           {isPlaying ? 'Playing' : 'Paused'}: {decodeURIComponent(finalAudioUrl).split('/').pop()}
         </p>
       )}
