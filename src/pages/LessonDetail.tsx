@@ -354,18 +354,14 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (lessonCompleted) {
-        if (lesson && lesson.nextLessonId) {
-          navigate(`/lesson/${lesson.nextLessonId}`);
+        const topicId = mockTopics.find(topic => 
+          topic.lessons.some(l => l.id === lessonId)
+        )?.id;
+        
+        if (topicId) {
+          navigate(`/topic/${topicId}`);
         } else {
-          const topicId = mockTopics.find(topic => 
-            topic.lessons.some(l => l.id === lessonId)
-          )?.id;
-          
-          if (topicId) {
-            navigate(`/topic/${topicId}`);
-          } else {
-            navigate('/curriculum');
-          }
+          navigate('/curriculum');
         }
       }
     } else if (lessonId === '4002') {
@@ -442,18 +438,14 @@ const LessonDetail = () => {
           onComplete: handleVideoComplete
         }]);
       } else if (lessonCompleted) {
-        if (lesson && lesson.nextLessonId) {
-          navigate(`/lesson/${lesson.nextLessonId}`);
+        const topicId = mockTopics.find(topic => 
+          topic.lessons.some(l => l.id === lessonId)
+        )?.id;
+        
+        if (topicId) {
+          navigate(`/topic/${topicId}`);
         } else {
-          const topicId = mockTopics.find(topic => 
-            topic.lessons.some(l => l.id === lessonId)
-          )?.id;
-          
-          if (topicId) {
-            navigate(`/topic/${topicId}`);
-          } else {
-            navigate('/curriculum');
-          }
+          navigate('/curriculum');
         }
       }
     } else if (lessonId === '4003') {
@@ -562,46 +554,6 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (lessonCompleted) {
-        if (lesson && lesson.nextLessonId) {
-          navigate(`/lesson/${lesson.nextLessonId}`);
-        } else {
-          const topicId = mockTopics.find(topic => 
-            topic.lessons.some(l => l.id === lessonId)
-          )?.id;
-          
-          if (topicId) {
-            navigate(`/topic/${topicId}`);
-          } else {
-            navigate('/curriculum');
-          }
-        }
-      }
-    } else if (lessonId === '4004') {
-      if (!isSecondPartPlayed) {
-        setLessonCompleted(true);
-      } else if (lessonCompleted) {
-        if (lesson && lesson.nextLessonId) {
-          navigate(`/lesson/${lesson.nextLessonId}`);
-        } else {
-          const topicId = mockTopics.find(topic => 
-            topic.lessons.some(l => l.id === lessonId)
-          )?.id;
-          
-          if (topicId) {
-            navigate(`/topic/${topicId}`);
-          } else {
-            navigate('/curriculum');
-          }
-        }
-      }
-    } else if (lesson && currentSectionIndex < lesson.sections.length - 1) {
-      setCurrentSectionIndex(prevIndex => prevIndex + 1);
-    } else {
-      console.log('Lesson completed');
-      
-      if (lesson && lesson.nextLessonId) {
-        navigate(`/lesson/${lesson.nextLessonId}`);
-      } else {
         const topicId = mockTopics.find(topic => 
           topic.lessons.some(l => l.id === lessonId)
         )?.id;
@@ -611,6 +563,33 @@ const LessonDetail = () => {
         } else {
           navigate('/curriculum');
         }
+      }
+    } else if (lessonId === '4004') {
+      if (!isSecondPartPlayed) {
+        setLessonCompleted(true);
+      } else if (lessonCompleted) {
+        const topicId = mockTopics.find(topic => 
+          topic.lessons.some(l => l.id === lessonId)
+        )?.id;
+        
+        if (topicId) {
+          navigate(`/topic/${topicId}`);
+        } else {
+          navigate('/curriculum');
+        }
+      }
+    } else if (lesson && currentSectionIndex < lesson.sections.length - 1) {
+      setCurrentSectionIndex(prevIndex => prevIndex + 1);
+    } else {
+      console.log('Lesson completed');
+      const topicId = mockTopics.find(topic => 
+        topic.lessons.some(l => l.id === lessonId)
+      )?.id;
+      
+      if (topicId) {
+        navigate(`/topic/${topicId}`);
+      } else {
+        navigate('/curriculum');
       }
     }
   };
