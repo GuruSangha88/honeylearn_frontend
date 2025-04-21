@@ -11,12 +11,6 @@ const TopicDetail = () => {
   
   const topic = mockTopics.find((t) => t.id === topicId);
   
-  // Calculate daily goal percentage
-  const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
-  const dailyGoalPercentage = todayGoal 
-    ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
-    : 0;
-  
   if (!topic) {
     return (
       <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
@@ -31,8 +25,8 @@ const TopicDetail = () => {
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
-        {/* Header with Student Info */}
-        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        {/* Header with Student Info - removed dailyGoalPercentage */}
+        <Header student={currentStudent} />
         
         {/* Back Navigation */}
         <div className="mt-8 mb-6">

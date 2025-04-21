@@ -4,19 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Users } from 'lucide-react';
 import Header from '@/components/Header';
 import TopicCard from '@/components/TopicCard';
-import GoalTracker from '@/components/GoalTracker';
 import { Button } from '@/components/ui/button';
 import { mockTopics, currentStudent } from '@/data/mockData';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'topics' | 'recommended'>('topics');
-  
-  // Calculate daily goal percentage
-  const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
-  const dailyGoalPercentage = todayGoal 
-    ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
-    : 0;
 
   // Find the last accessed lesson
   const lastAccessedLesson = Object.entries(currentStudent.progress.topicsProgress)
@@ -38,8 +31,8 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
-        {/* Header with Student Info */}
-        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        {/* Header with Student Info - removed dailyGoalPercentage */}
+        <Header student={currentStudent} />
         
         {/* Navigation Tabs */}
         <div className="flex justify-between items-center mt-8 mb-6">
@@ -117,9 +110,6 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-        
-        {/* Goal Tracker */}
-        <GoalTracker dailyGoals={currentStudent.dailyGoals} />
       </div>
     </div>
   );

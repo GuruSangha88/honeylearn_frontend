@@ -8,6 +8,8 @@ interface HeaderProps {
     name: string;
     avatar?: string;
   };
+  // Make dailyGoalPercentage optional
+  dailyGoalPercentage?: number;
 }
 
 const Header = ({ student }: HeaderProps) => {

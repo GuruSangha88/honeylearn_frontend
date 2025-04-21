@@ -9,17 +9,11 @@ import { mockTopics, currentStudent } from '@/data/mockData';
 const Curriculum = () => {
   const navigate = useNavigate();
   
-  // Calculate daily goal percentage
-  const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
-  const dailyGoalPercentage = todayGoal 
-    ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
-    : 0;
-  
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
-        {/* Header with Student Info */}
-        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        {/* Header with Student Info - removed dailyGoalPercentage */}
+        <Header student={currentStudent} />
         
         {/* Back Navigation */}
         <div className="mt-8 mb-6">
