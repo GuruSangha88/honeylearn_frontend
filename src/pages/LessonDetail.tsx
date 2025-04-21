@@ -148,6 +148,7 @@ const LessonDetail = () => {
         setIsSecondPartPlayed(false);
         setSecondPartFinished(false);
         setIsThirdPartPlayed(false);
+        setThirdPartFinished(false);
         setVideoCompleted(false);
         setVideoStarted(false);
         setAudioSevenPlayed(false);
@@ -336,20 +337,21 @@ const LessonDetail = () => {
           timing: 0,
           onComplete: handleVideoComplete
         }]);
-      } else if (videoCompleted && !isSixthPartPlayed) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney6.mp3');
-        setIsSixthPartPlayed(true);
+      } else if (secondPartFinished && isThirdPartPlayed && videoCompleted && !quizDisplayed) {
+        setQuizDisplayed(true);
         
         setActiveContent([{
-          id: 'money-video',
-          type: 'video',
+          id: 'work-quiz',
+          type: 'quiz',
           data: {
-            type: 'video',
-            url: 'https://hlearn.b-cdn.net/what%20is%20money/whatismoney56.mp4',
-            alt: 'What Is Money Video'
+            question: "What is work?",
+            options: [
+              { text: "Work is helping people in some way", color: "blue" },
+              { text: "Work is typing on a computer", color: "pink" }
+            ],
+            correctOptionIndex: 0
           },
-          timing: 0,
-          onComplete: handleVideoComplete
+          timing: 0
         }]);
       } else if (lessonCompleted) {
         if (lesson && lesson.nextLessonId) {
