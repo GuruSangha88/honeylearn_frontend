@@ -3,7 +3,7 @@ import { Topic, Student, Parent } from '../types';
 export const mockTopics: Topic[] = [
   {
     id: '1',
-    title: 'Mathematics',
+    title: 'Life Explorers',
     description: 'Learn foundational math concepts',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
     totalLessons: 7,
@@ -132,7 +132,7 @@ export const mockTopics: Topic[] = [
   },
   {
     id: '2',
-    title: 'Language Arts',
+    title: 'Leaders in Training',
     description: 'Develop reading and writing skills',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
     totalLessons: 5,
@@ -160,7 +160,7 @@ export const mockTopics: Topic[] = [
   },
   {
     id: '3',
-    title: 'Science',
+    title: 'Being Independent',
     description: 'Explore the natural world and scientific concepts',
     imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
     totalLessons: 4,
