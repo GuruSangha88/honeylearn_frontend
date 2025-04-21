@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 import Header from '@/components/Header';
 import TopicCard from '@/components/TopicCard';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { mockTopics, currentStudent } from '@/data/mockData';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   // Remove the activeTab state since we no longer need tabs
   const lastAccessedLesson = Object.entries(currentStudent.progress.topicsProgress)
     .reduce((found, [topicId, topicProgress]) => {
