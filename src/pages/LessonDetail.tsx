@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -91,6 +91,7 @@ const LessonDetail = () => {
         setIsSecondPartPlayed(false);
         setSecondPartFinished(false);
         setIsThirdPartPlayed(false);
+        setThirdPartFinished(false);
         setVideoCompleted(false);
         setVideoStarted(false);
         setAudioSevenPlayed(false);
@@ -620,12 +621,12 @@ const LessonDetail = () => {
   
   const getAudioUrl = () => {
     if (customAudioUrl) {
-      const url = customAudioUrl.replace(/ /g, '%20');
+      const url = customAudioUrl.replace(/\s+/g, '%20');
       console.log("Using custom audio URL:", url);
       return url;
     }
     
-    return currentSection?.audioUrl || '';
+    return currentSection?.audioUrl ? currentSection.audioUrl.replace(/\s+/g, '%20') : '';
   };
   
   if (!lesson) {

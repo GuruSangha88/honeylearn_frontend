@@ -20,6 +20,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
   const [volume, setVolume] = useState(0.8);
   const [isPulsing, setIsPulsing] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Reset state when audio URL changes
@@ -30,6 +31,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       setIsPlaying(false);
       setIsPulsing(false);
       setCurrentTime(0);
+      setIsLoading(true);
     }
   }, [audioUrl]);
 
@@ -39,15 +41,19 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       
       const handleCanPlay = () => {
         console.log("Audio can play now:", audioUrl);
+        setIsLoading(false);
         if (autoPlay) {
           playAudio();
         }
       };
       
-      const handleError = (e: ErrorEvent) => {
-        const errorMessage = `Audio error: ${e.message || 'Failed to load audio'}`;
+      const handleError = (e: Event) => {
+        const error = e as ErrorEvent;
+        const errorMessage = `Audio error: ${error.message || 'Failed to load audio'}`;
         console.error(errorMessage, e);
+        console.error("Failed to load audio URL:", audioUrl);
         setAudioError(errorMessage);
+        setIsLoading(false);
         toast.error("Audio failed to load. Please try again.");
       };
       
@@ -55,7 +61,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       audio.addEventListener('timeupdate', handleTimeUpdate);
       audio.addEventListener('ended', handleEnded);
       audio.addEventListener('canplay', handleCanPlay);
-      audio.addEventListener('error', handleError as EventListener);
+      audio.addEventListener('error', handleError);
       
       return () => {
         if (audio) {
@@ -63,7 +69,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
           audio.removeEventListener('timeupdate', handleTimeUpdate);
           audio.removeEventListener('ended', handleEnded);
           audio.removeEventListener('canplay', handleCanPlay);
-          audio.removeEventListener('error', handleError as EventListener);
+          audio.removeEventListener('error', handleError);
         }
       };
     }
@@ -151,15 +157,30 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
     }
   };
 
+  // Check if URL is valid
+  const finalAudioUrl = audioUrl ? audioUrl.trim() : '';
+  const isUrlValid = finalAudioUrl && finalAudioUrl !== '';
+  
   return (
     <div className="w-full flex flex-col items-center">
-      <audio 
-        ref={audioRef} 
-        src={audioUrl} 
-        preload="metadata" 
-      />
+      {isUrlValid && (
+        <audio 
+          ref={audioRef} 
+          src={finalAudioUrl} 
+          preload="metadata" 
+        />
+      )}
       
-      {audioError && <p className="text-red-500 text-sm mb-2">{audioError}</p>}
+      {audioError && (
+        <div className="text-red-500 text-sm mb-2 px-4 py-2 bg-red-100 rounded-md">
+          <p>{audioError}</p>
+          <p className="text-xs mt-1">URL: {finalAudioUrl || 'No URL provided'}</p>
+        </div>
+      )}
+      
+      {isLoading && !audioError && (
+        <p className="text-blue-500 text-sm mb-2">Loading audio...</p>
+      )}
       
       <div className="relative mb-8">
         <div className={`absolute inset-0 rounded-full bg-gradient-to-br from-tutor-blue to-tutor-purple opacity-30 blur-md transform scale-125 ${isPulsing ? 'animate-pulse-glow' : ''}`}></div>
@@ -204,9 +225,9 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
         />
       </div>
       
-      {audioUrl && (
+      {finalAudioUrl && (
         <p className="text-xs text-gray-400 mt-2 text-center">
-          {isPlaying ? 'Playing' : 'Paused'}: {audioUrl.split('/').pop()}
+          {isPlaying ? 'Playing' : 'Paused'}: {finalAudioUrl.split('/').pop()}
         </p>
       )}
     </div>
