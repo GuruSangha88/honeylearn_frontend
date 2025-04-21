@@ -102,7 +102,7 @@ const LessonDetail = () => {
           timing: 0
         };
         setActiveContent([initialImage]);
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio1.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio5.mp3');
         setIsSecondPartPlayed(false);
         setSecondPartFinished(false);
         setIsThirdPartPlayed(false);
@@ -306,7 +306,7 @@ const LessonDetail = () => {
   const handleSectionEnd = () => {
     if (lessonId === '4001') {
       if (!isSecondPartPlayed) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio2.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatsworkpart2.mp3');
         setIsSecondPartPlayed(true);
         
         setActiveContent([{
@@ -320,7 +320,7 @@ const LessonDetail = () => {
           timing: 0
         }]);
       } else if (isSecondPartPlayed && !secondPartFinished) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio3.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/letswatch.mp3');
         setSecondPartFinished(true);
         setIsThirdPartPlayed(true);
         
@@ -336,7 +336,7 @@ const LessonDetail = () => {
           onComplete: handleVideoComplete
         }]);
       } else if (videoCompleted && !isSixthPartPlayed) {
-        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20work/whatisworkaudio4.mp3');
+        setCustomAudioUrl('https://hlearn.b-cdn.net/what%20is%20money/whatismoney6.mp3');
         setIsSixthPartPlayed(true);
         
         setActiveContent([{
