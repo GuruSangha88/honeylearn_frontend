@@ -1,9 +1,10 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -21,26 +22,57 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
   const [isPulsing, setIsPulsing] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadAttempts, setLoadAttempts] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Process the audio URL to ensure it's properly encoded
+  const getProcessedAudioUrl = (url: string): string => {
+    if (!url) return '';
+    
+    try {
+      // First decode to handle any existing encoding, then encode properly
+      const decoded = decodeURIComponent(url);
+      // Replace spaces with %20 and handle other special characters
+      return encodeURI(decoded);
+    } catch (e) {
+      console.log("Error processing URL:", e);
+      return encodeURI(url);
+    }
+  };
 
   // Reset state when audio URL changes
   useEffect(() => {
     if (audioUrl) {
-      console.log(`Loading new audio: ${audioUrl}`);
+      const processedUrl = getProcessedAudioUrl(audioUrl);
+      console.log(`Loading new audio: ${processedUrl} (original: ${audioUrl})`);
       setAudioError(null);
       setIsPlaying(false);
       setIsPulsing(false);
       setCurrentTime(0);
       setIsLoading(true);
+      setLoadAttempts(0);
     }
   }, [audioUrl]);
+
+  const retryLoadAudio = () => {
+    if (audioRef.current) {
+      setLoadAttempts(prev => prev + 1);
+      setAudioError(null);
+      setIsLoading(true);
+      
+      // Force reload the audio element
+      audioRef.current.load();
+      
+      console.log(`Retrying audio load (attempt ${loadAttempts + 1}): ${getProcessedAudioUrl(audioUrl)}`);
+    }
+  };
 
   useEffect(() => {
     if (audioRef.current) {
       const audio = audioRef.current;
       
       const handleCanPlay = () => {
-        console.log("Audio can play now:", audioUrl);
+        console.log("Audio can play now:", getProcessedAudioUrl(audioUrl));
         setIsLoading(false);
         if (autoPlay) {
           playAudio();
@@ -49,12 +81,23 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       
       const handleError = (e: Event) => {
         const error = e as ErrorEvent;
-        const errorMessage = `Audio error: ${error.message || 'Failed to load audio'}`;
-        console.error(errorMessage, e);
-        console.error("Failed to load audio URL:", audioUrl);
+        const target = e.target as HTMLAudioElement;
+        const networkState = target?.networkState || -1;
+        const readyState = target?.readyState || -1;
+        
+        console.error(`Audio error. Network state: ${networkState}, Ready state: ${readyState}`);
+        console.error("Failed to load audio URL:", getProcessedAudioUrl(audioUrl));
+        
+        const errorMessage = `Audio error: Failed to load audio (attempt ${loadAttempts + 1})`;
         setAudioError(errorMessage);
         setIsLoading(false);
-        toast.error("Audio failed to load. Please try again.");
+        
+        if (loadAttempts < 2) {
+          console.log("Will retry audio load shortly...");
+          setTimeout(retryLoadAudio, 1500);
+        } else {
+          toast.error("Audio failed to load after multiple attempts");
+        }
       };
       
       audio.addEventListener('loadedmetadata', handleLoadedMetadata);
@@ -73,7 +116,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
         }
       };
     }
-  }, [audioRef, audioUrl, autoPlay, onEnded, onTimeUpdate]);
+  }, [audioRef, audioUrl, autoPlay, onEnded, onTimeUpdate, loadAttempts]);
 
   // Function to safely play audio
   const playAudio = () => {
@@ -158,7 +201,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
   };
 
   // Check if URL is valid
-  const finalAudioUrl = audioUrl ? audioUrl.trim() : '';
+  const finalAudioUrl = audioUrl ? getProcessedAudioUrl(audioUrl.trim()) : '';
   const isUrlValid = finalAudioUrl && finalAudioUrl !== '';
   
   return (
@@ -167,15 +210,26 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
         <audio 
           ref={audioRef} 
           src={finalAudioUrl} 
-          preload="metadata" 
+          preload="metadata"
+          crossOrigin="anonymous"
         />
       )}
       
       {audioError && (
-        <div className="text-red-500 text-sm mb-2 px-4 py-2 bg-red-100 rounded-md">
-          <p>{audioError}</p>
-          <p className="text-xs mt-1">URL: {finalAudioUrl || 'No URL provided'}</p>
-        </div>
+        <Alert variant="destructive" className="mb-4 bg-red-50">
+          <AlertDescription className="text-sm">
+            <p>{audioError}</p>
+            <p className="text-xs mt-1">URL: {finalAudioUrl || 'No URL provided'}</p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mt-2"
+              onClick={retryLoadAudio}
+            >
+              Retry Loading Audio
+            </Button>
+          </AlertDescription>
+        </Alert>
       )}
       
       {isLoading && !audioError && (
@@ -190,13 +244,22 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
           onClick={togglePlay}
         >
           <div className="w-full h-full rounded-full bg-tutor-dark-gray flex items-center justify-center">
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <div className={`h-10 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave1_1.2s_ease-in-out_infinite]' : ''}`}></div>
-              <div className={`h-14 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave2_1s_ease-in-out_infinite]' : ''}`}></div>
-              <div className={`h-20 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave3_1.4s_ease-in-out_infinite]' : ''}`}></div>
-              <div className={`h-16 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave4_0.9s_ease-in-out_infinite]' : ''}`}></div>
-              <div className={`h-8 w-2.5 rounded-full bg-tutor-purple ${isPulsing ? 'animate-[audio-wave5_1.1s_ease-in-out_infinite]' : ''}`}></div>
-            </div>
+            {isLoading ? (
+              <div className="animate-pulse text-tutor-blue">Loading...</div>
+            ) : (
+              <>
+                {!isPlaying && !isPulsing && (
+                  <Play size={64} className="text-tutor-blue ml-4" />
+                )}
+                <div className={`flex items-center gap-1.5 mb-0.5 ${!isPlaying && !isLoading ? 'opacity-50' : ''}`}>
+                  <div className={`h-10 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave1_1.2s_ease-in-out_infinite]' : ''}`}></div>
+                  <div className={`h-14 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave2_1s_ease-in-out_infinite]' : ''}`}></div>
+                  <div className={`h-20 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave3_1.4s_ease-in-out_infinite]' : ''}`}></div>
+                  <div className={`h-16 w-2.5 rounded-full bg-tutor-blue ${isPulsing ? 'animate-[audio-wave4_0.9s_ease-in-out_infinite]' : ''}`}></div>
+                  <div className={`h-8 w-2.5 rounded-full bg-tutor-purple ${isPulsing ? 'animate-[audio-wave5_1.1s_ease-in-out_infinite]' : ''}`}></div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -227,7 +290,7 @@ const AudioPlayer = ({ audioUrl, onTimeUpdate, onEnded, autoPlay = false }: Audi
       
       {finalAudioUrl && (
         <p className="text-xs text-gray-400 mt-2 text-center">
-          {isPlaying ? 'Playing' : 'Paused'}: {finalAudioUrl.split('/').pop()}
+          {isPlaying ? 'Playing' : 'Paused'}: {decodeURIComponent(finalAudioUrl).split('/').pop()}
         </p>
       )}
     </div>

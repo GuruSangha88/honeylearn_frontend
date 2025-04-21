@@ -621,12 +621,11 @@ const LessonDetail = () => {
   
   const getAudioUrl = () => {
     if (customAudioUrl) {
-      const url = customAudioUrl.replace(/\s+/g, '%20');
-      console.log("Using custom audio URL:", url);
-      return url;
+      console.log("Using custom audio URL:", customAudioUrl);
+      return customAudioUrl;
     }
     
-    return currentSection?.audioUrl ? currentSection.audioUrl.replace(/\s+/g, '%20') : '';
+    return currentSection?.audioUrl || '';
   };
   
   if (!lesson) {
