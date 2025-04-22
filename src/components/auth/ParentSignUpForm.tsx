@@ -2,77 +2,92 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { Link, useNavigate } from 'react-router-dom';
+import { TermsOfServiceLink, PrivacyPolicyLink } from './AuthLinks';
 
-interface ParentSignUpFormProps {
-  onSubmit: (email: string, password: string) => Promise<void>;
-}
-
-const ParentSignUpForm = ({ onSubmit }: ParentSignUpFormProps) => {
+const ParentSignUpForm = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      await onSubmit(email, password);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create account. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    // TODO: Implement actual sign-up logic
+    navigate('/signup/password');
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-white">Create Your Account</h2>
-        <p className="mt-2 text-gray-400">Join HoneyLearn and start your child's learning journey</p>
-      </div>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email" className="text-white">Email</Label>
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="w-full max-w-md space-y-6">
+        <div className="text-center">
+          <div className="flex justify-center mb-6">
+            <svg 
+              width="40" 
+              height="40" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="white" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-white">Create your parent account</h2>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex space-x-4">
+            <Input
+              type="text"
+              placeholder="First name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className="bg-[#1E1E1E] border-gray-700 text-white placeholder-gray-500"
+            />
+            <Input
+              type="text"
+              placeholder="Last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              className="bg-[#1E1E1E] border-gray-700 text-white placeholder-gray-500"
+            />
+          </div>
+          
           <Input
-            id="email"
             type="email"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="bg-gray-800 border-gray-700 text-white"
-            placeholder="Enter your email"
+            className="bg-[#1E1E1E] border-gray-700 text-white placeholder-gray-500"
           />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="password" className="text-white">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="bg-gray-800 border-gray-700 text-white"
-            placeholder="Create a password"
-          />
+
+          <Button 
+            type="submit" 
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
+          >
+            Continue
+          </Button>
+        </form>
+
+        <div className="text-center text-sm text-gray-400">
+          By signing up, you're agreeing to our{' '}
+          <TermsOfServiceLink /> and <PrivacyPolicyLink />.
         </div>
 
-        <Button
-          type="submit"
-          className="w-full bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black font-bold"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Creating Account...' : 'Continue'}
-        </Button>
-      </form>
+        <div className="text-center text-sm text-gray-400">
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Log in
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
