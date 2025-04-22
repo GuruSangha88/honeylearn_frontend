@@ -45,7 +45,7 @@ const CourseDetail = () => {
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
         {/* Header with Student Info */}
-        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        <Header student={currentStudent} />
         
         {/* Back Navigation */}
         <div className="mt-8 mb-6">
