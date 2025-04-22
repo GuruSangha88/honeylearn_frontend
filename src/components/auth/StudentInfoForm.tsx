@@ -23,6 +23,18 @@ const StudentInfoForm = ({ onSubmit }: StudentInfoFormProps) => {
     setIsLoading(true);
     setError(null);
     
+    if (!name.trim()) {
+      setError("Student name is required");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!birthDate) {
+      setError("Birth date is required");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       await onSubmit({
         name,

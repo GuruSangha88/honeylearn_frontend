@@ -53,6 +53,10 @@ const SignUpFlow = () => {
       // After successful signup, move to the student information step
       if (data.user) {
         setParentId(data.user.id);
+        toast({
+          title: "Success",
+          description: "Account created successfully! Now let's add your student information.",
+        });
         setCurrentStep('student');
       }
     } catch (error: any) {
@@ -63,17 +67,34 @@ const SignUpFlow = () => {
 
   const handleStudentInfo = async (studentData: { name: string; birthDate: Date }) => {
     try {
+      // Ensure we have a valid session and parent ID
       if (!parentId) {
         // Try to get the session again as a fallback
         const { data } = await supabase.auth.getSession();
         if (!data.session?.user?.id) {
-          throw new Error('User not authenticated');
+          throw new Error('User not authenticated. Please sign in again.');
         }
         setParentId(data.session.user.id);
       }
       
       console.log("Adding student with parent ID:", parentId);
+
+      // Make sure the parent is inserted in parent_profiles
+      const { error: profileError } = await supabase
+        .from('parent_profiles')
+        .upsert([
+          {
+            id: parentId,
+            email: session?.user?.email || '',
+          }
+        ]);
+
+      if (profileError) {
+        console.error('Error ensuring parent profile:', profileError);
+        throw new Error(`Failed to prepare parent profile: ${profileError.message}`);
+      }
       
+      // Insert the student record
       const { error } = await supabase
         .from('students')
         .insert([
@@ -88,6 +109,11 @@ const SignUpFlow = () => {
         console.error('Error adding student:', error);
         throw error;
       }
+      
+      toast({
+        title: "Success",
+        description: "Student information saved successfully!",
+      });
       
       setCurrentStep('paywall');
     } catch (error: any) {
