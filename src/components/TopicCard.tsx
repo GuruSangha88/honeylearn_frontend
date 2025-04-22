@@ -37,7 +37,7 @@ const TopicCard = ({ topic }: TopicCardProps) => {
         <div>
           <div className="flex items-center gap-2">
             <h2 className={`font-semibold text-xl mb-1 ${isLocked ? 'text-gray-500' : ''}`}>{topic.title}</h2>
-            {isLocked && <Lock size={16} className="text-gray-400" />}
+            {isLocked && <Lock size={24} className="text-gray-400" />}
           </div>
           <p className={`text-sm ${isLocked ? 'text-gray-500' : 'text-gray-400'}`}>{topic.description}</p>
         </div>
