@@ -63,7 +63,7 @@ const TopNav = () => {
           
           {/* Student Profile Button */}
           <Link to="/" className="ml-2">
-            <Avatar className="h-8 w-8 bg-tutor-purple text-white border-none">
+            <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none">
               <AvatarFallback>
                 <UserRound className="w-5 h-5" />
               </AvatarFallback>
@@ -105,7 +105,7 @@ const TopNav = () => {
             
             {/* Student Profile in Mobile Menu */}
             <div className="flex items-center px-4 py-3">
-              <Avatar className="h-8 w-8 bg-tutor-purple text-white border-none mr-2">
+              <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none mr-2">
                 <AvatarFallback>
                   <UserRound className="w-5 h-5" />
                 </AvatarFallback>
