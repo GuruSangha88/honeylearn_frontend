@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TopNav from "./components/TopNav";
+import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Curriculum from "./pages/Curriculum";
@@ -20,17 +21,20 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <TopNav />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/curriculum" element={<Curriculum />} />
-            <Route path="/topic/:topicId" element={<TopicDetail />} />
-            <Route path="/lesson/:lessonId" element={<LessonDetail />} />
-            <Route path="/parents" element={<ParentDashboard />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <div className="min-h-screen flex flex-col">
+            <Toaster />
+            <Sonner />
+            <TopNav />
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/curriculum" element={<Curriculum />} />
+              <Route path="/topic/:topicId" element={<TopicDetail />} />
+              <Route path="/lesson/:lessonId" element={<LessonDetail />} />
+              <Route path="/parents" element={<ParentDashboard />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Footer />
+          </div>
         </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>
