@@ -8,13 +8,9 @@ const ParentBenefitsSection = () => {
     title: "Parent Reviews",
     description: "Join thousands of satisfied parents who trust HoneyLearn"
   }, {
-    icon: <LayoutDashboard className="w-8 h-8 text-tutor-purple" />,
-    title: "Learning Dashboard",
-    description: "Track your child's progress and achievements"
-  }, {
     icon: <Star className="w-8 h-8 text-tutor-purple" />,
     title: "Expert-Backed",
-    description: "Developed with educators and child development experts"
+    description: "Developed by real business leaders"
   }, {
     icon: <Shield className="w-8 h-8 text-tutor-purple" />,
     title: "Safe & Private",
@@ -29,7 +25,7 @@ const ParentBenefitsSection = () => {
         <div className="max-w-2xl mx-auto text-center text-yellow-500 mb-12 italic">
           "It's not just academics—it's teaching my kids how to be independent, think like leaders, and understand money. That's what school's missing." - A HoneyLearn Parent
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
           {benefits.map((benefit, index) => (
             <Card key={index} className="bg-tutor-dark-gray border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-6 flex flex-col items-center text-center">
