@@ -3,40 +3,28 @@ import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import { mockTopics, currentStudent } from '@/data/mockData';
-
 const TopicDetail = () => {
   const navigate = useNavigate();
-  const { topicId } = useParams();
-  
-  const topic = mockTopics.find((t) => t.id === topicId);
-  
+  const {
+    topicId
+  } = useParams();
+  const topic = mockTopics.find(t => t.id === topicId);
   if (!topic) {
-    return (
-      <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
+    return <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Topic Not Found</h1>
           <Button onClick={() => navigate('/curriculum')}>Back to Curriculum</Button>
         </div>
-      </div>
-    );
+      </div>;
   }
-  
-  return (
-    <div className="min-h-screen bg-tutor-dark text-white pt-4">
+  return <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
         {/* Header with Student Info */}
         <Header student={currentStudent} />
         
         {/* Back Navigation */}
         <div className="mt-8 mb-6">
-          <Button
-            variant="link"
-            className="flex items-center gap-1 text-gray-300 hover:text-white pl-0"
-            onClick={() => navigate('/curriculum')}
-          >
-            <ChevronLeft size={20} />
-            Back to Curriculum
-          </Button>
+          
         </div>
         
         {/* Topic Header */}
@@ -49,8 +37,7 @@ const TopicDetail = () => {
         <div className="glass-card p-4 mb-8">
           <h2 className="text-xl font-semibold mb-4">Lessons</h2>
           <div className="space-y-4">
-            {topic.lessons.map((lesson) => (
-              <div key={lesson.id} className="glass-card p-4 hover:border-tutor-purple/40 transition duration-200">
+            {topic.lessons.map(lesson => <div key={lesson.id} className="glass-card p-4 hover:border-tutor-purple/40 transition duration-200">
                 <div className="flex justify-between items-center">
                   <div>
                     <h3 className="font-medium text-lg">{lesson.title}</h3>
@@ -59,21 +46,14 @@ const TopicDetail = () => {
                       {Math.floor(lesson.duration / 60)} minutes
                     </div>
                   </div>
-                  <Button 
-                    onClick={() => navigate(`/lesson/${lesson.id}`)}
-                    size="sm" 
-                    className="bg-tutor-purple hover:bg-tutor-dark-purple"
-                  >
+                  <Button onClick={() => navigate(`/lesson/${lesson.id}`)} size="sm" className="bg-tutor-purple hover:bg-tutor-dark-purple">
                     Start
                   </Button>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default TopicDetail;
