@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import { mockTopics, currentStudent } from '@/data/mockData';
 const Curriculum = () => {
   const navigate = useNavigate();
   
-  // Calculate daily goal percentage
+  // Calculate daily goal percentage - we keep this for other potential uses
   const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
   const dailyGoalPercentage = todayGoal 
     ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
@@ -18,20 +17,18 @@ const Curriculum = () => {
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
-        {/* Header with Student Info */}
-        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        {/* Header with Student Info - removed dailyGoalPercentage prop */}
+        <Header student={currentStudent} />
         
         {/* Back Navigation */}
-        <div className="mt-8 mb-6">
-          <Button
-            variant="link"
-            className="flex items-center gap-1 text-gray-300 hover:text-white pl-0"
-            onClick={() => navigate('/')}
-          >
-            <ChevronLeft size={20} />
-            Back to Dashboard
-          </Button>
-        </div>
+        <Button
+          variant="link"
+          className="flex items-center gap-1 text-gray-300 hover:text-white pl-0 mt-8 mb-6"
+          onClick={() => navigate('/')}
+        >
+          <ChevronLeft size={20} />
+          Back to Dashboard
+        </Button>
         
         <h1 className="text-2xl font-semibold mb-6 gradient-text">Curriculum</h1>
         

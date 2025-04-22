@@ -616,7 +616,7 @@ const LessonDetail = () => {
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
-        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        <Header student={currentStudent} />
         <div className="mb-6">
           <h1 className="text-2xl font-semibold gradient-text">{lessonTitle}</h1>
           <p className="text-sm text-gray-400">From: {topicTitle}</p>
