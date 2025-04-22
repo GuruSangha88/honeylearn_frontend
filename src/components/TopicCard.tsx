@@ -30,16 +30,16 @@ const TopicCard = ({ topic }: TopicCardProps) => {
 
   return (
     <div 
-      className={`glass-card p-5 ${!isLocked ? 'cursor-pointer hover:border-tutor-purple/40' : 'opacity-75'} transition duration-200`}
+      className={`glass-card p-5 ${!isLocked ? 'cursor-pointer hover:border-tutor-purple/40' : 'opacity-40 grayscale cursor-not-allowed'} transition duration-200`}
       onClick={() => !isLocked && navigate(`/topic/${topic.id}`)}
     >
       <div className="flex justify-between items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-semibold text-xl mb-1">{topic.title}</h2>
+            <h2 className={`font-semibold text-xl mb-1 ${isLocked ? 'text-gray-500' : ''}`}>{topic.title}</h2>
             {isLocked && <Lock size={16} className="text-gray-400" />}
           </div>
-          <p className="text-sm text-gray-400">{topic.description}</p>
+          <p className={`text-sm ${isLocked ? 'text-gray-500' : 'text-gray-400'}`}>{topic.description}</p>
         </div>
         <div className="flex flex-col items-center gap-2">
           {getTopicIcon(topic.title)}
@@ -48,7 +48,7 @@ const TopicCard = ({ topic }: TopicCardProps) => {
       
       <div className="mt-4 h-1.5 rounded-full bg-gray-700 overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-tutor-purple to-tutor-blue rounded-full" 
+          className={`h-full bg-gradient-to-r from-tutor-purple to-tutor-blue rounded-full ${isLocked ? 'opacity-30' : ''}`} 
           style={{ width: `${(topic.completedLessons / topic.totalLessons) * 100}%` }}
         />
       </div>
@@ -57,4 +57,3 @@ const TopicCard = ({ topic }: TopicCardProps) => {
 };
 
 export default TopicCard;
-
