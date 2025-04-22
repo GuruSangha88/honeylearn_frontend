@@ -11,8 +11,9 @@ import FaqSection from "@/components/home/FaqSection";
 
 const Home = () => {
   const scrollToVideo = () => {
-    const howItWorksSection = document.getElementById('how-it-works');
-    howItWorksSection?.scrollIntoView({ behavior: 'smooth' });
+    // Since HowItWorksSection was removed, let's scroll to the ParentBenefitsSection instead
+    const parentBenefitsSection = document.getElementById('parent-benefits');
+    parentBenefitsSection?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -21,7 +22,9 @@ const Home = () => {
       <StatsSection />
       <SkillsSection />
       {/* HowItWorksSection removed */}
-      <ParentBenefitsSection />
+      <div id="parent-benefits">
+        <ParentBenefitsSection />
+      </div>
       <FaqSection />
     </div>
   );

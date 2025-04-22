@@ -1,7 +1,11 @@
+
 import { Button } from "@/components/ui/button";
+import { Play } from "lucide-react";
+
 interface HeroSectionProps {
   onWatchVideo?: () => void;
 }
+
 const HeroSection = ({
   onWatchVideo
 }: HeroSectionProps) => {
@@ -18,7 +22,16 @@ const HeroSection = ({
             <Button size="lg" className="bg-purple-500 hover:bg-purple-600 text-white px-8">
               Start Free Trial
             </Button>
-            {onWatchVideo}
+            {onWatchVideo && (
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={onWatchVideo}
+                className="flex items-center gap-2"
+              >
+                <Play className="h-4 w-4" /> Watch Video
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex-1">
@@ -29,4 +42,5 @@ const HeroSection = ({
       </div>
     </section>;
 };
+
 export default HeroSection;
