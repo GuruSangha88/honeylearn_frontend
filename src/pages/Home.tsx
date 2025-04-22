@@ -5,7 +5,7 @@ import { Lightbulb, MessageSquare, DollarSign, Wrench, Play, Star, LayoutDashboa
 import HeroSection from "@/components/home/HeroSection";
 import StatsSection from "@/components/home/StatsSection";
 import SkillsSection from "@/components/home/SkillsSection";
-import HowItWorksSection from "@/components/home/HowItWorksSection";
+// Import removed: import HowItWorksSection from "@/components/home/HowItWorksSection";
 import ParentBenefitsSection from "@/components/home/ParentBenefitsSection";
 import FaqSection from "@/components/home/FaqSection";
 
@@ -20,7 +20,7 @@ const Home = () => {
       <HeroSection onWatchVideo={scrollToVideo} />
       <StatsSection />
       <SkillsSection />
-      <HowItWorksSection />
+      {/* HowItWorksSection removed */}
       <ParentBenefitsSection />
       <FaqSection />
     </div>
