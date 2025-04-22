@@ -1,3 +1,4 @@
+
 import { Home, UserRound, MenuIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -45,7 +46,7 @@ const TopNav = () => {
             Parents
           </Link>
 
-          <Button size="sm" className="bg-[#FEF7CD] hover:bg-[#FEF7CD]/90 text-black">
+          <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black">
             Try for free &gt;
           </Button>
 
@@ -75,7 +76,7 @@ const TopNav = () => {
                 {item.name}
               </Link>)}
             
-            <Button size="sm" className="bg-[#FEF7CD] hover:bg-[#FEF7CD]/90 text-black w-full mt-2">
+            <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2">
               Try for free &gt;
             </Button>
             
@@ -96,3 +97,4 @@ const TopNav = () => {
     </header>;
 };
 export default TopNav;
+

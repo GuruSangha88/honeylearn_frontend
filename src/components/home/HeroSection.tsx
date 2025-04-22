@@ -19,7 +19,7 @@ const HeroSection = ({
             HoneyLearn teaches kids 5-12 leadership, money smarts, and confidence — all through fun challenges, videos, and games.
           </p>
           <div className="pt-4 flex gap-4">
-            <Button size="lg" className="bg-[#FEF7CD] hover:bg-[#FEF7CD]/90 text-black px-8">
+            <Button size="lg" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black px-8">
               Try for free &gt;
             </Button>
             {onWatchVideo && (
@@ -44,3 +44,4 @@ const HeroSection = ({
 };
 
 export default HeroSection;
+
