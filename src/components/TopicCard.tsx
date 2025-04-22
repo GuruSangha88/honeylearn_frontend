@@ -1,5 +1,5 @@
 
-import { Star, Trophy, Rocket, Heart } from 'lucide-react';
+import { Star, Trophy, Rocket, Heart, Lock } from 'lucide-react';
 import { Topic } from '@/types';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,8 @@ interface TopicCardProps {
 
 const TopicCard = ({ topic }: TopicCardProps) => {
   const navigate = useNavigate();
+  
+  const isLocked = topic.title.toLowerCase() !== 'money explorers';
   
   // Function to get a fun icon based on the topic title
   const getTopicIcon = (title: string) => {
@@ -28,12 +30,15 @@ const TopicCard = ({ topic }: TopicCardProps) => {
 
   return (
     <div 
-      className="glass-card p-5 cursor-pointer hover:border-tutor-purple/40 transition duration-200"
-      onClick={() => navigate(`/topic/${topic.id}`)}
+      className={`glass-card p-5 ${!isLocked ? 'cursor-pointer hover:border-tutor-purple/40' : 'opacity-75'} transition duration-200`}
+      onClick={() => !isLocked && navigate(`/topic/${topic.id}`)}
     >
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="font-semibold text-xl mb-1">{topic.title}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-semibold text-xl mb-1">{topic.title}</h2>
+            {isLocked && <Lock size={16} className="text-gray-400" />}
+          </div>
           <p className="text-sm text-gray-400">{topic.description}</p>
         </div>
         <div className="flex flex-col items-center gap-2">
@@ -52,3 +57,4 @@ const TopicCard = ({ topic }: TopicCardProps) => {
 };
 
 export default TopicCard;
+
