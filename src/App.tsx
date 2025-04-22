@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TopNav from "./components/TopNav";
 import Footer from "./components/Footer";
+import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import TopicDetail from "./pages/TopicDetail";
 import LessonDetail from "./pages/LessonDetail";
@@ -24,7 +25,8 @@ const App = () => {
             <Sonner />
             <TopNav />
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/topic/:topicId" element={<TopicDetail />} />
               <Route path="/lesson/:lessonId" element={<LessonDetail />} />
               <Route path="/parents" element={<ParentDashboard />} />
