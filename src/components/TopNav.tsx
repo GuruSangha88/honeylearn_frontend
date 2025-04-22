@@ -5,6 +5,7 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+
 const TopNav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -44,6 +45,10 @@ const TopNav = () => {
             Parents
           </Link>
 
+          <Button size="sm" className="bg-[#FEF7CD] hover:bg-[#FEF7CD]/90 text-black">
+            Try for free &gt;
+          </Button>
+
           {/* Student Profile Button */}
           <Link to="/" className="ml-2">
             <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none">
@@ -70,12 +75,14 @@ const TopNav = () => {
                 {item.name}
               </Link>)}
             
-            {/* Parents Dashboard Link in Mobile Menu */}
+            <Button size="sm" className="bg-[#FEF7CD] hover:bg-[#FEF7CD]/90 text-black w-full mt-2">
+              Try for free &gt;
+            </Button>
+            
             <Link to="/parents" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center px-4 py-3 text-sm font-medium rounded-md", isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white")}>
               Parents
             </Link>
             
-            {/* Student Profile in Mobile Menu */}
             <div className="flex items-center px-4 py-3">
               <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none mr-2">
                 <AvatarFallback>
