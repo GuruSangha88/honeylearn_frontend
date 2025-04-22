@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +11,7 @@ import TopicDetail from "./pages/TopicDetail";
 import LessonDetail from "./pages/LessonDetail";
 import ParentDashboard from "./pages/ParentDashboard";
 import NotFound from "./pages/NotFound";
+import SignUpFlow from "./pages/auth/SignUpFlow";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +26,7 @@ const App = () => {
             <TopNav />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<SignUpFlow />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/topic/:topicId" element={<TopicDetail />} />
               <Route path="/lesson/:lessonId" element={<LessonDetail />} />

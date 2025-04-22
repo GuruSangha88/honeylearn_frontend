@@ -9,7 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      parent_profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          subscription_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id: string
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          birth_date: string
+          created_at: string | null
+          id: string
+          name: string
+          parent_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          birth_date: string
+          created_at?: string | null
+          id?: string
+          name: string
+          parent_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          parent_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "parent_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +82,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      subscription_status: "trial" | "active" | "cancelled" | "expired"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +197,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_status: ["trial", "active", "cancelled", "expired"],
+    },
   },
 } as const

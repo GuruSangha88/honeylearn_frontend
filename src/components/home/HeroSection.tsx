@@ -1,5 +1,5 @@
-
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface HeroSectionProps {
   onWatchVideo?: () => void;
@@ -18,9 +18,11 @@ const HeroSection = ({
             Schools teach facts. HoneyLearn teaches how to think, lead, earn, and thrive — in the real world.
           </p>
           <div className="pt-4 flex gap-4">
-            <Button size="lg" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black px-8 text-base font-bold">
-              Try for free &gt;
-            </Button>
+            <Link to="/signup">
+              <Button size="lg" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black px-8 text-base font-bold">
+                Try for free &gt;
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="flex-1">
