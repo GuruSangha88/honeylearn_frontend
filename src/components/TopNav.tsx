@@ -1,4 +1,5 @@
-import { Home, BookOpen, UserRound, MenuIcon } from "lucide-react";
+
+import { Home, UserRound, MenuIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -22,8 +23,7 @@ const TopNav = () => {
   };
 
   const menuItems = [
-    { name: "Home", icon: <Home className="w-5 h-5 mr-2" />, path: "/" },
-    { name: "Curriculum", icon: <BookOpen className="w-5 h-5 mr-2" />, path: "/curriculum" },
+    { name: "Home", icon: <Home className="w-5 h-5 mr-2" />, path: "/" }
   ];
 
   return (
