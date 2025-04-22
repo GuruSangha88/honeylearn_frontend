@@ -1,5 +1,5 @@
 
-import { ChevronRight } from 'lucide-react';
+import { Star, Trophy, Rocket, Heart } from 'lucide-react';
 import { Topic } from '@/types';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,12 +10,21 @@ interface TopicCardProps {
 const TopicCard = ({ topic }: TopicCardProps) => {
   const navigate = useNavigate();
   
-  // Calculate total lessons and completed lessons
-  const totalLessons = topic.totalLessons || topic.lessons.length;
-  const completedLessons = topic.completedLessons || topic.lessons.filter(lesson => lesson.completed).length;
-  
-  // Calculate progress percentage
-  const progress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+  // Function to get a fun icon based on the topic title
+  const getTopicIcon = (title: string) => {
+    switch (title.toLowerCase()) {
+      case 'money explorers':
+        return <Star className="text-[#FEC6A1]" size={32} />;
+      case 'life learning':
+        return <Trophy className="text-[#D3E4FD]" size={32} />;
+      case 'leadership':
+        return <Heart className="text-[#FFDEE2]" size={32} />;
+      case 'communication':
+        return <Rocket className="text-[#E5DEFF]" size={32} />;
+      default:
+        return <Star className="text-[#FEC6A1]" size={32} />;
+    }
+  };
 
   return (
     <div 
@@ -26,28 +35,16 @@ const TopicCard = ({ topic }: TopicCardProps) => {
         <div>
           <h2 className="font-semibold text-xl mb-1">{topic.title}</h2>
           <p className="text-sm text-gray-400">{topic.description}</p>
-          <p className="text-xs mt-3 text-tutor-purple">
-            {completedLessons}/{totalLessons} lessons completed
-          </p>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <div className="h-16 w-16 bg-tutor-dark-gray rounded-full overflow-hidden border-2 border-tutor-purple/30">
-            {topic.imageUrl ? (
-              <img src={topic.imageUrl} alt={topic.title} className="h-full w-full object-cover" />
-            ) : (
-              <div className="h-full w-full flex items-center justify-center text-3xl font-bold text-tutor-purple">
-                {topic.title.charAt(0)}
-              </div>
-            )}
-          </div>
-          <ChevronRight className="text-tutor-purple" size={20} />
+          {getTopicIcon(topic.title)}
         </div>
       </div>
       
       <div className="mt-4 h-1.5 rounded-full bg-gray-700 overflow-hidden">
         <div 
           className="h-full bg-gradient-to-r from-tutor-purple to-tutor-blue rounded-full" 
-          style={{ width: `${progress}%` }}
+          style={{ width: `${(topic.completedLessons / topic.totalLessons) * 100}%` }}
         />
       </div>
     </div>

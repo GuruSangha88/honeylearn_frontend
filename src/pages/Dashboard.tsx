@@ -1,10 +1,8 @@
 
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users } from 'lucide-react';
 import Header from '@/components/Header';
 import TopicCard from '@/components/TopicCard';
-import GoalTracker from '@/components/GoalTracker';
 import { Button } from '@/components/ui/button';
 import { mockTopics, currentStudent } from '@/data/mockData';
 
@@ -42,9 +40,6 @@ const Dashboard = () => {
             <TopicCard key={topic.id} topic={topic} />
           ))}
         </div>
-        
-        {/* Goal Tracker */}
-        <GoalTracker dailyGoals={currentStudent.dailyGoals} />
       </div>
     </div>
   );
