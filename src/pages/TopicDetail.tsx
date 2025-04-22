@@ -28,10 +28,7 @@ const TopicDetail = () => {
         </div>
         
         {/* Topic Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold gradient-text">{topic.title}</h1>
-          <p className="text-gray-400">{topic.description}</p>
-        </div>
+        
         
         {/* Lessons List */}
         <div className="glass-card p-4 mb-8">
