@@ -1,17 +1,16 @@
 
-import { Facebook, Instagram, Twitter, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
     <footer className="bg-tutor-dark-gray mt-auto py-8 border-t border-gray-800">
       <div className="container max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Company Info */}
           <div>
             <h3 className="text-tutor-purple font-semibold mb-4">HoneyLearn</h3>
             <p className="text-gray-400 text-sm">
-              Empowering young minds with financial literacy and essential life skills.
+              Equipping the next generation with the life skills schools forget.
             </p>
           </div>
           
@@ -35,25 +34,6 @@ const Footer = () => {
                 </Link>
               </li>
             </ul>
-          </div>
-          
-          {/* Social Links */}
-          <div>
-            <h3 className="text-tutor-purple font-semibold mb-4">Connect With Us</h3>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Instagram size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Twitter size={20} />
-              </a>
-              <a href="mailto:contact@honeylearn.com" className="text-gray-400 hover:text-white transition-colors">
-                <Mail size={20} />
-              </a>
-            </div>
           </div>
         </div>
         
