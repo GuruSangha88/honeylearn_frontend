@@ -1,37 +1,23 @@
 
 import { useNavigate } from 'react-router-dom';
-import { Users } from 'lucide-react';
-import Header from '@/components/Header';
 import TopicCard from '@/components/TopicCard';
-import { Button } from '@/components/ui/button';
 import { mockTopics, currentStudent } from '@/data/mockData';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  
-  // Calculate daily goal percentage
-  const todayGoal = currentStudent.dailyGoals[currentStudent.dailyGoals.length - 1];
-  const dailyGoalPercentage = todayGoal 
-    ? Math.min(Math.round((todayGoal.completedMinutes / todayGoal.targetMinutes) * 100), 100)
-    : 0;
 
   return (
     <div className="min-h-screen bg-tutor-dark text-white pt-4">
       <div className="container max-w-6xl mx-auto px-4">
-        {/* Header with Student Info */}
-        <Header student={currentStudent} dailyGoalPercentage={dailyGoalPercentage} />
+        {/* Student Greeting */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold">Welcome, {currentStudent.name}</h1>
+          <p className="text-gray-400">Let's continue learning today!</p>
+        </div>
         
-        {/* Navigation Header */}
-        <div className="flex justify-between items-center mt-8 mb-6">
+        {/* Topics Header */}
+        <div className="mb-6">
           <h2 className="text-xl font-semibold">My Topics</h2>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            onClick={() => navigate('/parents')}
-            className="gap-1"
-          >
-            <Users size={16} /> Parent Dashboard
-          </Button>
         </div>
         
         {/* Topics Grid */}
