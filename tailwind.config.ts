@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -71,6 +70,9 @@ export default {
 					dark: '#1A1F2C',
 					'dark-gray': '#212429',
 					gray: '#8E9196',
+				},
+				slate: {
+					900: '#0A0F1C',
 				}
 			},
 			borderRadius: {
@@ -142,6 +144,10 @@ export default {
 				'audio-wave3': 'audio-wave3 1.4s ease-in-out infinite',
 				'audio-wave4': 'audio-wave4 0.9s ease-in-out infinite',
 				'audio-wave5': 'audio-wave5 1.1s ease-in-out infinite'
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 			}
 		}
 	},
