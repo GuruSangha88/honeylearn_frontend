@@ -531,6 +531,62 @@ export const mockTopics: Topic[] = [
         ]
       }
     ]
+  },
+  {
+    id: '5',
+    title: 'Solving Problems',
+    description: 'Learn critical thinking and problem-solving strategies',
+    imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
+    totalLessons: 6,
+    completedLessons: 0,
+    lessons: [
+      {
+        id: '5001',
+        topicId: '5',
+        title: 'Introduction to Problem Solving',
+        description: 'Learn the basics of solving problems step by step',
+        duration: 600,
+        completed: false,
+        sections: [
+          {
+            id: '50001',
+            title: 'What is Problem Solving?',
+            audioUrl: '/audio/problem-solving/intro.mp3',
+            completed: false,
+            durationInSeconds: 180,
+            content: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '6',
+    title: 'Building Things',
+    description: 'Discover how to design and create amazing projects',
+    imageUrl: '/lovable-uploads/9453ab3a-e6c0-4cc3-802b-8f0de7e8ef01.png',
+    totalLessons: 5,
+    completedLessons: 0,
+    lessons: [
+      {
+        id: '6001',
+        topicId: '6',
+        title: 'Getting Started with Building',
+        description: 'Learn the fundamentals of building and design',
+        duration: 600,
+        completed: false,
+        sections: [
+          {
+            id: '60001',
+            title: 'Introduction to Building',
+            audioUrl: '/audio/building/intro.mp3',
+            completed: false,
+            durationInSeconds: 180,
+            content: []
+          }
+        ]
+      }
+    ]
   }
 ];
 
@@ -635,5 +691,4 @@ export const mockParent: Parent = {
   students: mockStudents
 };
 
-// Get current student (for demo purposes)
 export const currentStudent = mockStudents[0];
