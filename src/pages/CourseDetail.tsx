@@ -1,5 +1,6 @@
+
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, Play, CheckCircle, Circle } from 'lucide-react';
+import { Play, CheckCircle, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import { mockTopics, currentStudent } from '@/data/mockData';
@@ -35,7 +36,7 @@ const CourseDetail = () => {
       <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Course Not Found</h1>
-          <Button onClick={() => navigate('/curriculum')}>Back to Curriculum</Button>
+          <Button onClick={() => navigate('/')}>Back to Home</Button>
         </div>
       </div>
     );
@@ -96,3 +97,4 @@ const CourseDetail = () => {
 };
 
 export default CourseDetail;
+
