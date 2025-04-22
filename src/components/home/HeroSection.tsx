@@ -1,7 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onWatchVideo?: () => void;
+}
+
+const HeroSection = ({ onWatchVideo }: HeroSectionProps) => {
   return (
     <section className="container mx-auto px-6 py-16 md:py-24">
       <div className="flex flex-col md:flex-row items-center justify-between gap-12">
@@ -12,10 +16,20 @@ const HeroSection = () => {
           <p className="text-lg md:text-xl text-gray-300 max-w-xl">
             HoneyLearn teaches kids 5-12 leadership, money smarts, and confidence — all through fun challenges, videos, and games.
           </p>
-          <div className="pt-4">
+          <div className="pt-4 flex gap-4">
             <Button size="lg" className="bg-purple-500 hover:bg-purple-600 text-white px-8">
               Start Free Trial
             </Button>
+            {onWatchVideo && (
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={onWatchVideo} 
+                className="border-gray-600 hover:bg-gray-800"
+              >
+                Watch Demo
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex-1">
