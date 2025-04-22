@@ -47,20 +47,8 @@ const CourseDetail = () => {
         {/* Header with Student Info */}
         <Header student={currentStudent} />
         
-        {/* Back Navigation */}
-        <div className="mt-8 mb-6">
-          <Button
-            variant="link"
-            className="flex items-center gap-1 text-gray-300 hover:text-white pl-0"
-            onClick={() => navigate(-1)}
-          >
-            <ChevronLeft size={20} />
-            Back to {topicTitle}
-          </Button>
-        </div>
-        
         {/* Course Header */}
-        <div className="mb-8">
+        <div className="mt-8 mb-8">
           <h1 className="text-2xl font-semibold gradient-text">{course.title}</h1>
           <p className="text-gray-400">{course.description}</p>
           <div className="mt-3 flex items-center gap-1 text-sm text-tutor-purple">
