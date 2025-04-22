@@ -12,19 +12,29 @@ type SignUpStep = 'parent' | 'student' | 'paywall';
 const SignUpFlow = () => {
   const [currentStep, setCurrentStep] = useState<SignUpStep>('parent');
   const [session, setSession] = useState<any>(null);
+  const [parentId, setParentId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   // Check for existing session on load
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      if (data.session?.user?.id) {
+        setParentId(data.session.user.id);
+      }
+    };
+    
+    checkSession();
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
+      (event, currentSession) => {
+        setSession(currentSession);
+        if (currentSession?.user?.id) {
+          setParentId(currentSession.user.id);
+        }
       }
     );
 
@@ -42,6 +52,7 @@ const SignUpFlow = () => {
       
       // After successful signup, move to the student information step
       if (data.user) {
+        setParentId(data.user.id);
         setCurrentStep('student');
       }
     } catch (error: any) {
@@ -52,15 +63,22 @@ const SignUpFlow = () => {
 
   const handleStudentInfo = async (studentData: { name: string; birthDate: Date }) => {
     try {
-      if (!session?.user?.id) {
-        throw new Error('User not authenticated');
+      if (!parentId) {
+        // Try to get the session again as a fallback
+        const { data } = await supabase.auth.getSession();
+        if (!data.session?.user?.id) {
+          throw new Error('User not authenticated');
+        }
+        setParentId(data.session.user.id);
       }
-
+      
+      console.log("Adding student with parent ID:", parentId);
+      
       const { error } = await supabase
         .from('students')
         .insert([
           {
-            parent_id: session.user.id,
+            parent_id: parentId,
             name: studentData.name,
             birth_date: studentData.birthDate.toISOString().split('T')[0],
           },
