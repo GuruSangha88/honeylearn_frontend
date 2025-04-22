@@ -1,5 +1,4 @@
-
-import { Home, BookOpen, User, MenuIcon } from "lucide-react";
+import { Home, BookOpen, UserRound, MenuIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -25,7 +24,6 @@ const TopNav = () => {
   const menuItems = [
     { name: "Home", icon: <Home className="w-5 h-5 mr-2" />, path: "/" },
     { name: "Curriculum", icon: <BookOpen className="w-5 h-5 mr-2" />, path: "/curriculum" },
-    { name: "Parent View", icon: <User className="w-5 h-5 mr-2" />, path: "/parents" },
   ];
 
   return (
@@ -66,7 +64,9 @@ const TopNav = () => {
           {/* Student Profile Button */}
           <Link to="/" className="ml-2">
             <Avatar className="h-8 w-8 bg-tutor-purple text-white border-none">
-              <AvatarFallback>Alex</AvatarFallback>
+              <AvatarFallback>
+                <UserRound className="w-5 h-5" />
+              </AvatarFallback>
             </Avatar>
           </Link>
         </div>
@@ -106,7 +106,9 @@ const TopNav = () => {
             {/* Student Profile in Mobile Menu */}
             <div className="flex items-center px-4 py-3">
               <Avatar className="h-8 w-8 bg-tutor-purple text-white border-none mr-2">
-                <AvatarFallback>Alex</AvatarFallback>
+                <AvatarFallback>
+                  <UserRound className="w-5 h-5" />
+                </AvatarFallback>
               </Avatar>
               <span className="text-sm font-medium text-gray-300">Alex</span>
             </div>
