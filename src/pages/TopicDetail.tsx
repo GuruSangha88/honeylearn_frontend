@@ -42,9 +42,7 @@ const TopicDetail = () => {
                   <div>
                     <h3 className="font-medium text-lg">{lesson.title}</h3>
                     <p className="text-sm text-gray-400">{lesson.description}</p>
-                    <div className="text-xs text-tutor-gray mt-1">
-                      {Math.floor(lesson.duration / 60)} minutes
-                    </div>
+                    
                   </div>
                   <Button onClick={() => navigate(`/lesson/${lesson.id}`)} size="sm" className="bg-tutor-purple hover:bg-tutor-dark-purple">
                     Start
