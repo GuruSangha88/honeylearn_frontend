@@ -46,7 +46,7 @@ const TopNav = () => {
             Parents
           </Link>
 
-          <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black">
+          <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
             Try for free &gt;
           </Button>
 
@@ -76,7 +76,7 @@ const TopNav = () => {
                 {item.name}
               </Link>)}
             
-            <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2">
+            <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2 text-base font-bold">
               Try for free &gt;
             </Button>
             
