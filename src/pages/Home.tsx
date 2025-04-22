@@ -5,23 +5,15 @@ import { Lightbulb, MessageSquare, DollarSign, Wrench, Play, Star, LayoutDashboa
 import HeroSection from "@/components/home/HeroSection";
 import StatsSection from "@/components/home/StatsSection";
 import SkillsSection from "@/components/home/SkillsSection";
-// Import removed: import HowItWorksSection from "@/components/home/HowItWorksSection";
 import ParentBenefitsSection from "@/components/home/ParentBenefitsSection";
 import FaqSection from "@/components/home/FaqSection";
 
 const Home = () => {
-  const scrollToVideo = () => {
-    // Since HowItWorksSection was removed, let's scroll to the ParentBenefitsSection instead
-    const parentBenefitsSection = document.getElementById('parent-benefits');
-    parentBenefitsSection?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
-      <HeroSection onWatchVideo={scrollToVideo} />
+      <HeroSection />
       <StatsSection />
       <SkillsSection />
-      {/* HowItWorksSection removed */}
       <div id="parent-benefits">
         <ParentBenefitsSection />
       </div>
