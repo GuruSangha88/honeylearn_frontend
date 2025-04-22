@@ -1,11 +1,11 @@
 
-import { Bulb, MessageSquare, DollarSign, Wrench } from "lucide-react";
+import { Lightbulb, MessageSquare, DollarSign, Wrench } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const SkillsSection = () => {
   const skills = [
     {
-      icon: <Bulb className="w-8 h-8 text-tutor-purple" />,
+      icon: <Lightbulb className="w-8 h-8 text-tutor-purple" />,
       title: "Entrepreneurship",
       description: "Run mini businesses & solve real problems"
     },

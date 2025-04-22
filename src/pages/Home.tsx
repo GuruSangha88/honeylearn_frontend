@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Bulb, MessageSquare, DollarSign, Wrench, Play, Star, LayoutDashboard, Shield } from "lucide-react";
+import { Lightbulb, MessageSquare, DollarSign, Wrench, Play, Star, LayoutDashboard, Shield } from "lucide-react";
 import HeroSection from "@/components/home/HeroSection";
 import StatsSection from "@/components/home/StatsSection";
 import SkillsSection from "@/components/home/SkillsSection";
