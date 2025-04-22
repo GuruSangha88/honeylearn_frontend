@@ -5,17 +5,20 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+
 const TopNav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
   const menuItems = [{
     name: "Home",
     icon: <Home className="w-5 h-5 mr-2" />,
     path: "/"
   }];
+
   return <header className="bg-tutor-dark border-b border-gray-800 sticky top-0 z-50">
       <div className="container max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center">
@@ -25,7 +28,7 @@ const TopNav = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center">
+        <div className="hidden md:flex items-center space-x-2">
           <NavigationMenu>
             <NavigationMenuList>
               {menuItems.map(item => <NavigationMenuItem key={item.path}>
@@ -39,6 +42,17 @@ const TopNav = () => {
             </NavigationMenuList>
           </NavigationMenu>
           
+          {/* Parents Dashboard Link */}
+          <Link 
+            to="/parents"
+            className={cn(
+              "px-4 py-2 text-sm font-medium rounded-md",
+              isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white"
+            )}
+          >
+            Parents
+          </Link>
+
           {/* Student Profile Button */}
           <Link to="/" className="ml-2">
             <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none">
@@ -65,6 +79,18 @@ const TopNav = () => {
                 {item.name}
               </Link>)}
             
+            {/* Parents Dashboard Link in Mobile Menu */}
+            <Link 
+              to="/parents"
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center px-4 py-3 text-sm font-medium rounded-md",
+                isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white"
+              )}
+            >
+              Parents
+            </Link>
+            
             {/* Student Profile in Mobile Menu */}
             <div className="flex items-center px-4 py-3">
               <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none mr-2">
@@ -78,4 +104,5 @@ const TopNav = () => {
         </div>}
     </header>;
 };
+
 export default TopNav;
