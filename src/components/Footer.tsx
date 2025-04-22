@@ -1,5 +1,7 @@
 
 import { Link } from "react-router-dom";
+import { TermsOfServiceLink } from "./auth/AuthLinks";
+import { PrivacyPolicyLink } from "./auth/AuthLinks";
 
 const Footer = () => {
   return (
@@ -19,19 +21,10 @@ const Footer = () => {
             <h3 className="text-tutor-purple font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-400 hover:text-white text-sm transition-colors">
-                  Home
-                </Link>
+                <TermsOfServiceLink />
               </li>
               <li>
-                <Link to="/curriculum" className="text-gray-400 hover:text-white text-sm transition-colors">
-                  Curriculum
-                </Link>
-              </li>
-              <li>
-                <Link to="/parents" className="text-gray-400 hover:text-white text-sm transition-colors">
-                  Parent Dashboard
-                </Link>
+                <PrivacyPolicyLink />
               </li>
             </ul>
           </div>
