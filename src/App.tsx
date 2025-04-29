@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import SignUpFlow from "./pages/auth/SignUpFlow";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import DemoLesson from "./pages/DemoLesson";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => {
               <Route path="/parents" element={<ParentDashboard />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/demo-lesson" element={<DemoLesson />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />

@@ -14,6 +14,11 @@ const Footer = () => {
             <p className="text-gray-400 text-sm">
               Equipping the next generation with the life skills schools forget.
             </p>
+            <div className="mt-3">
+              <Link to="/demo-lesson" className="text-tutor-blue hover:text-tutor-purple text-sm transition-colors">
+                Try Demo Lesson →
+              </Link>
+            </div>
           </div>
           
           {/* Quick Links */}
