@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
-import { Play, Volume2, VolumeX } from "lucide-react";
+import { Play } from "lucide-react";
 
 interface HeroSectionProps {
   onWatchVideo?: () => void;
@@ -13,7 +13,6 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
 
   const handlePlayVideo = () => {
     if (videoRef.current) {
@@ -26,14 +25,6 @@ const HeroSection = ({
       }
       setIsPlaying(!isPlaying);
       if (onWatchVideo) onWatchVideo();
-    }
-  };
-
-  const toggleMute = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(!isMuted);
     }
   };
 
@@ -56,42 +47,41 @@ const HeroSection = ({
         </div>
         <div className="flex-1">
           <div className="aspect-video bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl overflow-hidden relative">
-            <video 
-              ref={videoRef}
-              className="w-full h-full object-cover"
-              playsInline
-              loop
-              muted={isMuted}
-              controls={false}
-            >
-              <source src="https://hlearn.b-cdn.net/HoneyLearnIntro.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            
-            {!isPlaying && (
-              <div 
-                className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
-                onClick={handlePlayVideo}
-              >
-                <div className="bg-white/90 rounded-full p-4 shadow-lg hover:bg-white transition-all">
-                  <Play className="h-10 w-10 text-[#FCE20B] stroke-[1.5px] fill-purple-600" />
+            {!isPlaying ? (
+              <>
+                <video 
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                  playsInline
+                  loop
+                  muted={true}
+                  controls={false}
+                >
+                  <source src="https://hlearn.b-cdn.net/HoneyLearnIntro.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                
+                <div 
+                  className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
+                  onClick={handlePlayVideo}
+                >
+                  <div className="bg-white/90 rounded-full p-4 shadow-lg hover:bg-white transition-all">
+                    <Play className="h-10 w-10 text-[#FCE20B] stroke-[1.5px] fill-purple-600" />
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {isPlaying && (
-              <div 
-                className="absolute bottom-4 right-4 cursor-pointer"
-                onClick={toggleMute}
+              </>
+            ) : (
+              <video 
+                ref={videoRef}
+                className="w-full h-full object-cover"
+                playsInline
+                loop
+                controls={true}
+                autoPlay
               >
-                <div className="bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all">
-                  {isMuted ? (
-                    <VolumeX className="h-6 w-6 text-purple-600" />
-                  ) : (
-                    <Volume2 className="h-6 w-6 text-purple-600" />
-                  )}
-                </div>
-              </div>
+                <source src="https://hlearn.b-cdn.net/HoneyLearnIntro.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             )}
           </div>
         </div>
