@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
-import { Play } from "lucide-react";
+import { Play, Volume2, VolumeX } from "lucide-react";
 
 interface HeroSectionProps {
   onWatchVideo?: () => void;
@@ -13,6 +13,7 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   const handlePlayVideo = () => {
     if (videoRef.current) {
@@ -25,6 +26,14 @@ const HeroSection = ({
       }
       setIsPlaying(!isPlaying);
       if (onWatchVideo) onWatchVideo();
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
     }
   };
 
@@ -52,7 +61,7 @@ const HeroSection = ({
               className="w-full h-full object-cover"
               playsInline
               loop
-              muted
+              muted={isMuted}
               controls={false}
             >
               <source src="https://hlearn.b-cdn.net/HoneyLearnIntro.mp4" type="video/mp4" />
@@ -66,6 +75,21 @@ const HeroSection = ({
               >
                 <div className="bg-white/90 rounded-full p-4 shadow-lg hover:bg-white transition-all">
                   <Play className="h-10 w-10 text-[#FCE20B] stroke-[1.5px] fill-purple-600" />
+                </div>
+              </div>
+            )}
+
+            {isPlaying && (
+              <div 
+                className="absolute bottom-4 right-4 cursor-pointer"
+                onClick={toggleMute}
+              >
+                <div className="bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all">
+                  {isMuted ? (
+                    <VolumeX className="h-6 w-6 text-purple-600" />
+                  ) : (
+                    <Volume2 className="h-6 w-6 text-purple-600" />
+                  )}
                 </div>
               </div>
             )}
