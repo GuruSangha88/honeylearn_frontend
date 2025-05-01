@@ -1,5 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useRef, useEffect } from "react";
 
 interface HeroSectionProps {
   onWatchVideo?: () => void;
@@ -8,6 +10,16 @@ interface HeroSectionProps {
 const HeroSection = ({
   onWatchVideo
 }: HeroSectionProps) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log("Auto-play was prevented:", error);
+      });
+    }
+  }, []);
+
   return <section className="container mx-auto px-6 py-16 md:py-24">
       <div className="flex flex-col md:flex-row items-center justify-between gap-12">
         <div className="flex-1 space-y-6 text-left">
@@ -27,7 +39,18 @@ const HeroSection = ({
         </div>
         <div className="flex-1">
           <div className="aspect-video bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl overflow-hidden">
-            <img src="/lovable-uploads/f48a591f-9a92-4f14-848e-b66104e4675c.png" alt="Interactive learning platform" className="w-full h-full object-cover" />
+            <video 
+              ref={videoRef}
+              className="w-full h-full object-cover"
+              autoPlay
+              muted
+              playsInline
+              loop
+              controls={false}
+            >
+              <source src="https://hlearn.b-cdn.net/HoneyLearnIntro.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       </div>
