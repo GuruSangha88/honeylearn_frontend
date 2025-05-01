@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useRef, useEffect } from "react";
+import { useRef, useState } from "react";
+import { Play } from "lucide-react";
 
 interface HeroSectionProps {
   onWatchVideo?: () => void;
@@ -11,14 +12,21 @@ const HeroSection = ({
   onWatchVideo
 }: HeroSectionProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
+  const handlePlayVideo = () => {
     if (videoRef.current) {
-      videoRef.current.play().catch(error => {
-        console.log("Auto-play was prevented:", error);
-      });
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play().catch(error => {
+          console.log("Video playback was prevented:", error);
+        });
+      }
+      setIsPlaying(!isPlaying);
+      if (onWatchVideo) onWatchVideo();
     }
-  }, []);
+  };
 
   return <section className="container mx-auto px-6 py-16 md:py-24">
       <div className="flex flex-col md:flex-row items-center justify-between gap-12">
@@ -38,19 +46,29 @@ const HeroSection = ({
           </div>
         </div>
         <div className="flex-1">
-          <div className="aspect-video bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl overflow-hidden">
+          <div className="aspect-video bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl overflow-hidden relative">
             <video 
               ref={videoRef}
               className="w-full h-full object-cover"
-              autoPlay
-              muted
               playsInline
               loop
+              muted
               controls={false}
             >
               <source src="https://hlearn.b-cdn.net/HoneyLearnIntro.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+            
+            {!isPlaying && (
+              <div 
+                className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
+                onClick={handlePlayVideo}
+              >
+                <div className="bg-white/90 rounded-full p-4 shadow-lg hover:bg-white transition-all">
+                  <Play className="h-10 w-10 text-[#FCE20B] stroke-[1.5px] fill-purple-600" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
