@@ -10,14 +10,20 @@ import { cn } from "@/lib/utils";
 const TopNav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  
+  // Simple auth check - replace with your actual auth logic later
+  const isLoggedIn = false; // Set to false by default
+  
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+  
   const menuItems = [{
     name: "Home",
     icon: <Home className="w-5 h-5 mr-2" />,
     path: "/"
   }];
+  
   return <header className="bg-tutor-dark border-b border-gray-800 sticky top-0 z-50">
       <div className="container max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center">
@@ -41,23 +47,27 @@ const TopNav = () => {
             </NavigationMenuList>
           </NavigationMenu>
           
-          {/* Parents Dashboard Link */}
-          <Link to="/parents" className={cn("px-4 py-2 text-sm font-medium rounded-md", isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white")}>
-            Parents
-          </Link>
+          {/* Parents Dashboard Link - Only show if logged in */}
+          {isLoggedIn && (
+            <Link to="/parents" className={cn("px-4 py-2 text-sm font-medium rounded-md", isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white")}>
+              Parents
+            </Link>
+          )}
 
           <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
             Try for free &gt;
           </Button>
 
-          {/* Student Profile Button */}
-          <Link to="/" className="ml-2">
-            <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none">
-              <AvatarFallback className="text-indigo-600">
-                <UserRound className="w-5 h-5" />
-              </AvatarFallback>
-            </Avatar>
-          </Link>
+          {/* Student Profile Button - Only show if logged in */}
+          {isLoggedIn && (
+            <Link to="/" className="ml-2">
+              <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none">
+                <AvatarFallback className="text-indigo-600">
+                  <UserRound className="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -80,21 +90,26 @@ const TopNav = () => {
               Try for free &gt;
             </Button>
             
-            <Link to="/parents" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center px-4 py-3 text-sm font-medium rounded-md", isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white")}>
-              Parents
-            </Link>
+            {/* Parents Link - Only show if logged in */}
+            {isLoggedIn && (
+              <Link to="/parents" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center px-4 py-3 text-sm font-medium rounded-md", isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white")}>
+                Parents
+              </Link>
+            )}
             
-            <div className="flex items-center px-4 py-3">
-              <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none mr-2">
-                <AvatarFallback>
-                  <UserRound className="w-5 h-5" />
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-medium text-gray-300">Alex</span>
-            </div>
+            {/* Profile - Only show if logged in */}
+            {isLoggedIn && (
+              <div className="flex items-center px-4 py-3">
+                <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none mr-2">
+                  <AvatarFallback>
+                    <UserRound className="w-5 h-5" />
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-medium text-gray-300">Alex</span>
+              </div>
+            )}
           </div>
         </div>}
     </header>;
 };
 export default TopNav;
-
