@@ -9,70 +9,189 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      parent_profiles: {
+      courses: {
         Row: {
+          category: string
           created_at: string | null
-          email: string
+          description: string | null
           id: string
-          subscription_status:
-            | Database["public"]["Enums"]["subscription_status"]
-            | null
-          updated_at: string | null
+          points: number | null
+          title: string
         }
         Insert: {
+          category: string
           created_at?: string | null
-          email: string
-          id: string
-          subscription_status?:
-            | Database["public"]["Enums"]["subscription_status"]
-            | null
-          updated_at?: string | null
+          description?: string | null
+          id?: string
+          points?: number | null
+          title: string
         }
         Update: {
+          category?: string
           created_at?: string | null
-          email?: string
+          description?: string | null
           id?: string
-          subscription_status?:
-            | Database["public"]["Enums"]["subscription_status"]
-            | null
-          updated_at?: string | null
+          points?: number | null
+          title?: string
         }
         Relationships: []
       }
-      students: {
+      lesson_sections: {
         Row: {
-          birth_date: string
+          content: Json
           created_at: string | null
           id: string
-          name: string
-          parent_id: string
-          updated_at: string | null
+          lesson_id: string | null
+          order_number: number
+          type: string
         }
         Insert: {
-          birth_date: string
+          content: Json
           created_at?: string | null
           id?: string
-          name: string
-          parent_id: string
-          updated_at?: string | null
+          lesson_id?: string | null
+          order_number: number
+          type: string
         }
         Update: {
-          birth_date?: string
+          content?: Json
           created_at?: string | null
           id?: string
-          name?: string
-          parent_id?: string
-          updated_at?: string | null
+          lesson_id?: string | null
+          order_number?: number
+          type?: string
         }
         Relationships: [
           {
-            foreignKeyName: "students_parent_id_fkey"
-            columns: ["parent_id"]
+            foreignKeyName: "lesson_sections_lesson_id_fkey"
+            columns: ["lesson_id"]
             isOneToOne: false
-            referencedRelation: "parent_profiles"
+            referencedRelation: "lessons"
             referencedColumns: ["id"]
           },
         ]
+      }
+      lessons: {
+        Row: {
+          course_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          order_number: number
+          points: number | null
+          title: string
+          video_url: string | null
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_number: number
+          points?: number | null
+          title: string
+          video_url?: string | null
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_number?: number
+          points?: number | null
+          title?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_progress: {
+        Row: {
+          completed_at: string | null
+          completed_sections: string[] | null
+          created_at: string | null
+          id: string
+          lesson_id: string | null
+          student_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_sections?: string[] | null
+          created_at?: string | null
+          id?: string
+          lesson_id?: string | null
+          student_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          completed_sections?: string[] | null
+          created_at?: string | null
+          id?: string
+          lesson_id?: string | null
+          student_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_progress_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          age_group: string
+          avatar_url: string | null
+          birthday: string
+          course_progress: Json | null
+          created_at: string
+          first_name: string
+          id: string
+          last_name: string
+          parent_id: string
+          points: number | null
+        }
+        Insert: {
+          age_group?: string
+          avatar_url?: string | null
+          birthday: string
+          course_progress?: Json | null
+          created_at?: string
+          first_name: string
+          id?: string
+          last_name: string
+          parent_id: string
+          points?: number | null
+        }
+        Update: {
+          age_group?: string
+          avatar_url?: string | null
+          birthday?: string
+          course_progress?: Json | null
+          created_at?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          parent_id?: string
+          points?: number | null
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -82,7 +201,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      subscription_status: "trial" | "active" | "cancelled" | "expired"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -197,8 +316,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      subscription_status: ["trial", "active", "cancelled", "expired"],
-    },
+    Enums: {},
   },
 } as const
