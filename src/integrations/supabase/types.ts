@@ -112,6 +112,24 @@ export type Database = {
           },
         ]
       }
+      parent_profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       student_progress: {
         Row: {
           completed_at: string | null

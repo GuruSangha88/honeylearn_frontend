@@ -82,28 +82,26 @@ const SignUpFlow = () => {
       // Make sure the parent is inserted in parent_profiles
       const { error: profileError } = await supabase
         .from('parent_profiles')
-        .upsert([
-          {
-            id: parentId,
-            email: session?.user?.email || '',
-          }
-        ]);
+        .upsert({
+          id: parentId,
+          email: session?.user?.email || '',
+        });
 
       if (profileError) {
         console.error('Error ensuring parent profile:', profileError);
         throw new Error(`Failed to prepare parent profile: ${profileError.message}`);
       }
       
-      // Insert the student record
+      // Insert the student record - updating to match the students table schema
       const { error } = await supabase
         .from('students')
-        .insert([
-          {
-            parent_id: parentId,
-            name: studentData.name,
-            birth_date: studentData.birthDate.toISOString().split('T')[0],
-          },
-        ]);
+        .insert({
+          parent_id: parentId,
+          first_name: studentData.name,
+          last_name: '', // Required field but we don't collect it in our form
+          birthday: studentData.birthDate.toISOString().split('T')[0],
+          age_group: 'GROUP_7_9', // Default value
+        });
 
       if (error) {
         console.error('Error adding student:', error);
