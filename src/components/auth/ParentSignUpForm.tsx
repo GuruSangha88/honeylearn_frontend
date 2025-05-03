@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from 'react-router-dom';
 import { TermsOfServiceLink, PrivacyPolicyLink } from './AuthLinks';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { WifiOff } from 'lucide-react';
 
 interface ParentSignUpFormProps {
   onSubmit: (email: string, password: string) => Promise<void>;
@@ -25,7 +27,14 @@ const ParentSignUpForm = ({ onSubmit }: ParentSignUpFormProps) => {
     try {
       await onSubmit(email, password);
     } catch (err: any) {
-      setError(err.message || 'An error occurred during sign up');
+      console.error('Error in signup form:', err);
+      
+      // Handle network errors with a specific message
+      if (err.message === 'Failed to fetch') {
+        setError('Network connection error. Please check your internet connection and try again.');
+      } else {
+        setError(err.message || 'An error occurred during sign up');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -54,9 +63,10 @@ const ParentSignUpForm = ({ onSubmit }: ParentSignUpFormProps) => {
         </div>
         
         {error && (
-          <div className="bg-red-500 bg-opacity-10 border border-red-500 text-red-500 px-4 py-2 rounded">
-            {error}
-          </div>
+          <Alert variant="destructive" className="bg-red-500 bg-opacity-10 border border-red-500 text-red-500">
+            {error.includes('Network') && <WifiOff className="h-4 w-4 mr-2" />}
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
