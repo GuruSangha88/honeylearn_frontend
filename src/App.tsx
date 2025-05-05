@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import SignUpFlow from "./pages/auth/SignUpFlow";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => {
             <TopNav />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/index" element={<Index />} />
               <Route path="/signup/*" element={<SignUpFlow />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/topic/:topicId" element={<TopicDetail />} />

@@ -6,9 +6,9 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to the dashboard
-    navigate('/');
-  }, []);
+    // Redirect to the home page instead of empty string
+    navigate('/dashboard');
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-tutor-dark text-white">
