@@ -1,7 +1,55 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const PaywallScreen = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSubscribe = async () => {
+    setIsLoading(true);
+
+    try {
+      // Get the current user session
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session?.user) {
+        throw new Error("User not authenticated. Please sign in again.");
+      }
+
+      const parentId = sessionData.session.user.id;
+      const email = sessionData.session.user.email;
+
+      // Call the Stripe checkout function
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { parentId, email },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error("Failed to create checkout session");
+      }
+    } catch (error: any) {
+      console.error("Error starting checkout:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to start checkout process. Please try again.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -37,8 +85,19 @@ const PaywallScreen = () => {
           </li>
         </ul>
         
-        <Button className="w-full bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black font-bold">
-          Start Premium Plan
+        <Button 
+          className="w-full bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black font-bold"
+          onClick={handleSubscribe}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "Start Premium Plan"
+          )}
         </Button>
       </div>
     </div>
