@@ -14,6 +14,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Starting create-checkout function");
+    
     const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeSecretKey) {
       throw new Error("STRIPE_SECRET_KEY is not set in environment variables");
@@ -29,15 +31,19 @@ serve(async (req) => {
       throw new Error("parentId and email are required");
     }
 
+    console.log(`Creating checkout session for parent ${parentId} with email ${email}`);
+
     // Create or retrieve a Stripe customer
     const customers = await stripe.customers.list({ email, limit: 1 });
     let customerId;
     
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
+      console.log(`Found existing customer: ${customerId}`);
     } else {
       const newCustomer = await stripe.customers.create({ email });
       customerId = newCustomer.id;
+      console.log(`Created new customer: ${customerId}`);
     }
 
     // Create a checkout session
@@ -68,6 +74,8 @@ serve(async (req) => {
         parent_id: parentId,
       },
     });
+
+    console.log(`Checkout session created: ${session.id}, URL: ${session.url}`);
 
     // Return the checkout URL to the client
     return new Response(JSON.stringify({ url: session.url }), {

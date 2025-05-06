@@ -24,19 +24,24 @@ const PaywallScreen = () => {
       const parentId = sessionData.session.user.id;
       const email = sessionData.session.user.email;
 
+      console.log("Starting checkout with parent ID:", parentId, "and email:", email);
+
       // Call the Stripe checkout function
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { parentId, email },
       });
 
       if (error) {
+        console.error("Checkout function error:", error);
         throw error;
       }
 
       if (data?.url) {
+        console.log("Redirecting to Stripe checkout:", data.url);
         // Redirect to Stripe checkout
         window.location.href = data.url;
       } else {
+        console.error("No checkout URL returned:", data);
         throw new Error("Failed to create checkout session");
       }
     } catch (error: any) {

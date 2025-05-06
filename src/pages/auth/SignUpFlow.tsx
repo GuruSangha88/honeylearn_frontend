@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import ParentSignUpForm from '@/components/auth/ParentSignUpForm';
 import StudentInfoForm from '@/components/auth/StudentInfoForm';
@@ -14,6 +14,7 @@ const SignUpFlow = () => {
   const [session, setSession] = useState<any>(null);
   const [parentId, setParentId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
 
   // Check for existing session on load
@@ -23,6 +24,12 @@ const SignUpFlow = () => {
       setSession(data.session);
       if (data.session?.user?.id) {
         setParentId(data.session.user.id);
+        
+        // If we have a session but are still on the parent step, 
+        // move to the student step
+        if (currentStep === 'parent') {
+          setCurrentStep('student');
+        }
       }
     };
     
@@ -31,15 +38,29 @@ const SignUpFlow = () => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth state changed:", event);
         setSession(currentSession);
         if (currentSession?.user?.id) {
           setParentId(currentSession.user.id);
+          
+          // If we just signed in and are on the parent step,
+          // automatically move to the student step
+          if (currentStep === 'parent' && event === 'SIGNED_IN') {
+            setCurrentStep('student');
+          }
         }
       }
     );
 
+    // Check for query params that might indicate where we are in the flow
+    const params = new URLSearchParams(location.search);
+    if (params.get('session_id')) {
+      // This is coming back from a successful Stripe payment
+      navigate('/dashboard');
+    }
+
     return () => subscription.unsubscribe();
-  }, []);
+  }, [currentStep, navigate, location]);
 
   const handleParentSignUp = async (email: string, password: string) => {
     try {
