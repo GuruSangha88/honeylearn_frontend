@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { TermsOfServiceLink, PrivacyPolicyLink } from "./AuthLinks";
 
 const PaywallScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -65,9 +66,9 @@ const PaywallScreen = () => {
       
       <div className="bg-gray-800 rounded-lg p-6 space-y-4">
         <div className="text-center">
-          <h3 className="text-xl font-bold text-white">Premium Plan</h3>
-          <p className="text-4xl font-bold text-[#FCE20B] mt-2">$29/month</p>
-          <p className="text-gray-400 mt-2">Full access to all features</p>
+          <h3 className="text-xl font-bold text-white">Get Started</h3>
+          <p className="text-4xl font-bold text-[#FCE20B] mt-2">Try HoneyLearn For Free</p>
+          <p className="text-gray-400 mt-2">Just $9.99 per month after that</p>
         </div>
         
         <ul className="space-y-3">
@@ -102,13 +103,16 @@ const PaywallScreen = () => {
               Processing...
             </>
           ) : (
-            "Start Premium Plan"
+            "Start Free Trial"
           )}
         </Button>
 
         <div className="mt-4 text-center text-sm text-gray-400">
           <p>Secure payment processed by Stripe</p>
           <p className="font-mono mt-1">Your subscription can be cancelled anytime</p>
+          <p className="mt-2">
+            <TermsOfServiceLink /> and <PrivacyPolicyLink />
+          </p>
         </div>
       </div>
     </div>
