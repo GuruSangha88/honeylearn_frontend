@@ -1,4 +1,6 @@
 
+import { Separator } from "@/components/ui/separator";
+
 const StatsSection = () => {
   const stats = [
     {
@@ -23,6 +25,9 @@ const StatsSection = () => {
 
   return (
     <section className="container mx-auto px-6 py-16">
+      <div className="mb-16">
+        <Separator className="bg-gray-700/30 h-[1px]" />
+      </div>
       <h2 className="text-3xl font-bold text-center text-blue-400 mb-16">
         Why Traditional Education Isn't Enough
       </h2>
