@@ -13,6 +13,7 @@ const SignUpFlow = () => {
   const [currentStep, setCurrentStep] = useState<SignUpStep>('parent');
   const [session, setSession] = useState<any>(null);
   const [parentId, setParentId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -20,16 +21,25 @@ const SignUpFlow = () => {
   // Check for existing session on load
   useEffect(() => {
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-      if (data.session?.user?.id) {
-        setParentId(data.session.user.id);
+      setLoading(true);
+      try {
+        const { data } = await supabase.auth.getSession();
+        console.log("Session check:", data.session);
+        setSession(data.session);
         
-        // If we have a session but are still on the parent step, 
-        // move to the student step
-        if (currentStep === 'parent') {
-          setCurrentStep('student');
+        if (data.session?.user?.id) {
+          setParentId(data.session.user.id);
+          
+          // If we have a session but are still on the parent step, 
+          // move to the student step
+          if (currentStep === 'parent') {
+            setCurrentStep('student');
+          }
         }
+      } catch (error) {
+        console.error("Session check error:", error);
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -145,6 +155,14 @@ const SignUpFlow = () => {
       throw error;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center py-12 px-4">
+        <p className="text-white">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

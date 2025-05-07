@@ -54,9 +54,11 @@ const TopNav = () => {
             </Link>
           )}
 
-          <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
-            Try for free &gt;
-          </Button>
+          <Link to="/signup">
+            <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
+              Try for free &gt;
+            </Button>
+          </Link>
 
           {/* Student Profile Button - Only show if logged in */}
           {isLoggedIn && (
@@ -86,9 +88,11 @@ const TopNav = () => {
                 {item.name}
               </Link>)}
             
-            <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2 text-base font-bold">
-              Try for free &gt;
-            </Button>
+            <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
+              <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2 text-base font-bold">
+                Try for free &gt;
+              </Button>
+            </Link>
             
             {/* Parents Link - Only show if logged in */}
             {isLoggedIn && (

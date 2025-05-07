@@ -28,18 +28,20 @@ const App = () => {
             <Toaster />
             <Sonner />
             <TopNav />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/index" element={<Index />} />
-              <Route path="/signup/*" element={<SignUpFlow />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/topic/:topicId" element={<TopicDetail />} />
-              <Route path="/lesson/:lessonId" element={<LessonDetail />} />
-              <Route path="/parents" element={<ParentDashboard />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/index" element={<Index />} />
+                <Route path="/signup" element={<SignUpFlow />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/topic/:topicId" element={<TopicDetail />} />
+                <Route path="/lesson/:lessonId" element={<LessonDetail />} />
+                <Route path="/parents" element={<ParentDashboard />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
             <Footer />
           </div>
         </TooltipProvider>
