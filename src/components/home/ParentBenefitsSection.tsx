@@ -1,5 +1,5 @@
 
-import { Star, LayoutDashboard, Shield } from "lucide-react";
+import { Star, Shield, Briefcase, Lightbulb, GraduationCap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ParentBenefitsSection = () => {
@@ -8,9 +8,9 @@ const ParentBenefitsSection = () => {
     title: "Parent Reviews",
     description: "Join thousands of satisfied parents who trust HoneyLearn"
   }, {
-    icon: <Star className="w-8 h-8 text-tutor-purple" />,
+    icon: <Briefcase className="w-8 h-8 text-tutor-purple" />,
     title: "Expert-Backed",
-    description: "Developed by real business leaders"
+    description: "Developed by real business leaders, entrepreneurs, and teachers"
   }, {
     icon: <Shield className="w-8 h-8 text-tutor-purple" />,
     title: "Safe & Private",
