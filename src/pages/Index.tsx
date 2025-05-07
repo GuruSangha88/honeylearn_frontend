@@ -6,13 +6,13 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to the home page 
-    navigate('/');
+    // Redirect to the signup page to start the process 
+    navigate('/signup');
   }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-tutor-dark text-white">
-      <p>Redirecting to homepage...</p>
+      <p>Redirecting to signup page...</p>
     </div>
   );
 };

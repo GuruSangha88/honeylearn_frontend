@@ -134,7 +134,7 @@ const SignUpFlow = () => {
         throw new Error(`Failed to prepare parent profile: ${profileError.message}`);
       }
       
-      // Insert the student record - updating to match the students table schema
+      // Insert the student record
       const { error } = await supabase
         .from('students')
         .insert({

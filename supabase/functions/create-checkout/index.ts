@@ -47,6 +47,7 @@ serve(async (req) => {
     }
 
     const origin = req.headers.get("origin") || "http://localhost:3000";
+    console.log(`Using origin: ${origin}`);
     
     // Create a checkout session
     const session = await stripe.checkout.sessions.create({
