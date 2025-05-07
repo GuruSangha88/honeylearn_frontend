@@ -107,9 +107,8 @@ const PaywallScreen = () => {
         </Button>
 
         <div className="mt-4 text-center text-sm text-gray-400">
-          <p>For testing, use Stripe test card:</p>
-          <p className="font-mono mt-1">4242 4242 4242 4242</p>
-          <p className="font-mono">Any future date, any CVC, any ZIP</p>
+          <p>Secure payment processed by Stripe</p>
+          <p className="font-mono mt-1">Your subscription can be cancelled anytime</p>
         </div>
       </div>
     </div>
