@@ -1,4 +1,3 @@
-
 import { Home, UserRound, MenuIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -78,11 +77,18 @@ const TopNav = () => {
           )}
 
           {!isLoggedIn && (
-            <Link to="/signup">
-              <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
-                Try for free &gt;
-              </Button>
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link to="/login">
+                <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
+                  Try for free &gt;
+                </Button>
+              </Link>
+            </div>
           )}
 
           {/* Student Profile Button - Only show if logged in */}
@@ -134,11 +140,16 @@ const TopNav = () => {
               </Link>)}
             
             {!isLoggedIn && (
-              <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
-                <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2 text-base font-bold">
-                  Try for free &gt;
-                </Button>
-              </Link>
+              <>
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center px-4 py-3 text-sm font-medium text-gray-300 hover:text-white">
+                  Login
+                </Link>
+                <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
+                  <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2 text-base font-bold">
+                    Try for free &gt;
+                  </Button>
+                </Link>
+              </>
             )}
             
             {/* Parents Link - Only show if logged in */}

@@ -13,6 +13,7 @@ import LessonDetail from "./pages/LessonDetail";
 import ParentDashboard from "./pages/ParentDashboard";
 import NotFound from "./pages/NotFound";
 import SignUpFlow from "./pages/auth/SignUpFlow";
+import LoginPage from "./pages/auth/LoginPage";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Index from "./pages/Index";
@@ -33,6 +34,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/index" element={<Index />} />
                 <Route path="/signup" element={<SignUpFlow />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/topic/:topicId" element={<TopicDetail />} />
                 <Route path="/lesson/:lessonId" element={<LessonDetail />} />
