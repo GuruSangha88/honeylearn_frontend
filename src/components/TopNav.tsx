@@ -5,6 +5,12 @@ import { useState, useEffect } from "react";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -81,27 +87,33 @@ const TopNav = () => {
 
           {/* Student Profile Button - Only show if logged in */}
           {isLoggedIn && (
-            <div className="relative group">
-              <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none cursor-pointer">
-                <AvatarFallback className="bg-tutor-purple">
-                  {userEmail ? userEmail[0].toUpperCase() : <UserRound className="w-5 h-5" />}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg p-2 hidden group-hover:block">
-                <Link to="/parents" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded-md">
-                  Parent Dashboard
-                </Link>
-                <button
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                    window.location.href = '/';
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded-md"
-                >
-                  Sign Out
-                </button>
-              </div>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none cursor-pointer">
+                  <AvatarFallback className="bg-tutor-purple">
+                    {userEmail ? userEmail[0].toUpperCase() : <UserRound className="w-5 h-5" />}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 bg-gray-800 border border-gray-700 text-white">
+                <DropdownMenuItem asChild>
+                  <Link to="/parents" className="text-gray-300 hover:text-white focus:text-white">
+                    Parent Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <button
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      window.location.href = '/';
+                    }}
+                    className="w-full text-left text-gray-300 hover:text-white focus:text-white"
+                  >
+                    Sign Out
+                  </button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
 
