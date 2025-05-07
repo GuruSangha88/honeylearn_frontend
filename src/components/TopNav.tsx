@@ -1,18 +1,35 @@
 
 import { Home, UserRound, MenuIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const TopNav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   
-  // Simple auth check - replace with your actual auth logic later
-  const isLoggedIn = false; // Set to false by default
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setIsLoggedIn(!!data.session);
+      setUserEmail(data.session?.user?.email || null);
+    };
+    
+    checkSession();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(!!session);
+      setUserEmail(session?.user?.email || null);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
   
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -54,21 +71,37 @@ const TopNav = () => {
             </Link>
           )}
 
-          <Link to="/signup">
-            <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
-              Try for free &gt;
-            </Button>
-          </Link>
+          {!isLoggedIn && (
+            <Link to="/signup">
+              <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black text-base font-bold">
+                Try for free &gt;
+              </Button>
+            </Link>
+          )}
 
           {/* Student Profile Button - Only show if logged in */}
           {isLoggedIn && (
-            <Link to="/" className="ml-2">
-              <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none">
-                <AvatarFallback className="text-indigo-600">
-                  <UserRound className="w-5 h-5" />
+            <div className="relative group">
+              <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none cursor-pointer">
+                <AvatarFallback className="bg-tutor-purple">
+                  {userEmail ? userEmail[0].toUpperCase() : <UserRound className="w-5 h-5" />}
                 </AvatarFallback>
               </Avatar>
-            </Link>
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg p-2 hidden group-hover:block">
+                <Link to="/parents" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded-md">
+                  Parent Dashboard
+                </Link>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = '/';
+                  }}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded-md"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
@@ -88,28 +121,41 @@ const TopNav = () => {
                 {item.name}
               </Link>)}
             
-            <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
-              <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2 text-base font-bold">
-                Try for free &gt;
-              </Button>
-            </Link>
+            {!isLoggedIn && (
+              <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
+                <Button size="sm" className="bg-[#FCE20B] hover:bg-[#FCE20B]/90 text-black w-full mt-2 text-base font-bold">
+                  Try for free &gt;
+                </Button>
+              </Link>
+            )}
             
             {/* Parents Link - Only show if logged in */}
             {isLoggedIn && (
-              <Link to="/parents" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center px-4 py-3 text-sm font-medium rounded-md", isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white")}>
-                Parents
-              </Link>
+              <>
+                <Link to="/parents" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center px-4 py-3 text-sm font-medium rounded-md", isActive("/parents") ? "text-tutor-purple" : "text-gray-300 hover:text-white")}>
+                  Parents
+                </Link>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = '/';
+                  }}
+                  className="flex w-full items-center px-4 py-3 text-sm font-medium rounded-md text-gray-300 hover:text-white"
+                >
+                  Sign Out
+                </button>
+              </>
             )}
             
             {/* Profile - Only show if logged in */}
             {isLoggedIn && (
               <div className="flex items-center px-4 py-3">
                 <Avatar className="h-8 w-8 bg-tutor-dark-purple text-white border-none mr-2">
-                  <AvatarFallback>
-                    <UserRound className="w-5 h-5" />
+                  <AvatarFallback className="bg-tutor-purple">
+                    {userEmail ? userEmail[0].toUpperCase() : <UserRound className="w-5 h-5" />}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium text-gray-300">Alex</span>
+                <span className="text-sm font-medium text-gray-300">{userEmail}</span>
               </div>
             )}
           </div>

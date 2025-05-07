@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { mockParent, mockTopics } from '@/data/mockData';
+import SubscriptionCard from '@/components/parent/SubscriptionCard';
 
 const ParentDashboard = () => {
   const navigate = useNavigate();
@@ -45,12 +46,14 @@ const ParentDashboard = () => {
         
         <div className="mt-8">
           <Tabs defaultValue="overview" onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="students">Students</TabsTrigger>
               <TabsTrigger value="reports">Reports</TabsTrigger>
+              <TabsTrigger value="account">Account</TabsTrigger>
             </TabsList>
             
+            {/* Overview Tab Content */}
             <TabsContent value="overview">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-6">
                 <Card>
@@ -175,6 +178,7 @@ const ParentDashboard = () => {
               </Card>
             </TabsContent>
             
+            {/* Students Tab Content */}
             <TabsContent value="students">
               <div className="mt-6">
                 <div className="flex justify-between items-center mb-4">
@@ -296,6 +300,7 @@ const ParentDashboard = () => {
               </div>
             </TabsContent>
             
+            {/* Reports Tab Content */}
             <TabsContent value="reports">
               <div className="glass-card p-8 mt-6 flex items-center justify-center">
                 <div className="text-center">
@@ -303,6 +308,43 @@ const ParentDashboard = () => {
                   <p className="text-gray-400">
                     Advanced analytics and downloadable reports will be available in a future update.
                   </p>
+                </div>
+              </div>
+            </TabsContent>
+            
+            {/* New Account Tab Content */}
+            <TabsContent value="account">
+              <div className="mt-6">
+                <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <SubscriptionCard />
+                  
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Users size={18} className="text-tutor-purple" />
+                        Account Details
+                      </CardTitle>
+                      <CardDescription>Manage your account information</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm font-medium">Email Address</p>
+                          <p className="text-sm text-gray-400">{mockParent.email}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Account Created</p>
+                          <p className="text-sm text-gray-400">May 1, 2025</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                      <Button variant="outline" size="sm">Change Password</Button>
+                      <Button variant="outline" size="sm" className="text-red-500 hover:text-red-600">Delete Account</Button>
+                    </CardFooter>
+                  </Card>
                 </div>
               </div>
             </TabsContent>
