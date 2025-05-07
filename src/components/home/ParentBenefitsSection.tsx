@@ -22,7 +22,7 @@ const ParentBenefitsSection = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 gradient-text">
           Parents Love HoneyLearn
         </h2>
-        <div className="max-w-2xl mx-auto text-center text-yellow-500 mb-12 italic">
+        <div className="max-w-2xl mx-auto text-center text-yellow-500 mb-12 italic font-bold">
           "It's not just academics—it's teaching my kids how to be independent, think like leaders, and understand money. That's what school's missing." - A HoneyLearn Parent
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
