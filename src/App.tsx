@@ -3,7 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import TopNav from "./components/TopNav";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -17,8 +18,36 @@ import LoginPage from "./pages/auth/LoginPage";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Index from "./pages/Index";
+import { trackPageView } from "./utils/analytics";
 
 const queryClient = new QueryClient();
+
+// Page tracker component
+const PageTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Get page title based on path
+    const getPageTitle = (path: string) => {
+      if (path === '/') return 'Home';
+      if (path === '/index') return 'Index';
+      if (path === '/signup') return 'Sign Up';
+      if (path === '/login') return 'Login';
+      if (path === '/dashboard') return 'Dashboard';
+      if (path === '/parents') return 'Parent Dashboard';
+      if (path === '/terms') return 'Terms of Service';
+      if (path === '/privacy') return 'Privacy Policy';
+      if (path.includes('/topic/')) return 'Topic Detail';
+      if (path.includes('/lesson/')) return 'Lesson Detail';
+      return 'Page Not Found';
+    };
+
+    const pageTitle = getPageTitle(location.pathname);
+    trackPageView(location.pathname, pageTitle);
+  }, [location]);
+
+  return null;
+};
 
 const App = () => {
   return (
@@ -29,6 +58,7 @@ const App = () => {
             <Toaster />
             <Sonner />
             <TopNav />
+            <PageTracker />
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<Home />} />

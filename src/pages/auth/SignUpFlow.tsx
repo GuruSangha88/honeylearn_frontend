@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +5,7 @@ import ParentSignUpForm from '@/components/auth/ParentSignUpForm';
 import StudentInfoForm from '@/components/auth/StudentInfoForm';
 import PaywallScreen from '@/components/auth/PaywallScreen';
 import { useToast } from "@/hooks/use-toast";
+import { trackSignup, trackTrialStart } from '@/utils/analytics';
 
 type SignUpStep = 'parent' | 'student' | 'paywall';
 
@@ -74,6 +74,9 @@ const SignUpFlow = () => {
         description: "Your subscription has been activated! Redirecting to dashboard...",
       });
       
+      // Track successful subscription
+      trackTrialStart();
+      
       // Short timeout before redirect to allow the toast to be seen
       setTimeout(() => {
         navigate('/dashboard');
@@ -95,6 +98,10 @@ const SignUpFlow = () => {
       // After successful signup, move to the student information step
       if (data.user) {
         setParentId(data.user.id);
+        
+        // Track the signup event
+        trackSignup('email');
+        
         toast({
           title: "Success",
           description: "Account created successfully! Now let's add your student information.",
