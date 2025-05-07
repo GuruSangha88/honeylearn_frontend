@@ -46,6 +46,8 @@ serve(async (req) => {
       console.log(`Created new customer: ${customerId}`);
     }
 
+    const origin = req.headers.get("origin") || "http://localhost:3000";
+    
     // Create a checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -67,13 +69,17 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/signup`,
+      success_url: `${origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/signup`,
       client_reference_id: parentId,
       metadata: {
         parent_id: parentId,
       },
     });
+
+    if (!session || !session.url) {
+      throw new Error("Failed to create Stripe checkout session");
+    }
 
     console.log(`Checkout session created: ${session.id}, URL: ${session.url}`);
 

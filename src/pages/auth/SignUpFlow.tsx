@@ -64,13 +64,24 @@ const SignUpFlow = () => {
 
     // Check for query params that might indicate where we are in the flow
     const params = new URLSearchParams(location.search);
-    if (params.get('session_id')) {
+    const sessionId = params.get('session_id');
+    
+    if (sessionId) {
+      console.log("Found Stripe session ID in URL params:", sessionId);
       // This is coming back from a successful Stripe payment
-      navigate('/dashboard');
+      toast({
+        title: "Payment Successful",
+        description: "Your subscription has been activated! Redirecting to dashboard...",
+      });
+      
+      // Short timeout before redirect to allow the toast to be seen
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
     }
 
     return () => subscription.unsubscribe();
-  }, [currentStep, navigate, location]);
+  }, [currentStep, navigate, location, toast]);
 
   const handleParentSignUp = async (email: string, password: string) => {
     try {

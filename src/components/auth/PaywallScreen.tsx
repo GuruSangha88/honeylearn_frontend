@@ -36,14 +36,15 @@ const PaywallScreen = () => {
         throw error;
       }
 
-      if (data?.url) {
-        console.log("Redirecting to Stripe checkout:", data.url);
-        // Redirect to Stripe checkout
-        window.location.href = data.url;
-      } else {
+      if (!data || !data.url) {
         console.error("No checkout URL returned:", data);
-        throw new Error("Failed to create checkout session");
+        throw new Error("Failed to create checkout session - no URL returned");
       }
+
+      console.log("Redirecting to Stripe checkout:", data.url);
+      
+      // Use window.location.href for a full page redirect to Stripe
+      window.location.href = data.url;
     } catch (error: any) {
       console.error("Error starting checkout:", error);
       toast({
@@ -104,6 +105,12 @@ const PaywallScreen = () => {
             "Start Premium Plan"
           )}
         </Button>
+
+        <div className="mt-4 text-center text-sm text-gray-400">
+          <p>For testing, use Stripe test card:</p>
+          <p className="font-mono mt-1">4242 4242 4242 4242</p>
+          <p className="font-mono">Any future date, any CVC, any ZIP</p>
+        </div>
       </div>
     </div>
   );
