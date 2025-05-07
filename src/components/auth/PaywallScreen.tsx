@@ -68,7 +68,7 @@ const PaywallScreen = () => {
         <div className="text-center">
           <h3 className="text-xl font-bold text-white">Get Started</h3>
           <p className="text-4xl font-bold text-[#FCE20B] mt-2">Try HoneyLearn For Free</p>
-          <p className="text-gray-400 mt-2">Just $9.99 per month after that</p>
+          <p className="text-gray-400 mt-2">7 Day Free Trial & Just $9.99 per month after that</p>
         </div>
         
         <ul className="space-y-3">
