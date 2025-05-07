@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
@@ -8,7 +8,42 @@ import { useToast } from "@/hooks/use-toast";
 
 const SubscriptionCard = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<{
+    isActive: boolean;
+    isOnTrial: boolean;
+    endDate: string | null;
+  }>({
+    isActive: false,
+    isOnTrial: false,
+    endDate: null
+  });
   const { toast } = useToast();
+
+  // Function to fetch subscription status
+  useEffect(() => {
+    const checkSubscriptionStatus = async () => {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData.session?.user) {
+          // Here you could call an edge function to check actual subscription status
+          // For now, we'll assume active and trial based on trial end date
+          const now = new Date();
+          const trialEnd = new Date();
+          trialEnd.setDate(now.getDate() + 7); // Assuming 7-day trial
+          
+          setSubscriptionStatus({
+            isActive: true,
+            isOnTrial: true, 
+            endDate: trialEnd.toLocaleDateString()
+          });
+        }
+      } catch (error) {
+        console.error("Error checking subscription:", error);
+      }
+    };
+    
+    checkSubscriptionStatus();
+  }, []);
 
   const handleManageSubscription = async () => {
     setIsLoading(true);
@@ -63,11 +98,22 @@ const SubscriptionCard = () => {
       <CardContent>
         <div className="space-y-2">
           <div className="px-3 py-2 bg-yellow-500/10 rounded-md border border-yellow-500/20">
-            <p className="text-sm font-medium">Active Subscription</p>
-            <p className="text-xs text-gray-400">HoneyLearn Premium - $9.99/month</p>
+            <p className="text-sm font-medium">
+              {subscriptionStatus.isActive ? "Active Subscription" : "No Active Subscription"}
+            </p>
+            {subscriptionStatus.isOnTrial ? (
+              <p className="text-xs text-gray-400">Free Trial - Ends on {subscriptionStatus.endDate}</p>
+            ) : (
+              <p className="text-xs text-gray-400">HoneyLearn Premium - $9.99/month</p>
+            )}
           </div>
           <p className="text-sm text-gray-400">
             Your subscription provides full access to all learning materials and progress tracking for your students.
+            {subscriptionStatus.isOnTrial && (
+              <span className="block mt-1 font-medium text-[#FCE20B]">
+                Enjoying your free trial? Your first payment will be processed after your trial ends.
+              </span>
+            )}
           </p>
         </div>
       </CardContent>

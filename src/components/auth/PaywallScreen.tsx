@@ -110,7 +110,8 @@ const PaywallScreen = () => {
         <div className="mt-4 text-center text-sm text-gray-400">
           <p>Secure payment processed by Stripe</p>
           <p className="font-mono mt-1">Your subscription can be cancelled anytime</p>
-          <p className="mt-2">
+          <p className="mt-2">By continuing, you agree to our</p>
+          <p>
             <TermsOfServiceLink /> and <PrivacyPolicyLink />
           </p>
         </div>

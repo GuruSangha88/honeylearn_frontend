@@ -51,7 +51,7 @@ serve(async (req) => {
     const origin = req.headers.get("origin") || "http://localhost:3000";
     console.log(`Using origin: ${origin}`);
     
-    // Create a checkout session
+    // Create a checkout session with a 7-day free trial
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ["card"],
@@ -72,6 +72,9 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
+      subscription_data: {
+        trial_period_days: 7, // Add a 7-day free trial
+      },
       success_url: `${origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/signup`,
       client_reference_id: parentId,
