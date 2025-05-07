@@ -18,8 +18,10 @@ serve(async (req) => {
     
     const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeSecretKey) {
+      console.error("ERROR: STRIPE_SECRET_KEY is not set in environment variables");
       throw new Error("STRIPE_SECRET_KEY is not set in environment variables");
     }
+    console.log("STRIPE_SECRET_KEY is configured properly");
 
     const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2023-10-16",
@@ -61,7 +63,7 @@ serve(async (req) => {
               name: "Premium Subscription",
               description: "Full access to all features",
             },
-            unit_amount: 2900, // $29.00
+            unit_amount: 999, // $9.99
             recurring: {
               interval: "month",
             },
