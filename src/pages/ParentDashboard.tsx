@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,30 @@ import {
 } from '@/components/ui/card';
 import { mockParent } from '@/data/mockData';
 import SubscriptionCard from '@/components/parent/SubscriptionCard';
+import { supabase } from '@/integrations/supabase/client';
 
 const ParentDashboard = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/signup');
+      } else {
+        setIsLoading(false);
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
+  
+  if (isLoading) {
+    return <div className="min-h-screen bg-tutor-dark text-white flex items-center justify-center">
+      <p>Loading...</p>
+    </div>;
+  }
   
   return (
     <div className="min-h-screen bg-tutor-dark text-white">
