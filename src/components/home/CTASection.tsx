@@ -38,7 +38,7 @@ const CTASection = () => {
           </div>
           
           <p className="text-sm text-gray-400 mt-4">
-            No credit card required · Cancel anytime
+            Cancel anytime
           </p>
         </div>
       </div>

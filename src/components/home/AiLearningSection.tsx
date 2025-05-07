@@ -1,5 +1,5 @@
 
-import { Sparkles, Bot, Book, LineChart } from "lucide-react";
+import { Sparkles, Bot, Book } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -13,8 +13,8 @@ const AiLearningSection = () => {
               <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl border border-purple-500/20">
                 <div className="relative">
                   <img 
-                    src="/lovable-uploads/f48a591f-9a92-4f14-848e-b66104e4675c.png" 
-                    alt="AI Learning Interface" 
+                    src="/lovable-uploads/8fe78391-45b2-429a-b523-6e9d80c8f4ca.png" 
+                    alt="AI Learning Interface with Money Lesson" 
                     className="w-full h-auto object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
@@ -58,11 +58,6 @@ const AiLearningSection = () => {
                   icon: <Book className="w-5 h-5 text-blue-400" />,
                   title: "Interactive Challenges",
                   description: "Engaging scenarios that make learning feel like play"
-                },
-                {
-                  icon: <LineChart className="w-5 h-5 text-green-400" />,
-                  title: "Progress Tracking",
-                  description: "See exactly what skills your child is mastering"
                 }
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-4">
