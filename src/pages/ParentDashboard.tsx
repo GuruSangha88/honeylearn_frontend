@@ -11,13 +11,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { mockParent } from '@/data/mockData';
 import SubscriptionCard from '@/components/parent/SubscriptionCard';
 import { supabase } from '@/integrations/supabase/client';
 
 const ParentDashboard = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({
+    email: '',
+    name: '',
+    createdAt: ''
+  });
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -25,6 +29,15 @@ const ParentDashboard = () => {
       if (!session) {
         navigate('/signup');
       } else {
+        // Get user data
+        const { user } = session;
+        
+        setUserData({
+          email: user.email || '',
+          name: user.user_metadata?.name || user.email?.split('@')[0] || 'Parent',
+          createdAt: new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        });
+        
         setIsLoading(false);
       }
     };
@@ -44,7 +57,7 @@ const ParentDashboard = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold gradient-text">Parent Dashboard</h1>
-            <p className="text-gray-400">Welcome back, {mockParent.name}</p>
+            <p className="text-gray-400">Welcome back, {userData.name}</p>
           </div>
           <Button
             variant="ghost"
@@ -74,11 +87,11 @@ const ParentDashboard = () => {
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm font-medium">Email Address</p>
-                    <p className="text-sm text-gray-400">{mockParent.email}</p>
+                    <p className="text-sm text-gray-400">{userData.email}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium">Account Created</p>
-                    <p className="text-sm text-gray-400">May 1, 2025</p>
+                    <p className="text-sm text-gray-400">{userData.createdAt}</p>
                   </div>
                 </div>
               </CardContent>
