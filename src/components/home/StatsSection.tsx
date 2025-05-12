@@ -5,19 +5,19 @@ const StatsSection = () => {
   const stats = [
     {
       percentage: "65%",
-      description: "of jobs Generation Z will work in don't exist yet",
+      description: "65% of jobs Generation Z will work in don't exist yet",
       bgColor: "bg-purple-500/10",
       textColor: "text-purple-400"
     },
     {
       percentage: "78%",
-      description: "of teachers say school doesn't prepare kids for real life",
+      description: "78% of teachers say school doesn't prepare kids for real life",
       bgColor: "bg-teal-500/10",
       textColor: "text-teal-400"
     },
     {
       percentage: "92%",
-      description: "of parents want their kids to learn practical life skills",
+      description: "92% of parents want their kids to learn practical life skills",
       bgColor: "bg-pink-500/10",
       textColor: "text-pink-400"
     }
