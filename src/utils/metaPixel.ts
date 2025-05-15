@@ -1,11 +1,17 @@
 
+// Add TypeScript interface for the fbq function
+interface Window {
+  fbq: any;
+  _fbq: any;
+}
+
 /**
  * Utility functions for Facebook Meta Pixel events
  */
 
 // Check if fbq is available
 const isFbqAvailable = (): boolean => {
-  return typeof window !== 'undefined' && typeof window.fbq === 'function';
+  return typeof window !== 'undefined' && typeof (window as any).fbq === 'function';
 };
 
 /**
@@ -15,9 +21,9 @@ const isFbqAvailable = (): boolean => {
 export const trackPageView = (path?: string): void => {
   if (isFbqAvailable()) {
     if (path) {
-      window.fbq('track', 'PageView', { path });
+      (window as any).fbq('track', 'PageView', { path });
     } else {
-      window.fbq('track', 'PageView');
+      (window as any).fbq('track', 'PageView');
     }
     console.log('📊 Meta PageView event tracked', path ? { path } : '');
   }
@@ -29,7 +35,7 @@ export const trackPageView = (path?: string): void => {
  */
 export const trackSignUp = (method: string = 'email'): void => {
   if (isFbqAvailable()) {
-    window.fbq('track', 'CompleteRegistration', { method });
+    (window as any).fbq('track', 'CompleteRegistration', { method });
     console.log('📊 Meta CompleteRegistration event tracked', { method });
   }
 };
@@ -39,7 +45,7 @@ export const trackSignUp = (method: string = 'email'): void => {
  */
 export const trackTrialStart = (): void => {
   if (isFbqAvailable()) {
-    window.fbq('track', 'StartTrial', {
+    (window as any).fbq('track', 'StartTrial', {
       value: 9.99,
       currency: 'USD',
       predicted_ltv: 119.88 // 9.99 * 12 months
@@ -54,7 +60,7 @@ export const trackTrialStart = (): void => {
  */
 export const trackSubscription = (value: number = 9.99): void => {
   if (isFbqAvailable()) {
-    window.fbq('track', 'Purchase', {
+    (window as any).fbq('track', 'Purchase', {
       value,
       currency: 'USD',
       content_type: 'subscription'
@@ -71,7 +77,7 @@ export const trackSubscription = (value: number = 9.99): void => {
  */
 export const trackViewContent = (contentName: string, contentId?: string, contentType: string = 'lesson'): void => {
   if (isFbqAvailable()) {
-    window.fbq('track', 'ViewContent', {
+    (window as any).fbq('track', 'ViewContent', {
       content_name: contentName,
       content_ids: contentId ? [contentId] : undefined,
       content_type: contentType
@@ -86,7 +92,7 @@ export const trackViewContent = (contentName: string, contentId?: string, conten
  */
 export const trackLead = (source: string): void => {
   if (isFbqAvailable()) {
-    window.fbq('track', 'Lead', { source });
+    (window as any).fbq('track', 'Lead', { source });
     console.log('📊 Meta Lead event tracked', { source });
   }
 };
