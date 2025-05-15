@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { TermsOfServiceLink, PrivacyPolicyLink } from './AuthLinks';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { WifiOff } from 'lucide-react';
+import * as MetaPixel from "@/utils/metaPixel";
 
 interface ParentSignUpFormProps {
   onSubmit: (email: string, password: string) => Promise<void>;
@@ -26,6 +27,9 @@ const ParentSignUpForm = ({ onSubmit }: ParentSignUpFormProps) => {
     
     try {
       await onSubmit(email, password);
+      
+      // Track sign-up event with Meta Pixel
+      MetaPixel.trackSignUp('email');
     } catch (err: any) {
       console.error('Error in signup form:', err);
       

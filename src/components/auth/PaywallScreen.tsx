@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { TermsOfServiceLink, PrivacyPolicyLink } from "./AuthLinks";
 import { trackTrialStart } from "@/utils/analytics";
+import * as MetaPixel from "@/utils/metaPixel";
 
 const PaywallScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,8 +44,11 @@ const PaywallScreen = () => {
         throw new Error("Failed to create checkout session - no URL returned");
       }
 
-      // Track trial start event (will be finalized once payment is confirmed)
+      // Track trial start event in Google Analytics
       trackTrialStart();
+      
+      // Track trial start event in Meta Pixel
+      MetaPixel.trackTrialStart();
       
       console.log("Redirecting to Stripe checkout:", data.url);
       

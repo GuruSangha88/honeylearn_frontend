@@ -19,6 +19,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Index from "./pages/Index";
 import { trackPageView } from "./utils/analytics";
+import * as MetaPixel from "./utils/metaPixel";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +44,11 @@ const PageTracker = () => {
     };
 
     const pageTitle = getPageTitle(location.pathname);
+    // Track with Google Analytics
     trackPageView(location.pathname, pageTitle);
+    
+    // Track with Meta Pixel
+    MetaPixel.trackPageView(location.pathname);
   }, [location]);
 
   return null;
