@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { trackTrialStart } from "@/utils/analytics";
+import * as MetaPixel from "@/utils/metaPixel";
 
 const SubscriptionCard = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -152,8 +152,13 @@ const SubscriptionCard = () => {
         throw new Error("Failed to create checkout session - no URL returned");
       }
       
-      // Track trial start event
+      // Track trial start event in Google Analytics
       trackTrialStart();
+      
+      // Track trial start event in Meta Pixel
+      MetaPixel.trackTrialStart();
+      
+      console.log("Redirecting to Stripe checkout:", data.url);
       
       // Use window.location.href for a full page redirect to Stripe
       window.location.href = data.url;
