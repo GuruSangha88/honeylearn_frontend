@@ -103,8 +103,9 @@ const TestLesson = () => {
     }
   };
 
-  // Replace 'YOUR_AGENT_ID' with the actual agent ID you set up
-  const agentId = 'YOUR_AGENT_ID';
+  // Replace this value with your actual ElevenLabs agent ID
+  // You can find this in your ElevenLabs dashboard
+  const agentId = 'YOUR_AGENT_ID';  // <-- Replace this value
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -135,7 +136,7 @@ const TestLesson = () => {
         <div className="rounded-lg overflow-hidden" style={{ height: '400px' }}>
           <elevenlabs-convai
             ref={convaiRef}
-            agent-id={agentId}
+            agent-id={agentId}  {/* The agent ID is used here */}
             style={{ width: '100%', height: '100%' }}
           />
         </div>
