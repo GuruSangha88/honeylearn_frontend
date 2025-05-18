@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import { ELEVENLABS_CONFIG } from '../config/elevenlabs';
 
 const TestLesson = () => {
   const [text, setText] = useState('Hello, welcome to HoneyLearn! How can I help you today?');
@@ -10,6 +11,7 @@ const TestLesson = () => {
   const { toast } = useToast();
   const convaiRef = useRef<HTMLElement>(null);
   const [agentLoaded, setAgentLoaded] = useState(false);
+  const [apiKey, setApiKey] = useState('');
 
   useEffect(() => {
     // Load the ElevenLabs Convai script
@@ -65,7 +67,7 @@ const TestLesson = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'xi-api-key': 'YOUR_ELEVENLABS_API_KEY',
+            'xi-api-key': apiKey || 'YOUR_ELEVENLABS_API_KEY', // Use entered API key if available
           },
           body: JSON.stringify({
             text: text,
@@ -103,10 +105,6 @@ const TestLesson = () => {
     }
   };
 
-  // Replace this value with your actual ElevenLabs agent ID
-  // You can find this in your ElevenLabs dashboard
-  const agentId = 'YOUR_AGENT_ID';  // <-- Replace this value
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Test Lesson with ElevenLabs AI</h1>
@@ -130,14 +128,28 @@ const TestLesson = () => {
         </div>
       </div>
 
+      {/* Add API key input field */}
+      <div className="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
+        <p className="mb-4 text-gray-700">ElevenLabs API Key (for direct TTS fallback):</p>
+        <Input
+          type="password"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          placeholder="Enter your ElevenLabs API key"
+          className="w-full"
+        />
+        <p className="mt-2 text-xs text-gray-500">
+          This key is only stored in your browser's memory and is not saved anywhere.
+        </p>
+      </div>
+
       {/* ElevenLabs Convai Widget */}
       <div className="mt-6 border rounded-lg p-4 bg-white shadow-md">
         <h2 className="text-lg font-semibold mb-4">Conversational Agent</h2>
         <div className="rounded-lg overflow-hidden" style={{ height: '400px' }}>
           <elevenlabs-convai
             ref={convaiRef}
-            agent-id={agentId}
-            // The agent ID is used here
+            agent-id={ELEVENLABS_CONFIG.agentId}
             style={{ width: '100%', height: '100%' }}
           />
         </div>
@@ -147,8 +159,8 @@ const TestLesson = () => {
         <p className="text-amber-700 text-sm">
           <strong>Note:</strong> You need to:
           <ul className="list-disc ml-6 mt-2">
-            <li>Replace 'YOUR_AGENT_ID' with the agent ID you created in ElevenLabs.</li>
-            <li>Replace 'YOUR_ELEVENLABS_API_KEY' with your actual ElevenLabs API key for the direct API fallback.</li>
+            <li>Add your agent ID in the <code>src/config/elevenlabs.ts</code> file.</li>
+            <li>Enter your ElevenLabs API key in the field above for the direct API fallback.</li>
           </ul>
           You can get an API key by signing up at <a href="https://elevenlabs.io" className="underline" target="_blank" rel="noopener noreferrer">elevenlabs.io</a>.
         </p>
