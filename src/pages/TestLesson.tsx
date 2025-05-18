@@ -1,21 +1,7 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const TestLesson = () => {
-  useEffect(() => {
-    // Create script element for the ElevenLabs Convai widget
-    const script = document.createElement('script');
-    script.src = 'https://elevenlabs.io/convai-widget/index.js';
-    script.async = true;
-    script.type = 'text/javascript';
-    document.body.appendChild(script);
-
-    return () => {
-      // Clean up by removing the script when component unmounts
-      document.body.removeChild(script);
-    };
-  }, []);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Test Lesson with ElevenLabs AI</h1>
@@ -26,5 +12,19 @@ const TestLesson = () => {
     </div>
   );
 };
+
+// This adds the script to the document in a non-React way
+// It will only run on the client side
+if (typeof document !== 'undefined') {
+  const script = document.createElement('script');
+  script.src = 'https://elevenlabs.io/convai-widget/index.js';
+  script.async = true;
+  script.type = 'text/javascript';
+  
+  // Only add the script if it doesn't already exist
+  if (!document.querySelector('script[src="https://elevenlabs.io/convai-widget/index.js"]')) {
+    document.head.appendChild(script);
+  }
+}
 
 export default TestLesson;
