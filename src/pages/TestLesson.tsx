@@ -1,11 +1,12 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ELEVENLABS_CONFIG } from '../config/elevenlabs';
+import { isElevenLabsAvailable } from '../config/elevenlabs';
 import Header from '@/components/Header';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Loader2, MessageSquare } from "lucide-react";
+import ElevenLabsConvai from '@/components/ElevenLabsConvai';
+import { trackEvent } from '@/utils/analytics';
 
 // Fallback component when ElevenLabs component fails to load
 const FallbackConversation = ({ onSendMessage }) => {
@@ -94,212 +95,54 @@ const TestLesson = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState('');
   const { toast } = useToast();
-  const convaiRef = useRef(null);
-  const [agentLoaded, setAgentLoaded] = useState(false);
-  const [scriptError, setScriptError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const MAX_RETRIES = 5;
-  const timeoutRef = useRef(null);
-  const [useFallback, setUseFallback] = useState(false);
+  const [useFallback, setUseFallback] = useState(!isElevenLabsAvailable());
   
-  // Clean up function to remove any timeout when component unmounts
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    // First, check if the script is already loaded
-    if (window.customElements && window.customElements.get('elevenlabs-convai')) {
-      console.log("ElevenLabs component is already registered");
-      setAgentLoaded(true);
-      setScriptError(false);
-      return;
-    }
-
-    const loadScript = () => {
-      setLoadingStage('Loading ElevenLabs script...');
-      
-      // Check if script already exists to avoid duplicate loading
-      const existingScript = document.querySelector('script[data-elevenlabs="true"]');
-      
-      if (existingScript) {
-        console.log("ElevenLabs script element exists in DOM");
-        // The script exists but may have failed to load completely
-        // Let's check if the custom element is registered
-        if (window.customElements && window.customElements.get('elevenlabs-convai')) {
-          console.log("ElevenLabs component is registered");
-          setAgentLoaded(true);
-          setScriptError(false);
-          setLoadingStage('ElevenLabs script loaded successfully');
-          return;
-        } else {
-          // Script exists but component isn't registered - remove the script to try again
-          console.log("Script exists but component not registered, removing script to retry");
-          document.head.removeChild(existingScript);
-        }
-      }
-      
-      // Clean up any failed script tags
-      const failedScripts = document.querySelectorAll('script[data-elevenlabs-failed="true"]');
-      failedScripts.forEach(script => script.parentNode.removeChild(script));
-      
-      // Create a new script element
-      const script = document.createElement('script');
-      script.src = 'https://cdn.elevenlabs.io/convai/v1/index.js';
-      script.async = true;
-      script.crossOrigin = "anonymous";
-      script.setAttribute('data-elevenlabs', 'true');
-      
-      script.onload = () => {
-        console.log("ElevenLabs script loaded successfully");
-        
-        // Give the browser some time to register the custom element
-        timeoutRef.current = setTimeout(() => {
-          if (window.customElements && window.customElements.get('elevenlabs-convai')) {
-            setAgentLoaded(true);
-            setScriptError(false);
-            setRetryCount(0);
-            setLoadingStage('ElevenLabs component registered successfully');
-          } else {
-            console.warn("Script loaded but component not registered");
-            if (retryCount < MAX_RETRIES - 1) {
-              setRetryCount(prevCount => prevCount + 1);
-              loadScript(); // Try again
-            } else {
-              console.log("Using fallback interface after multiple failures");
-              setScriptError(true);
-              setUseFallback(true);
-              setLoadingStage('Using simplified tutor interface');
-              toast({
-                title: "Notice",
-                description: "Using simplified tutor interface due to connectivity issues.",
-                variant: "default"
-              });
-            }
-          }
-        }, 2000);
-      };
-      
-      script.onerror = (error) => {
-        console.error("Error loading ElevenLabs script:", error);
-        script.setAttribute('data-elevenlabs-failed', 'true');
-        
-        if (retryCount < MAX_RETRIES - 1) {
-          console.log(`Retrying script load (${retryCount + 1}/${MAX_RETRIES})...`);
-          setRetryCount(prevCount => prevCount + 1);
-          timeoutRef.current = setTimeout(loadScript, 2000); // Longer delay between retries
-          setLoadingStage(`Retrying script load (${retryCount + 1}/${MAX_RETRIES})...`);
-        } else {
-          console.log("Using fallback interface after multiple failures");
-          setScriptError(true);
-          setUseFallback(true);
-          setLoadingStage('Using simplified tutor interface');
-          toast({
-            title: "Notice",
-            description: "Using simplified tutor interface due to connectivity issues.",
-            variant: "default"
-          });
-        }
-      };
-      
-      document.head.appendChild(script);
-    };
-    
-    // Start loading the script
-    loadScript();
-    
-    // Cleanup function
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [retryCount, toast]);
-
-  // Check if convai element is ready
-  const isConvaiReady = () => {
-    return (
-      convaiRef.current && 
-      window.customElements && 
-      window.customElements.get('elevenlabs-convai') &&
-      document.querySelector('elevenlabs-convai') !== null
-    );
-  };
-
   const handleFallbackMessage = (message) => {
     console.log("Fallback message sent:", message);
+    trackEvent('fallback_message_sent', { message });
     // Here you could implement an alternative API call to process the message
-    // For example, connecting to a server-side endpoint that uses OpenAI or another AI service
+  };
+
+  const handleConvaiInitialized = () => {
+    console.log("ElevenLabs Convai successfully initialized");
+    setIsLoading(false);
+    trackEvent('elevenlabs_convai_initialized');
+    toast({
+      title: "AI Tutor Ready",
+      description: "You can now start your interactive lesson!",
+    });
+  };
+
+  const handleConvaiError = () => {
+    console.log("Error initializing ElevenLabs Convai, switching to fallback");
+    setUseFallback(true);
+    setIsLoading(false);
+    trackEvent('elevenlabs_convai_error');
+    toast({
+      title: "Notice",
+      description: "Using simplified tutor interface due to technical issues.",
+      variant: "default"
+    });
   };
 
   const startLesson = async () => {
-    console.log("Start lesson clicked, agent loaded:", agentLoaded);
+    console.log("Start lesson clicked");
     setIsLoading(true);
     setIsStarted(true);
+    setLoadingStage('Preparing your AI tutor...');
+    
+    trackEvent('lesson_started', { 
+      mode: useFallback ? 'fallback' : 'elevenlabs'
+    });
     
     toast({
       title: "Lesson Started",
       description: "Your AI tutor is preparing to help you learn!",
     });
     
+    // If using fallback, we can stop loading immediately
     if (useFallback) {
       console.log("Using fallback interface");
-      setIsLoading(false);
-      return;
-    }
-    
-    // Polling mechanism to wait for the component to be ready
-    const checkComponentAndSendMessage = () => {
-      console.log("Checking if convai component is ready...");
-      
-      if (isConvaiReady()) {
-        console.log("Convai component is ready, sending welcome message");
-        try {
-          // Create and dispatch the welcome event
-          const welcomeEvent = new CustomEvent('convai-message', {
-            detail: { message: "Hello, I'm ready to start my lesson!" }
-          });
-          convaiRef.current.dispatchEvent(welcomeEvent);
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Error sending welcome message:", error);
-          console.log("Switching to fallback interface");
-          setUseFallback(true);
-          setIsLoading(false);
-          toast({
-            title: "Notice",
-            description: "Using simplified tutor interface due to technical issues.",
-            variant: "default"
-          });
-        }
-      } else {
-        console.log("Convai component not ready yet, waiting...");
-        // Check again after a delay
-        if (retryCount < MAX_RETRIES * 2) {  // More retries for component readiness
-          setRetryCount(prevCount => prevCount + 1);
-          timeoutRef.current = setTimeout(checkComponentAndSendMessage, 2000);
-        } else {
-          console.error("Convai component failed to initialize after multiple attempts");
-          console.log("Switching to fallback interface");
-          setUseFallback(true);
-          setIsLoading(false);
-          toast({
-            title: "Notice",
-            description: "Using simplified tutor interface due to technical issues.",
-            variant: "default"
-          });
-        }
-      }
-    };
-    
-    // Start checking after giving component time to render
-    if (!useFallback) {
-      timeoutRef.current = setTimeout(checkComponentAndSendMessage, 3000);
-    } else {
       setIsLoading(false);
     }
   };
@@ -336,42 +179,14 @@ const TestLesson = () => {
             </div>
           )}
           
-          {scriptError && !useFallback && (
+          {useFallback && (
             <Alert variant="destructive" className="mt-4 max-w-md">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Connection Error</AlertTitle>
+              <AlertTitle>Connection Notice</AlertTitle>
               <AlertDescription>
-                There was an issue loading the tutor resources. This could be due to:
-                <ul className="list-disc ml-5 mt-2">
-                  <li>Internet connection issues</li>
-                  <li>Browser security settings</li>
-                  <li>Ad blockers or content filters</li>
-                </ul>
-                <div className="mt-4">
-                  <Button 
-                    onClick={() => {
-                      setScriptError(false);
-                      setRetryCount(1); // Trigger a retry
-                      setUseFallback(false);
-                    }}
-                    variant="outline"
-                    size="sm"
-                    className="bg-white text-red-600 border-red-300 hover:bg-red-50 mr-2"
-                  >
-                    Try Again
-                  </Button>
-                  <Button 
-                    onClick={() => {
-                      setUseFallback(true);
-                      setScriptError(false);
-                      startLesson();
-                    }}
-                    variant="outline"
-                    size="sm"
-                    className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                  >
-                    Use Simple Mode
-                  </Button>
+                Using simplified tutor interface due to compatibility or connectivity issues.
+                <div className="mt-2 text-sm text-gray-600">
+                  This could be due to ad blockers, network issues, or browser settings.
                 </div>
               </AlertDescription>
             </Alert>
@@ -393,16 +208,14 @@ const TestLesson = () => {
             {isLoading ? (
               <div className="flex flex-col items-center justify-center h-full bg-gray-50">
                 <Loader2 className="animate-spin h-8 w-8 text-blue-600 mb-4" />
-                <p className="text-gray-600">Connecting to your AI tutor...</p>
+                <p className="text-gray-600">{loadingStage || 'Connecting to your AI tutor...'}</p>
               </div>
             ) : useFallback ? (
               <FallbackConversation onSendMessage={handleFallbackMessage} />
             ) : (
-              <elevenlabs-convai
-                ref={convaiRef}
-                agent-id={ELEVENLABS_CONFIG.agentId}
-                api-key={ELEVENLABS_CONFIG.apiKey}
-                style={{ width: '100%', height: '100%' }}
+              <ElevenLabsConvai 
+                onInitialized={handleConvaiInitialized} 
+                onError={handleConvaiError}
               />
             )}
           </div>

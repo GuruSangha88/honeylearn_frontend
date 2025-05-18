@@ -1,4 +1,3 @@
-
 // Analytics utility to track important events
 
 /**
@@ -14,6 +13,18 @@ export const trackPageView = (pagePath: string, pageTitle: string) => {
       page_location: window.location.href
     });
     console.log(`📊 Page view tracked: ${pageTitle}`);
+  }
+};
+
+/**
+ * Tracks a specific event in Google Analytics
+ * @param eventName The name of the event to track
+ * @param eventParams Optional parameters for the event
+ */
+export const trackEvent = (eventName: string, eventParams: Record<string, any> = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, eventParams);
+    console.log(`📊 Event tracked: ${eventName}`, eventParams);
   }
 };
 
