@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ELEVENLABS_CONFIG, getApiKey, updateApiKey } from '../config/elevenlabs';
+import { ELEVENLABS_CONFIG } from '../config/elevenlabs';
 import Header from '@/components/Header';
 
 const TestLesson = () => {
@@ -34,6 +34,7 @@ const TestLesson = () => {
 
   const startLesson = () => {
     setIsStarted(true);
+    setIsLoading(true);
     
     toast({
       title: "Lesson Started",
@@ -47,6 +48,7 @@ const TestLesson = () => {
           detail: { message: "Hello, I'm ready to start my lesson!" }
         });
         convaiRef.current?.dispatchEvent(welcomeEvent);
+        setIsLoading(false);
       }, 1000);
     }
   };
@@ -72,7 +74,7 @@ const TestLesson = () => {
             size="lg"
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            {!agentLoaded ? 'Loading...' : 'Start Lesson'}
+            {isLoading ? 'Loading...' : 'Start Lesson'}
           </Button>
         </div>
       ) : (
@@ -82,6 +84,7 @@ const TestLesson = () => {
             <elevenlabs-convai
               ref={convaiRef}
               agent-id={ELEVENLABS_CONFIG.agentId}
+              api-key={ELEVENLABS_CONFIG.apiKey}
               style={{ width: '100%', height: '100%' }}
             />
           </div>
