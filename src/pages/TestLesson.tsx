@@ -1,108 +1,42 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { isElevenLabsAvailable } from '../config/elevenlabs';
+// Import your ElevenLabs API configuration file
+import * as elevenLabsConfig from '../elevenlabs'; // Adjust the path as needed
 import Header from '@/components/Header';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, Loader2, MessageSquare } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 import ElevenLabsConvai from '@/components/ElevenLabsConvai';
 import { trackEvent } from '@/utils/analytics';
 
-// Fallback component when ElevenLabs component fails to load
-const FallbackConversation = ({ onSendMessage }) => {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hello! I'm your AI tutor. What would you like to learn today?", isUser: false }
-  ]);
-  const [input, setInput] = useState('');
-  const messagesEndRef = useRef(null);
-
-  useEffect(() => {
-    // Scroll to bottom whenever messages change
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
-
-  const handleSend = (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    
-    // Add user message
-    const userMessage = { id: Date.now(), text: input, isUser: true };
-    setMessages(prev => [...prev, userMessage]);
-    
-    // Notify parent component
-    if (onSendMessage) {
-      onSendMessage(input);
-    }
-    
-    setInput('');
-    
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const aiResponse = { 
-        id: Date.now() + 1, 
-        text: "I understand. Could you tell me more about what you'd like to learn?", 
-        isUser: false 
-      };
-      setMessages(prev => [...prev, aiResponse]);
-    }, 1000);
-  };
-
-  return (
-    <div className="flex flex-col h-full border rounded-lg overflow-hidden bg-gray-900">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((msg) => (
-          <div 
-            key={msg.id} 
-            className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}
-          >
-            <div 
-              className={`max-w-[75%] rounded-lg p-3 ${
-                msg.isUser 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-700 text-white'
-              }`}
-            >
-              {msg.text}
-            </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-      
-      <form onSubmit={handleSend} className="border-t border-gray-700 p-3 flex">
-        <input 
-          type="text" 
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          className="flex-1 bg-transparent border border-gray-600 rounded-l-md p-2 text-white outline-none"
-        />
-        <Button 
-          type="submit"
-          className="rounded-l-none"
-        >
-          Send
-        </Button>
-      </form>
-    </div>
-  );
-};
-
-const TestLesson = () => {
+const SimplifiedLesson = () => {
   const [isStarted, setIsStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingStage, setLoadingStage] = useState('');
   const { toast } = useToast();
-  const [useFallback, setUseFallback] = useState(!isElevenLabsAvailable());
+  const [elevenLabsAvailable, setElevenLabsAvailable] = useState(true);
+  const [apiKey, setApiKey] = useState('');
   
-  const handleFallbackMessage = (message) => {
-    console.log("Fallback message sent:", message);
-    trackEvent('fallback_message_sent', { message });
-    // Here you could implement an alternative API call to process the message
-  };
-
+  // Get ElevenLabs API key from config on component mount
+  useEffect(() => {
+    const initializeElevenLabs = async () => {
+      try {
+        // Check if API key and agent ID exist in the config
+        if (elevenLabsConfig.apiKey && elevenLabsConfig.agentId) {
+          setApiKey(elevenLabsConfig.apiKey);
+          console.log("ElevenLabs configuration loaded successfully");
+        } else {
+          console.error("ElevenLabs configuration incomplete. Missing API key or agent ID.");
+          setElevenLabsAvailable(false);
+        }
+      } catch (error) {
+        console.error("Error loading ElevenLabs config:", error);
+        setElevenLabsAvailable(false);
+      }
+    };
+    
+    initializeElevenLabs();
+  }, []);
+  
   const handleConvaiInitialized = () => {
     console.log("ElevenLabs Convai successfully initialized");
     setIsLoading(false);
@@ -114,14 +48,14 @@ const TestLesson = () => {
   };
 
   const handleConvaiError = () => {
-    console.log("Error initializing ElevenLabs Convai, switching to fallback");
-    setUseFallback(true);
+    console.error("Error initializing ElevenLabs Convai");
     setIsLoading(false);
     trackEvent('elevenlabs_convai_error');
+    setElevenLabsAvailable(false);
     toast({
-      title: "Notice",
-      description: "Using simplified tutor interface due to technical issues.",
-      variant: "default"
+      title: "Connection Error",
+      description: "Unable to connect to ElevenLabs. Please check your connection and try again.",
+      variant: "destructive"
     });
   };
 
@@ -129,22 +63,29 @@ const TestLesson = () => {
     console.log("Start lesson clicked");
     setIsLoading(true);
     setIsStarted(true);
-    setLoadingStage('Preparing your AI tutor...');
+    
+    // Check if ElevenLabs configuration is complete before proceeding
+    if (!apiKey || !elevenLabsConfig.agentId) {
+      console.error("ElevenLabs configuration incomplete");
+      setElevenLabsAvailable(false);
+      setIsLoading(false);
+      toast({
+        title: "Configuration Error",
+        description: "ElevenLabs API key or agent ID missing. Please check your configuration.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     trackEvent('lesson_started', { 
-      mode: useFallback ? 'fallback' : 'elevenlabs'
+      mode: 'elevenlabs',
+      agentId: elevenLabsConfig.agentId
     });
     
     toast({
-      title: "Lesson Started",
-      description: "Your AI tutor is preparing to help you learn!",
+      title: "Connecting...",
+      description: "Establishing connection to ElevenLabs AI tutor.",
     });
-    
-    // If using fallback, we can stop loading immediately
-    if (useFallback) {
-      console.log("Using fallback interface");
-      setIsLoading(false);
-    }
   };
   
   // Mock user data for Header component
@@ -160,7 +101,7 @@ const TestLesson = () => {
           <h2 className="text-xl font-semibold mb-4">Ready to start your lesson?</h2>
           <p className="text-gray-600 mb-8 text-center">
             Your AI tutor will guide you through this interactive session.
-            Just click the button below to begin!
+            Click the button below to begin!
           </p>
           
           <Button 
@@ -169,60 +110,42 @@ const TestLesson = () => {
             size="lg"
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            {isLoading ? 'Loading...' : 'Start Lesson'}
+            Start Lesson
           </Button>
-          
-          {isLoading && (
-            <div className="flex items-center space-x-2 mt-4">
-              <Loader2 className="animate-spin h-5 w-5 text-blue-600" />
-              <span>{loadingStage || 'Loading...'}</span>
+        </div>
+      ) : (
+        <div className="mt-6 border rounded-lg p-4 bg-white shadow-md" style={{ height: '600px' }}>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-full bg-gray-50">
+              <Loader2 className="animate-spin h-8 w-8 text-blue-600 mb-4" />
+              <p className="text-gray-600">Connecting to ElevenLabs AI tutor...</p>
+              <p className="text-sm text-gray-400 mt-2">This may take a few seconds</p>
             </div>
-          )}
-          
-          {useFallback && (
-            <Alert variant="destructive" className="mt-4 max-w-md">
+          ) : elevenLabsAvailable ? (
+            <ElevenLabsConvai 
+              apiKey={apiKey}
+              agentId={elevenLabsConfig.agentId || ""}
+              voiceId={elevenLabsConfig.voiceId || ""}
+              modelId={elevenLabsConfig.modelId || ""}
+              onInitialized={handleConvaiInitialized} 
+              onError={handleConvaiError}
+            />
+          ) : (
+            <Alert variant="destructive" className="mt-4">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Connection Notice</AlertTitle>
+              <AlertTitle>Connection Error</AlertTitle>
               <AlertDescription>
-                Using simplified tutor interface due to compatibility or connectivity issues.
-                <div className="mt-2 text-sm text-gray-600">
-                  This could be due to ad blockers, network issues, or browser settings.
+                Unable to connect to ElevenLabs AI. Please ensure your agent ID and API key are correctly configured.
+                <div className="mt-2 text-sm">
+                  Error details: Missing or invalid configuration parameters.
                 </div>
               </AlertDescription>
             </Alert>
           )}
-        </div>
-      ) : (
-        <div className="mt-6 border rounded-lg p-4 bg-white shadow-md">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Your AI Tutor</h2>
-            {useFallback && (
-              <div className="flex items-center text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-                <MessageSquare className="h-3 w-3 mr-1" />
-                Simple Mode
-              </div>
-            )}
-          </div>
-          
-          <div className="rounded-lg overflow-hidden" style={{ height: '500px' }}>
-            {isLoading ? (
-              <div className="flex flex-col items-center justify-center h-full bg-gray-50">
-                <Loader2 className="animate-spin h-8 w-8 text-blue-600 mb-4" />
-                <p className="text-gray-600">{loadingStage || 'Connecting to your AI tutor...'}</p>
-              </div>
-            ) : useFallback ? (
-              <FallbackConversation onSendMessage={handleFallbackMessage} />
-            ) : (
-              <ElevenLabsConvai 
-                onInitialized={handleConvaiInitialized} 
-                onError={handleConvaiError}
-              />
-            )}
-          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default TestLesson;
+export default SimplifiedLesson;
