@@ -7,5 +7,5 @@ export const ELEVENLABS_CONFIG = {
   
   // This is a hardcoded API key that should be replaced with your actual key
   // In production, this should be moved to environment variables or server-side code
-  apiKey: 'YOUR_ELEVENLABS_API_KEY_HERE', // Replace with your actual API key
+  apiKey: 'sk_4cebd1fb9bcc0bfc7bec143fb2d8312e1c442c2e7858ce1a', // Replace with your actual API key
 };
