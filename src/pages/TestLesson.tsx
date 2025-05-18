@@ -136,7 +136,8 @@ const TestLesson = () => {
         <div className="rounded-lg overflow-hidden" style={{ height: '400px' }}>
           <elevenlabs-convai
             ref={convaiRef}
-            agent-id={agentId}  {/* The agent ID is used here */}
+            agent-id={agentId}
+            // The agent ID is used here
             style={{ width: '100%', height: '100%' }}
           />
         </div>
