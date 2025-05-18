@@ -26,11 +26,6 @@ const Footer = () => {
               <li>
                 <PrivacyPolicyLink />
               </li>
-              <li>
-                <Link to="/test-lesson" className="text-gray-400 hover:text-white transition-colors">
-                  Test Lesson
-                </Link>
-              </li>
             </ul>
           </div>
         </div>

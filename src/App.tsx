@@ -18,7 +18,6 @@ import LoginPage from "./pages/auth/LoginPage";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Index from "./pages/Index";
-import TestLesson from "./pages/TestLesson";
 import { trackPageView } from "./utils/analytics";
 import * as MetaPixel from "./utils/metaPixel";
 
@@ -39,7 +38,6 @@ const PageTracker = () => {
       if (path === '/parents') return 'Parent Dashboard';
       if (path === '/terms') return 'Terms of Service';
       if (path === '/privacy') return 'Privacy Policy';
-      if (path === '/test-lesson') return 'Test Lesson';
       if (path.includes('/topic/')) return 'Topic Detail';
       if (path.includes('/lesson/')) return 'Lesson Detail';
       return 'Page Not Found';
@@ -78,7 +76,6 @@ const App = () => {
                 <Route path="/parents" element={<ParentDashboard />} />
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/test-lesson" element={<TestLesson />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
