@@ -11,20 +11,33 @@ const TestLesson = () => {
   const { toast } = useToast();
   const convaiRef = useRef(null);
   const [agentLoaded, setAgentLoaded] = useState(false);
+  const [scriptError, setScriptError] = useState(false);
 
   useEffect(() => {
+    // Check if script already exists to avoid duplicate loading
+    const existingScript = document.querySelector('script[src="https://cdn.elevenlabs.io/convai/v1/index.js"]');
+    
+    if (existingScript) {
+      console.log("ElevenLabs script already exists, setting agent as loaded");
+      setAgentLoaded(true);
+      return;
+    }
+    
     // Load the ElevenLabs Convai script
     const script = document.createElement('script');
     script.src = 'https://cdn.elevenlabs.io/convai/v1/index.js';
     script.async = true;
+    script.crossOrigin = "anonymous"; // Add crossOrigin attribute
     
     script.onload = () => {
       console.log("ElevenLabs script loaded successfully");
       setAgentLoaded(true);
+      setScriptError(false);
     };
     
     script.onerror = (error) => {
       console.error("Error loading ElevenLabs script:", error);
+      setScriptError(true);
       toast({
         title: "Error",
         description: "Failed to load AI tutor resources. Please try again later.",
@@ -43,46 +56,37 @@ const TestLesson = () => {
   }, [toast]);
 
   const startLesson = () => {
-    if (!agentLoaded) {
-      toast({
-        title: "Not Ready",
-        description: "AI tutor resources are still loading. Please wait a moment.",
-      });
-      return;
-    }
+    console.log("Start lesson clicked, agent loaded:", agentLoaded);
     
-    try {
-      console.log("Starting lesson...");
-      setIsLoading(true);
-      setIsStarted(true);
-      
-      toast({
-        title: "Lesson Started",
-        description: "Your AI tutor is ready to help you learn!",
-      });
-      
-      // Give time for the component to render before sending the welcome message
-      setTimeout(() => {
+    setIsLoading(true);
+    setIsStarted(true);
+    
+    toast({
+      title: "Lesson Started",
+      description: "Your AI tutor is ready to help you learn!",
+    });
+    
+    // Give time for the component to render before sending the welcome message
+    setTimeout(() => {
+      try {
+        console.log("Attempting to send welcome message, ref exists:", !!convaiRef.current);
+        
         if (convaiRef.current) {
           console.log("Sending welcome message to agent");
+          // Create and dispatch the welcome event
           const welcomeEvent = new CustomEvent('convai-message', {
             detail: { message: "Hello, I'm ready to start my lesson!" }
           });
-          convaiRef.current?.dispatchEvent(welcomeEvent);
+          convaiRef.current.dispatchEvent(welcomeEvent);
         } else {
-          console.error("Convai element ref is not available");
+          console.warn("Convai element ref is not available yet");
         }
-        setIsLoading(false);
-      }, 2000);
-    } catch (error) {
-      console.error("Error starting lesson:", error);
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive"
-      });
+      } catch (error) {
+        console.error("Error sending welcome message:", error);
+      }
+      
       setIsLoading(false);
-    }
+    }, 3000); // Increased timeout to ensure component is fully rendered
   };
   
   // Mock user data for Header component
@@ -108,11 +112,17 @@ const TestLesson = () => {
           >
             {isLoading ? 'Loading...' : 'Start Lesson'}
           </Button>
+          {scriptError && (
+            <p className="mt-4 text-red-500 text-sm">
+              There was an issue loading the tutor resources. Please refresh the page and try again.
+            </p>
+          )}
         </div>
       ) : (
         <div className="mt-6 border rounded-lg p-4 bg-white shadow-md">
           <h2 className="text-lg font-semibold mb-4">Your AI Tutor</h2>
           <div className="rounded-lg overflow-hidden" style={{ height: '500px' }}>
+            {/* Only render the elevenlabs-convai component after clicking the start button */}
             <elevenlabs-convai
               ref={convaiRef}
               agent-id={ELEVENLABS_CONFIG.agentId}
