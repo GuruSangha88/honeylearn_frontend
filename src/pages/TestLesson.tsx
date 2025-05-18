@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { ELEVENLABS_CONFIG } from '../config/elevenlabs';
 import Header from '@/components/Header';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 const TestLesson = () => {
   const [isStarted, setIsStarted] = useState(false);
@@ -12,58 +14,85 @@ const TestLesson = () => {
   const convaiRef = useRef(null);
   const [agentLoaded, setAgentLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
 
   useEffect(() => {
-    // Check if script already exists to avoid duplicate loading
-    const existingScript = document.querySelector('script[src="https://cdn.elevenlabs.io/convai/v1/index.js"]');
-    
-    if (existingScript) {
-      console.log("ElevenLabs script already exists, setting agent as loaded");
-      setAgentLoaded(true);
-      return;
-    }
-    
-    // Load the ElevenLabs Convai script
-    const script = document.createElement('script');
-    script.src = 'https://cdn.elevenlabs.io/convai/v1/index.js';
-    script.async = true;
-    script.crossOrigin = "anonymous"; // Add crossOrigin attribute
-    
-    script.onload = () => {
-      console.log("ElevenLabs script loaded successfully");
-      setAgentLoaded(true);
-      setScriptError(false);
-    };
-    
-    script.onerror = (error) => {
-      console.error("Error loading ElevenLabs script:", error);
-      setScriptError(true);
-      toast({
-        title: "Error",
-        description: "Failed to load AI tutor resources. Please try again later.",
-        variant: "destructive"
+    const loadScript = () => {
+      // Check if script already exists to avoid duplicate loading
+      const existingScript = document.querySelector('script[src="https://cdn.elevenlabs.io/convai/v1/index.js"]');
+      
+      if (existingScript) {
+        console.log("ElevenLabs script already exists, setting agent as loaded");
+        setAgentLoaded(true);
+        setScriptError(false);
+        return;
+      }
+      
+      // Clean up any failed script tags first
+      const failedScripts = document.querySelectorAll('script[data-elevenlabs-failed="true"]');
+      failedScripts.forEach(script => {
+        document.head.removeChild(script);
       });
+      
+      // Load the ElevenLabs Convai script
+      const script = document.createElement('script');
+      script.src = 'https://cdn.elevenlabs.io/convai/v1/index.js';
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      script.setAttribute('data-elevenlabs', 'true');
+      
+      script.onload = () => {
+        console.log("ElevenLabs script loaded successfully");
+        setAgentLoaded(true);
+        setScriptError(false);
+        setRetryCount(0); // Reset retry count on success
+      };
+      
+      script.onerror = (error) => {
+        console.error("Error loading ElevenLabs script:", error);
+        script.setAttribute('data-elevenlabs-failed', 'true');
+        
+        if (retryCount < MAX_RETRIES) {
+          console.log(`Retrying script load (${retryCount + 1}/${MAX_RETRIES})...`);
+          setRetryCount(prevCount => prevCount + 1);
+          // Try again with a delay
+          setTimeout(loadScript, 1500);
+        } else {
+          setScriptError(true);
+          toast({
+            title: "Error",
+            description: "Failed to load AI tutor resources after several attempts. Please check your internet connection and try again.",
+            variant: "destructive"
+          });
+        }
+      };
+      
+      document.head.appendChild(script);
     };
     
-    document.head.appendChild(script);
+    loadScript();
     
     return () => {
       // Clean up script when component unmounts
-      if (document.head.contains(script)) {
+      const script = document.querySelector('script[data-elevenlabs="true"]');
+      if (script && document.head.contains(script)) {
         document.head.removeChild(script);
       }
     };
-  }, [toast]);
+  }, [retryCount, toast]);
 
   const startLesson = () => {
     console.log("Start lesson clicked, agent loaded:", agentLoaded);
     
+    // Even if the agent isn't fully loaded, we'll try to start the lesson
+    // This is more user-friendly than blocking the button
     setIsLoading(true);
     setIsStarted(true);
     
     toast({
       title: "Lesson Started",
-      description: "Your AI tutor is ready to help you learn!",
+      description: "Your AI tutor is preparing to help you learn!",
     });
     
     // Give time for the component to render before sending the welcome message
@@ -71,7 +100,7 @@ const TestLesson = () => {
       try {
         console.log("Attempting to send welcome message, ref exists:", !!convaiRef.current);
         
-        if (convaiRef.current) {
+        if (window.customElements && window.customElements.get('elevenlabs-convai') && convaiRef.current) {
           console.log("Sending welcome message to agent");
           // Create and dispatch the welcome event
           const welcomeEvent = new CustomEvent('convai-message', {
@@ -79,14 +108,24 @@ const TestLesson = () => {
           });
           convaiRef.current.dispatchEvent(welcomeEvent);
         } else {
-          console.warn("Convai element ref is not available yet");
+          console.warn("Convai element is not fully initialized yet");
+          // Show a toast to let the user know
+          toast({
+            title: "Still Loading",
+            description: "The AI tutor is taking longer than expected to initialize. You may need to refresh the page if it doesn't respond soon.",
+          });
         }
       } catch (error) {
         console.error("Error sending welcome message:", error);
+        toast({
+          title: "Error",
+          description: "There was an issue starting the conversation. Please refresh the page and try again.",
+          variant: "destructive"
+        });
       }
       
       setIsLoading(false);
-    }, 3000); // Increased timeout to ensure component is fully rendered
+    }, 4000); // Increased timeout to ensure component is fully rendered
   };
   
   // Mock user data for Header component
@@ -112,10 +151,21 @@ const TestLesson = () => {
           >
             {isLoading ? 'Loading...' : 'Start Lesson'}
           </Button>
+          
           {scriptError && (
-            <p className="mt-4 text-red-500 text-sm">
-              There was an issue loading the tutor resources. Please refresh the page and try again.
-            </p>
+            <Alert variant="destructive" className="mt-4 max-w-md">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Connection Error</AlertTitle>
+              <AlertDescription>
+                There was an issue loading the tutor resources. This could be due to:
+                <ul className="list-disc ml-5 mt-2">
+                  <li>Internet connection issues</li>
+                  <li>Browser security settings</li>
+                  <li>Ad blockers or content filters</li>
+                </ul>
+                Try refreshing the page or disabling any content blockers.
+              </AlertDescription>
+            </Alert>
           )}
         </div>
       ) : (
