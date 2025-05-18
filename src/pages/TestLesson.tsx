@@ -9,7 +9,7 @@ const TestLesson = () => {
   const [isStarted, setIsStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const convaiRef = useRef<HTMLElement>(null);
+  const convaiRef = useRef(null);
   const [agentLoaded, setAgentLoaded] = useState(false);
 
   useEffect(() => {
@@ -19,7 +19,17 @@ const TestLesson = () => {
     script.async = true;
     
     script.onload = () => {
+      console.log("ElevenLabs script loaded successfully");
       setAgentLoaded(true);
+    };
+    
+    script.onerror = (error) => {
+      console.error("Error loading ElevenLabs script:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load AI tutor resources. Please try again later.",
+        variant: "destructive"
+      });
     };
     
     document.head.appendChild(script);
@@ -30,26 +40,48 @@ const TestLesson = () => {
         document.head.removeChild(script);
       }
     };
-  }, []);
+  }, [toast]);
 
   const startLesson = () => {
-    setIsStarted(true);
-    setIsLoading(true);
+    if (!agentLoaded) {
+      toast({
+        title: "Not Ready",
+        description: "AI tutor resources are still loading. Please wait a moment.",
+      });
+      return;
+    }
     
-    toast({
-      title: "Lesson Started",
-      description: "Your AI tutor is ready to help you learn!",
-    });
-    
-    // If we wanted to send an initial message to the agent, we would do it here
-    if (agentLoaded && convaiRef.current) {
+    try {
+      console.log("Starting lesson...");
+      setIsLoading(true);
+      setIsStarted(true);
+      
+      toast({
+        title: "Lesson Started",
+        description: "Your AI tutor is ready to help you learn!",
+      });
+      
+      // Give time for the component to render before sending the welcome message
       setTimeout(() => {
-        const welcomeEvent = new CustomEvent('convai-message', {
-          detail: { message: "Hello, I'm ready to start my lesson!" }
-        });
-        convaiRef.current?.dispatchEvent(welcomeEvent);
+        if (convaiRef.current) {
+          console.log("Sending welcome message to agent");
+          const welcomeEvent = new CustomEvent('convai-message', {
+            detail: { message: "Hello, I'm ready to start my lesson!" }
+          });
+          convaiRef.current?.dispatchEvent(welcomeEvent);
+        } else {
+          console.error("Convai element ref is not available");
+        }
         setIsLoading(false);
-      }, 1000);
+      }, 2000);
+    } catch (error) {
+      console.error("Error starting lesson:", error);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
     }
   };
   
@@ -70,7 +102,7 @@ const TestLesson = () => {
           </p>
           <Button 
             onClick={startLesson} 
-            disabled={isLoading || !agentLoaded}
+            disabled={isLoading}
             size="lg"
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
