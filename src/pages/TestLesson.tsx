@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-// Import your ElevenLabs API configuration file
-import * as elevenLabsConfig from '../elevenlabs'; // Adjust the path as needed
+// Import your ElevenLabs API configuration file - Fixed import path
+import * as elevenLabsConfig from '../elevenlabs';
 import Header from '@/components/Header';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Loader2 } from "lucide-react";

@@ -1,16 +1,27 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ELEVENLABS_CONFIG, loadElevenLabsScript } from '../config/elevenlabs';
+import { loadElevenLabsScript } from '../elevenlabs';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { trackEvent } from '@/utils/analytics';
 
 interface ElevenLabsConvaiProps {
+  apiKey: string;
+  agentId: string;
+  voiceId?: string;
+  modelId?: string;
   onInitialized?: () => void;
   onError?: () => void;
 }
 
-const ElevenLabsConvai = ({ onInitialized, onError }: ElevenLabsConvaiProps) => {
+const ElevenLabsConvai = ({ 
+  apiKey,
+  agentId,
+  voiceId,
+  modelId,
+  onInitialized, 
+  onError 
+}: ElevenLabsConvaiProps) => {
   const convaiRef = useRef<HTMLElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -109,8 +120,10 @@ const ElevenLabsConvai = ({ onInitialized, onError }: ElevenLabsConvaiProps) => 
   return (
     <elevenlabs-convai
       ref={convaiRef}
-      agent-id={ELEVENLABS_CONFIG.agentId}
-      api-key={ELEVENLABS_CONFIG.apiKey}
+      agent-id={agentId}
+      api-key={apiKey}
+      voice-id={voiceId}
+      model-id={modelId}
       style={{ width: '100%', height: '100%' }}
     />
   );
