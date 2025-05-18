@@ -36,8 +36,13 @@ const ElevenLabsConvai = ({
       if (!mounted) return;
       
       try {
+        console.log("Starting ElevenLabs initialization...");
+        console.log(`Using agentId: ${agentId}`);
+        console.log(`API key validity: ${apiKey ? 'Key provided' : 'No key provided'}`);
+        
         // Load the script
         const scriptLoaded = await loadElevenLabsScript();
+        console.log(`Script loaded: ${scriptLoaded}`);
         
         if (!scriptLoaded) {
           scriptLoadAttempts++;
@@ -45,6 +50,7 @@ const ElevenLabsConvai = ({
           
           if (scriptLoadAttempts < MAX_ATTEMPTS) {
             // Retry after delay
+            console.log(`Retrying in 3 seconds...`);
             setTimeout(initializeConvai, 3000);
             return;
           }
@@ -56,6 +62,16 @@ const ElevenLabsConvai = ({
           return;
         }
         
+        // Check if the window has the custom element registered
+        if (!window.customElements || !window.customElements.get('elevenlabs-convai')) {
+          console.error("ElevenLabs custom element not registered even though script loaded");
+          setIsLoading(false);
+          if (onError) onError();
+          return;
+        }
+        
+        console.log("ElevenLabs script loaded successfully");
+        
         // Script loaded successfully
         setIsLoading(false);
         setIsInitialized(true);
@@ -64,17 +80,25 @@ const ElevenLabsConvai = ({
         setTimeout(() => {
           if (mounted && convaiRef.current && window.customElements.get('elevenlabs-convai')) {
             try {
+              console.log("Attempting to send welcome message...");
               // Create and dispatch a welcome event
               const welcomeEvent = new CustomEvent('convai-message', {
                 detail: { message: "Hello, I'm ready to start my lesson!" }
               });
               convaiRef.current.dispatchEvent(welcomeEvent);
+              console.log("Welcome message sent successfully");
               
               if (onInitialized) onInitialized();
             } catch (error) {
               console.error("Error sending welcome message:", error);
               if (onError) onError();
             }
+          } else {
+            console.warn("Could not send welcome message - component not ready", {
+              mounted,
+              refExists: !!convaiRef.current,
+              elementRegistered: !!(window.customElements && window.customElements.get('elevenlabs-convai'))
+            });
           }
         }, 3000);
       } catch (error) {
@@ -91,7 +115,7 @@ const ElevenLabsConvai = ({
     return () => {
       mounted = false;
     };
-  }, [onInitialized, onError]);
+  }, [apiKey, agentId, onInitialized, onError]);
   
   // Track when component is successfully initialized
   useEffect(() => {

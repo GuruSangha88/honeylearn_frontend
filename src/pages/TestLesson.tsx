@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -5,13 +6,14 @@ import { useToast } from '@/hooks/use-toast';
 import * as elevenLabsConfig from '../elevenlabs';
 import Header from '@/components/Header';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2, RefreshCw } from "lucide-react";
 import ElevenLabsConvai from '@/components/ElevenLabsConvai';
 import { trackEvent } from '@/utils/analytics';
 
 const SimplifiedLesson = () => {
   const [isStarted, setIsStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [connectionAttempts, setConnectionAttempts] = useState(0);
   const { toast } = useToast();
   const [elevenLabsAvailable, setElevenLabsAvailable] = useState(true);
   const [apiKey, setApiKey] = useState('');
@@ -20,10 +22,12 @@ const SimplifiedLesson = () => {
   useEffect(() => {
     const initializeElevenLabs = async () => {
       try {
+        console.log("Initializing ElevenLabs in TestLesson component");
         // Check if API key and agent ID exist in the config
         if (elevenLabsConfig.apiKey && elevenLabsConfig.agentId) {
           setApiKey(elevenLabsConfig.apiKey);
           console.log("ElevenLabs configuration loaded successfully");
+          console.log(`Agent ID: ${elevenLabsConfig.agentId}`);
         } else {
           console.error("ElevenLabs configuration incomplete. Missing API key or agent ID.");
           setElevenLabsAvailable(false);
@@ -50,23 +54,37 @@ const SimplifiedLesson = () => {
   const handleConvaiError = () => {
     console.error("Error initializing ElevenLabs Convai");
     setIsLoading(false);
+    setConnectionAttempts(prev => prev + 1);
     trackEvent('elevenlabs_convai_error');
-    setElevenLabsAvailable(false);
-    toast({
-      title: "Connection Error",
-      description: "Unable to connect to ElevenLabs. Please check your connection and try again.",
-      variant: "destructive"
-    });
+    
+    // Only set as unavailable after multiple attempts
+    if (connectionAttempts >= 1) {
+      setElevenLabsAvailable(false);
+      toast({
+        title: "Connection Error",
+        description: "Unable to connect to ElevenLabs after multiple attempts. Using fallback mode.",
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Connection Issue",
+        description: "Having trouble connecting to the AI tutor. Trying again...",
+        variant: "destructive"
+      });
+    }
   };
 
   const startLesson = async () => {
     console.log("Start lesson clicked");
     setIsLoading(true);
     setIsStarted(true);
+    setConnectionAttempts(0);
     
     // Check if ElevenLabs configuration is complete before proceeding
     if (!apiKey || !elevenLabsConfig.agentId) {
       console.error("ElevenLabs configuration incomplete");
+      console.error(`API key: ${apiKey ? 'Provided' : 'Missing'}`);
+      console.error(`Agent ID: ${elevenLabsConfig.agentId ? 'Provided' : 'Missing'}`);
       setElevenLabsAvailable(false);
       setIsLoading(false);
       toast({
@@ -85,6 +103,16 @@ const SimplifiedLesson = () => {
     toast({
       title: "Connecting...",
       description: "Establishing connection to ElevenLabs AI tutor.",
+    });
+  };
+  
+  const retryConnection = () => {
+    setElevenLabsAvailable(true);
+    setIsLoading(true);
+    setConnectionAttempts(0);
+    toast({
+      title: "Reconnecting...",
+      description: "Attempting to reconnect to the AI tutor.",
     });
   };
   
@@ -135,10 +163,18 @@ const SimplifiedLesson = () => {
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>Connection Error</AlertTitle>
               <AlertDescription>
-                Unable to connect to ElevenLabs AI. Please ensure your agent ID and API key are correctly configured.
+                Unable to connect to ElevenLabs AI. Please ensure your internet connection is stable.
                 <div className="mt-2 text-sm">
-                  Error details: Missing or invalid configuration parameters.
+                  Error details: Unable to initialize the ElevenLabs AI agent.
                 </div>
+                <Button 
+                  variant="outline" 
+                  onClick={retryConnection}
+                  className="mt-4 bg-white hover:bg-gray-100"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Retry Connection
+                </Button>
               </AlertDescription>
             </Alert>
           )}

@@ -15,6 +15,8 @@ export const isElevenLabsAvailable = (): boolean => {
 // Helper functions for ElevenLabs integration
 export const loadElevenLabsScript = (): Promise<boolean> => {
   return new Promise((resolve) => {
+    console.log("Starting to load ElevenLabs script...");
+    
     // Check if script is already loaded and component is registered
     if (window.customElements && window.customElements.get('elevenlabs-convai')) {
       console.log("ElevenLabs component is already registered");
@@ -25,6 +27,7 @@ export const loadElevenLabsScript = (): Promise<boolean> => {
     // Remove any existing failed scripts
     const existingScripts = document.querySelectorAll('script[data-elevenlabs]');
     existingScripts.forEach(script => {
+      console.log("Removing existing ElevenLabs script");
       document.head.removeChild(script);
     });
     
@@ -35,29 +38,38 @@ export const loadElevenLabsScript = (): Promise<boolean> => {
     script.crossOrigin = "anonymous";
     script.setAttribute('data-elevenlabs', 'true');
     
+    console.log("Created script element with src:", script.src);
+    
     // Set timeout for script loading
     const timeoutId = setTimeout(() => {
       console.error("ElevenLabs script load timeout");
       resolve(false);
-    }, 10000); // 10 seconds timeout
+    }, 15000); // Extending timeout to 15 seconds
     
     script.onload = () => {
+      console.log("ElevenLabs script onload event triggered");
       clearTimeout(timeoutId);
       // Give time for component registration
       setTimeout(() => {
         const isRegistered = !!(window.customElements && 
                                window.customElements.get('elevenlabs-convai'));
         console.log(`ElevenLabs component registered: ${isRegistered}`);
+        
+        if (!isRegistered) {
+          console.error("Script loaded but component was not registered");
+        }
+        
         resolve(isRegistered);
-      }, 2000);
+      }, 3000); // Extra time for component registration
     };
     
-    script.onerror = () => {
+    script.onerror = (e) => {
+      console.error("Error loading ElevenLabs script:", e);
       clearTimeout(timeoutId);
-      console.error("Error loading ElevenLabs script");
       resolve(false);
     };
     
+    console.log("Appending script to document head");
     document.head.appendChild(script);
   });
 };
